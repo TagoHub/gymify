@@ -1,0 +1,15 @@
+%h1 User Details
+
+%table
+  %tbody
+    %tr
+      %th ID
+      %td= @user.id
+    %tr
+      %th Name
+      %td= @user.name
+    %tr
+      %th Email
+      %td= @user.email
+
+= link_to 'Back to Users', users_path, class: 'btn btn-secondary mt-3'
