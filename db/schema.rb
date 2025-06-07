@@ -10,9 +10,99 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_06_07_005428) do
+ActiveRecord::Schema[7.1].define(version: 2025_06_07_014938) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "exercise_groups", force: :cascade do |t|
+    t.integer "order"
+    t.boolean "superset"
+    t.bigint "workout_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["workout_id"], name: "index_exercise_groups_on_workout_id"
+  end
+
+  create_table "exercise_sets", force: :cascade do |t|
+    t.string "set_type"
+    t.integer "reps"
+    t.float "load"
+    t.string "unit"
+    t.integer "intensity"
+    t.string "intensity_technique"
+    t.bigint "exercise_id", null: false
+    t.bigint "intensity_technique_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["exercise_id"], name: "index_exercise_sets_on_exercise_id"
+    t.index ["intensity_technique_id"], name: "index_exercise_sets_on_intensity_technique_id"
+  end
+
+  create_table "exercises", force: :cascade do |t|
+    t.string "name"
+    t.string "notes"
+    t.string "exercise_type"
+    t.integer "rep_range_min"
+    t.integer "rep_range_max"
+    t.integer "rest_seconds"
+    t.boolean "unilateral"
+    t.bigint "exercise_group_id", null: false
+    t.bigint "instrument_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["exercise_group_id"], name: "index_exercises_on_exercise_group_id"
+    t.index ["instrument_id"], name: "index_exercises_on_instrument_id"
+  end
+
+  create_table "grips", force: :cascade do |t|
+    t.string "name"
+    t.bigint "instrument_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["instrument_id"], name: "index_grips_on_instrument_id"
+  end
+
+  create_table "instruments", force: :cascade do |t|
+    t.string "name"
+    t.float "weight"
+    t.string "unit"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "intensity_techniques", force: :cascade do |t|
+    t.string "name"
+    t.string "description"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "muscle_groups", force: :cascade do |t|
+    t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "muscles", force: :cascade do |t|
+    t.string "name"
+    t.bigint "muscle_group_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["muscle_group_id"], name: "index_muscles_on_muscle_group_id"
+  end
+
+  create_table "programs", force: :cascade do |t|
+    t.string "name"
+    t.integer "frequency"
+    t.string "level"
+    t.string "goal"
+    t.integer "minutes_min"
+    t.integer "minutes_max"
+    t.bigint "user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_programs_on_user_id"
+  end
 
   create_table "users", force: :cascade do |t|
     t.string "email", default: "", null: false
@@ -32,4 +122,23 @@ ActiveRecord::Schema[7.1].define(version: 2025_06_07_005428) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  create_table "workouts", force: :cascade do |t|
+    t.string "name"
+    t.string "goal"
+    t.integer "rest_days"
+    t.bigint "program_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["program_id"], name: "index_workouts_on_program_id"
+  end
+
+  add_foreign_key "exercise_groups", "workouts"
+  add_foreign_key "exercise_sets", "exercises"
+  add_foreign_key "exercise_sets", "intensity_techniques"
+  add_foreign_key "exercises", "exercise_groups"
+  add_foreign_key "exercises", "instruments"
+  add_foreign_key "grips", "instruments"
+  add_foreign_key "muscles", "muscle_groups"
+  add_foreign_key "programs", "users"
+  add_foreign_key "workouts", "programs"
 end
