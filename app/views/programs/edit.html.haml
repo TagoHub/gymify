@@ -1,0 +1,28 @@
+.form
+  %h1.title Edit Program
+  = form_for @program do |f|
+    .form-group
+      = f.label :name
+      = f.text_field :name, class: "form-control"
+
+    .form-group
+      = f.label :frequency, "Workouts per Week"
+      = f.number_field :frequency, class: "form-control"
+
+    .form-group
+      = f.label :level
+      = f.select :level, ['Beginner', 'Intermediate', 'Advanced', 'All levels'], {}, class: "form-control"
+
+    .form-group
+      = f.label :goal
+      = f.text_field :goal, class: "form-control"
+
+    .form-group
+      = f.label :duration
+      = f.number_field :duration, class: "form-control"
+
+    .form-group
+      = f.label :unit_id, "Preferred Unit"
+      = f.collection_select :unit_id, Unit.where(unit_type: "Time"), :id, :name, { prompt: "Select Unit" }, class: "form-control"
+
+    = f.submit "Save", class: "btn btn-primary"
