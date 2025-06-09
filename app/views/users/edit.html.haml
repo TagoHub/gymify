@@ -1,0 +1,88 @@
+= form_for @user do |f|
+  .form-group
+    = f.label :name
+    = f.text_field :name, class: "form-control"
+  .form-group
+    = f.label :email
+    = f.email_field :email, class: "form-control"
+  .form-group
+    = f.label :gender
+    = f.select :gender, ['Male', 'Female', 'Other'], {}, class: "form-control"
+  .form-group
+    = f.label :weight
+    = f.number_field :weight, class: "form-control"
+  .form-group
+    = f.label :weight_unit_id, "Weight Preference"
+    = f.collection_select :weight_unit_id, Unit.where(unit_type: 'Weight'), :id, :name, { prompt: "Select Weight Unit" }, class: "form-control"
+  .form-group
+    = f.label :height
+    = f.number_field :height, class: "form-control"
+  .form-group
+    = f.label :height_unit_id, "Height Preference"
+    = f.collection_select :height_unit_id, Unit.where(unit_type: 'Height'), :id, :name, { prompt: "Select Height Unit" }, class: "form-control"
+  = f.submit "Save", class: "btn btn-primary"
+
+:scss
+
+  h1 {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    font-size: 1.8rem;
+    color: #333;
+  }
+
+  form {
+    max-width: 500px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background-color: #fdfdfd;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  .form-group {
+    margin-bottom: 1.5rem;
+  }
+
+  label {
+    display: block;
+    margin-bottom: 0.4rem;
+    font-weight: 600;
+    color: #333;
+  }
+
+  input[type="text"],
+  input[type="email"],
+  input[type="number"],
+  select {
+    width: 100%;
+    padding: 0.6rem;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    background-color: #fff;
+    font-size: 1rem;
+    transition: border-color 0.2s ease;
+  }
+
+  input:focus,
+  select:focus {
+    border-color: #007BFF;
+    outline: none;
+  }
+
+  .btn {
+    display: inline-block;
+    padding: 0.6rem 1.2rem;
+    font-size: 1rem;
+    font-weight: 500;
+    color: white;
+    background-color: #007BFF;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    text-decoration: none;
+  }
+
+  .btn:hover {
+    background-color: #0056b3;
+  }
