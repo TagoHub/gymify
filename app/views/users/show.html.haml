@@ -1,67 +1,18 @@
-%h1= @user.name
-
-%table.user-profile
-  %tbody
-    %tr
-      %td.label Email
-      %td.value= @user.email
-    %tr
-      %td.label Gender
-      %td.value= @user.gender
-    %tr
-      %td.label Weight
-      %td.value= [@user.weight, @user.weight_unit.abbreviation].join(" ")
-    %tr
-      %td.label Height
-      %td.value= [@user.height, @user.height_unit.abbreviation].join(" ")
-
-= link_to "Edit Profile", edit_user_path(@user), class: "btn"
-
-:scss
-  .user-profile {
-    width: 100%;
-    max-width: 600px;
-    margin: 2rem auto;
-    border-collapse: collapse;
-    font-family: sans-serif;
-
-    td {
-      padding: 0.75rem 1rem;
-      border-bottom: 1px solid #eee;
-    }
-
-    .label {
-      font-weight: bold;
-      color: #333;
-      width: 30%;
-      background-color: #f9f9f9;
-    }
-
-    .value {
-      color: #555;
-    }
-  }
-
-  h1 {
-    text-align: center;
-    margin-bottom: 2rem;
-    font-size: 2rem;
-    color: #222;
-  }
-
-  .btn {
-    display: block;
-    width: fit-content;
-    margin: 2rem auto 0;
-    padding: 0.6rem 1.2rem;
-    font-size: 1rem;
-    background-color: #007bff;
-    color: white;
-    border-radius: 6px;
-    text-decoration: none;
-    transition: background-color 0.2s ease;
-
-    &:hover {
-      background-color: #0056b3;
-    }
-  }
+.show
+  %h1.title= @user.name
+  %table
+    %tbody
+      %tr
+        %td.label Email
+        %td.value= @user.email
+      %tr
+        %td.label Gender
+        %td.value= @user.gender
+      %tr
+        %td.label Weight
+        %td.value= [@user.weight, @user.weight_unit.abbreviation].join(" ")
+      %tr
+        %td.label Height
+        %td.value= [@user.height, @user.height_unit.abbreviation].join(" ")
+  
+  = link_to "Edit Profile", edit_user_path(@user), class: "btn btn-primary"

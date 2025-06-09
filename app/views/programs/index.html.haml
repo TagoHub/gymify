@@ -1,0 +1,28 @@
+.index
+  %h1.title My Programs
+  %table
+    %thead
+      %tr
+        %th Name
+        %th Frequency
+        %th Level
+        %th Goal
+        %th Duration
+        %th Time Unit
+        %th Actions
+    %tbody
+      - @programs.each do |program|
+        %tr
+          %td= program.name
+          %td= program.frequency
+          %td= program.level
+          %td= program.goal
+          %td= program.duration
+          %td= program.unit&.abbreviation
+          %td
+            = link_to program_path(program), class: "btn" do
+              %i.bi.bi-eye
+            = link_to edit_program_path(program), class: "btn" do
+              %i.bi.bi-pencil
+            = link_to program_path(program), data: { "turbo-method": :delete, "turbo-confirm": "Are you sure?" }, class: "btn delete" do
+              %i.bi.bi-x
