@@ -1,3 +1,5 @@
+.title 
+  %h1= @exercise.name
 .form
   = form_with model: [@program, @workout, @exercise, @exercise_set], local: true do |f|
     .form-group

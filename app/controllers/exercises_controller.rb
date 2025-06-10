@@ -23,12 +23,19 @@ class ExercisesController < ApplicationController
   end
 
   def new
-    @exercise = @workout.exercises.new
+    order = (@workout&.exercise_groups.select{ |eg| eg.exercises.any? }.map(&:order).max || 0) + 1
+    @exercise_group = @workout.exercise_groups.find_by(order: order)
+    unless @exercise_group
+      @exercise_group = @workout.exercise_groups.new(order: order)
+      @exercise_group.save!
+    end
+    @exercise = @exercise_group.exercises.new
     render :form
   end
 
   def create
-    @exercise = @workout.exercises.new(exercise_params)
+    @exercise_group = @workout.exercise_groups.find(exercise_params[:exercise_group_id])
+    @exercise = @exercise_group.exercises.new(exercise_params)
     if @exercise.save
       redirect_to program_workout_exercises_path(@program, @workout), notice: "Your exercise was successfully created."
     else

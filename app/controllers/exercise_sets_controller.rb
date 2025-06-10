@@ -24,7 +24,7 @@ class ExerciseSetsController < ApplicationController
   end
 
   def new
-    @exercise_set = @exercise.exercise_sets.new(order: @exercise.exercise_sets.map(&:order).max + 1)
+    @exercise_set = @exercise.exercise_sets.new(order: (@exercise.exercise_sets.map(&:order).max || 0) + 1)
     render :form
   end
 
