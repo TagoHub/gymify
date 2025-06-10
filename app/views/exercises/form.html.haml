@@ -1,0 +1,33 @@
+.form
+  = form_with model: [@program, @workout, @exercise], local: true do |f|
+    .form-group
+      = f.label :name
+      = f.text_field :name
+    .form-group
+      = f.label :exercise_group_id, "Workout Priority"
+      = f.collection_select :exercise_group_id, @workout.exercise_groups.order(:order), :id, :order, prompt: "Select Group"
+    .form-group
+      = f.label :exercise_type
+      = f.select :exercise_type, ["Compound", "Isolation"]
+    .form-group
+      = f.label :instrument_id
+      = f.collection_select :instrument_id, Instrument.all, :id, :name, prompt: "Select Instrument"
+    .form-group
+      = f.label :rep_range_min
+      = f.number_field :rep_range_min
+    .form-group
+      = f.label :rep_range_max
+      = f.number_field :rep_range_max
+    .form-group
+      = f.label :rest_time
+      = f.number_field :rest_time
+    .form-group
+      = f.label :unit_id, "Rest Unit"
+      = f.collection_select :unit_id, Unit.where(unit_type: "Time"), :id, :name, prompt: "Select Time Unit"
+    .form-group
+      = f.label :unilateral
+      = f.select :unilateral, [["Yes", true], ["No", false]]
+    .form-group
+      = f.label :notes
+      = f.text_field :notes
+    = f.submit 'Save', class: 'btn'

@@ -1,0 +1,40 @@
+.title
+  %h1= @workout.name
+  = link_to new_program_workout_exercise_path(@program, @workout), class: "btn btn-outline-primary btn-sm" do
+    %i.bi.bi-plus.h4
+.index
+  %table
+    %thead
+      %tr
+        %th Order
+        %th Name
+        %th Type
+        %th Instrument
+        %th Rep Range
+        %th Rest Time
+        %th Unilateral
+        %th Notes
+        %th Actions
+    %tbody
+      - @exercises.each do |exercise|
+        %tr
+          %td= exercise.exercise_group.order
+          %td= exercise.name
+          %td= exercise.exercise_type
+          %td= exercise.instrument.name
+          %td= [exercise.rep_range_min, exercise.rep_range_max].join(" - ")
+          %td= [exercise.rest_time, exercise.unit.abbreviation].join(" ")
+          - if exercise.unilateral 
+            %td
+              %i.bi.bi-check
+          - else
+            %td
+              %i.bi.bi-x
+          %td= exercise.notes
+          %td
+            = link_to program_workout_exercise_path(@program, @workout, exercise), class: "btn" do
+              %i.bi.bi-eye
+            = link_to edit_program_workout_exercise_path(@program, @workout, exercise), class: "btn" do
+              %i.bi.bi-pencil
+            = link_to program_workout_exercise_path(@program, @workout, exercise), data: { "turbo-method": :delete, "turbo-confirm": "Are you sure?" }, class: "btn delete" do
+              %i.bi.bi-trash

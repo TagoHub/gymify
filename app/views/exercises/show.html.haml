@@ -1,0 +1,40 @@
+.title 
+  %h1= @exercise.name
+  = link_to edit_program_workout_exercise_path(@program, @workout, @workout), class:  "btn btn-outline-primary btn-sm" do
+    %i.bi.bi-pencil.h5
+.show
+  %table
+    %tr
+      %td.label Order
+      %td.value= @exercise.exercise_group.order
+    %tr
+      %td.label Type
+      %td.value= @exercise.exercise_type
+    %tr
+      %td.label Instrument
+      %td.value= @exercise.instrument.name
+    %tr
+      %td.label Rep Range
+      %td.value= [@exercise.rep_range_max, @exercise.rep_range_min].join(" - ")
+    %tr
+      %td.label Rest Time
+      %td.value= [@exercise.rest_time, @exercise.unit.abbreviation].join(" ")
+    %tr
+      %td.label Unilateral
+      - if @exercise.unilateral 
+        %td.value
+          %i.bi.bi-check
+      - else
+        %td.value
+          %i.bi.bi-x
+    %tr
+      %td.label Notes
+      %td.value= @exercise.notes
+    %tr
+      %td.label Created At
+      %td.value= l(@exercise.created_at, format: :long)
+    %tr
+      %td.label Updated At
+      %td.value= l(@exercise.updated_at, format: :long)
+
+  = link_to 'Exercises', program_workout_exercises_path(@program, @workout), class: "btn"

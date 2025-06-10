@@ -10,6 +10,8 @@ Rails.application.routes.draw do
   # root "posts#index"
   resources :users
   resources :programs do
-    resources :workouts
+    resources :workouts do
+      resources :exercises
+    end
   end
 end
