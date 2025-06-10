@@ -3,6 +3,7 @@ class CreateExerciseSets < ActiveRecord::Migration[7.1]
     create_table :exercise_sets do |t|
       t.string :set_type
       t.integer :reps
+      t.integer :order
       t.float :load
       t.references :unit, null: false, foreign_key: true
       t.integer :intensity

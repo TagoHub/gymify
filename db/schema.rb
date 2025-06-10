@@ -32,6 +32,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_06_08_040018) do
   create_table "exercise_sets", force: :cascade do |t|
     t.string "set_type"
     t.integer "reps"
+    t.integer "order"
     t.float "load"
     t.bigint "unit_id", null: false
     t.integer "intensity"

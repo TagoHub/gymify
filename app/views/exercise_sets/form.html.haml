@@ -1,0 +1,24 @@
+.form
+  = form_with model: [@program, @workout, @exercise, @exercise_set], local: true do |f|
+    .form-group
+      = f.label :order
+      = f.number_field :order
+    .form-group
+      = f.label :set_type
+      = f.text_field :set_type
+    .form-group
+      = f.label :reps
+      = f.number_field :reps
+    .form-group
+      = f.label :load
+      .flex-row
+        = f.number_field :load, class: "form-control"
+        = f.collection_select :unit_id, Unit.where(unit_type: 'Weight'), :id, :name, { prompt: "Select Load Unit" }, class: "form-control"
+    .form-group
+      = f.label :intensity
+      = f.number_field :intensity
+    .form-group
+      = f.label :intensity_technique_id
+      - options = IntensityTechnique.all.pluck(:name, :id) << ["None", nil]
+      = f.select :intensity_technique_id, options
+    = f.submit 'Save', class: 'btn'

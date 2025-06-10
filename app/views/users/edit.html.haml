@@ -8,17 +8,15 @@
       = f.email_field :email, class: "form-control"
     .form-group
       = f.label :gender
-      = f.select :gender, ['Male', 'Female', 'Other'], {}, class: "form-control"
+      = f.select :gender, ['Male', 'Female'], {}, class: "form-control"
     .form-group
       = f.label :weight
-      = f.number_field :weight, class: "form-control"
-    .form-group
-      = f.label :weight_unit_id, "Weight Preference"
-      = f.collection_select :weight_unit_id, Unit.where(unit_type: 'Weight'), :id, :name, { prompt: "Select Weight Unit" }, class: "form-control"
+      .flex-row
+        = f.number_field :weight, class: "form-control"
+        = f.collection_select :weight_unit_id, Unit.where(unit_type: 'Weight'), :id, :name, { prompt: "Select Weight Unit" }, class: "form-control"
     .form-group
       = f.label :height
-      = f.number_field :height, class: "form-control"
-    .form-group
-      = f.label :height_unit_id, "Height Preference"
-      = f.collection_select :height_unit_id, Unit.where(unit_type: 'Height'), :id, :name, { prompt: "Select Height Unit" }, class: "form-control"
+      .flex-row
+        = f.number_field :height, class: "form-control"
+        = f.collection_select :height_unit_id, Unit.where(unit_type: 'Height'), :id, :name, { prompt: "Select Height Unit" }, class: "form-control"
     = f.submit "Save", class: "btn btn-primary"

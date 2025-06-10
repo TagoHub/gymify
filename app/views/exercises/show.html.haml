@@ -1,6 +1,6 @@
 .title 
   %h1= @exercise.name
-  = link_to edit_program_workout_exercise_path(@program, @workout, @workout), class:  "btn btn-outline-primary btn-sm" do
+  = link_to edit_program_workout_exercise_path(@program, @workout, @exercise), class:  "btn btn-outline-primary btn-sm" do
     %i.bi.bi-pencil.h5
 .show
   %table
@@ -36,4 +36,4 @@
     %tr
       %td.label Updated At
       %td.value= l(@exercise.updated_at, format: :long)
-  = link_to 'Exercises', program_workout_exercises_path(@program, @workout), class: "btn"
+  = link_to 'Sets', program_workout_exercise_exercise_sets_path(@program, @workout, @exercise), class: "btn"

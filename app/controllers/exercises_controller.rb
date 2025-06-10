@@ -18,7 +18,7 @@ class ExercisesController < ApplicationController
     if @exercise.update(exercise_params)
       redirect_to program_workout_exercises_path(@program, @workout), notice: "Exercise updated successfully."
     else
-      render :edit, status: :unprocessable_entity
+      render :form, status: :unprocessable_entity
     end
   end
 
@@ -64,6 +64,6 @@ class ExercisesController < ApplicationController
   end
 
   def exercise_params
-    params.require(:exercise).permit(:id, :name, :notes, :exercise_type, :rep_range_min, :rep_range_max, :rest_time, :unilateral, :exercise_group_id, :instrument_id, :unit_id)
+    params.require(:exercise).permit(:name, :notes, :exercise_type, :rep_range_min, :rep_range_max, :rest_time, :unilateral, :exercise_group_id, :instrument_id, :unit_id)
   end
 end

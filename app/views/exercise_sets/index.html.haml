@@ -1,0 +1,29 @@
+.title
+  %h1= @exercise.name
+  = link_to new_program_workout_exercise_exercise_set_path(@program, @workout, @exercise), class: "btn btn-outline-primary btn-sm" do
+    %i.bi.bi-plus.h4
+.index
+  %table
+    %thead
+      %tr
+        %th Order
+        %th Set Type
+        %th Reps
+        %th Load
+        %th Intensity Technique
+        %th Actions
+    %tbody
+      - @exercise_sets.each do |exercise_set|
+        %tr
+          %td= exercise_set.order
+          %td= exercise_set.set_type
+          %td= exercise_set.reps
+          %td= [exercise_set.load, exercise_set.unit.abbreviation].join(" ")
+          %td= exercise_set.intensity_technique&.name
+          %td
+            = link_to program_workout_exercise_exercise_set_path(@program, @workout, @exercise, exercise_set), class: "btn" do
+              %i.bi.bi-eye
+            = link_to edit_program_workout_exercise_exercise_set_path(@program, @workout, @exercise, exercise_set), class: "btn" do
+              %i.bi.bi-pencil
+            = link_to program_workout_exercise_exercise_set_path(@program, @workout, @exercise, exercise_set), data: { "turbo-method": :delete, "turbo-confirm": "Are you sure?" }, class: "btn delete" do
+              %i.bi.bi-trash
