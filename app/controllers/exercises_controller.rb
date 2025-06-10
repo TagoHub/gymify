@@ -56,6 +56,30 @@ class ExercisesController < ApplicationController
     redirect_to program_workout_exercises_path(@program, @workout), notice: "Exercise deleted successfully."
   end
 
+  def duplicate
+    original = Exercise.find(params[:id])
+    copy = original.dup
+    copy.save!
+    redirect_to edit_program_workout_exercise_path(@program, @workout, copy), notice: "Exercise duplicated."
+  end
+
+  def dummy_sets
+    unit_id = current_user.weight_unit&.id || Unit.where(unit_type: "Weight").first
+    dummy_sets = [
+      { order: 1, set_type: "Warmup Set", reps: 10 },
+      { order: 2, set_type: "Warmup Set", reps: 5  },
+      { order: 3, set_type: "Warmup Set", reps: 3  },
+      { order: 4, set_type: "Working Set", reps: @exercise.rep_range_min, intensity: 8  },
+      { order: 5, set_type: "Working Set", reps: @exercise.rep_range_min, intensity: 9  },
+      { order: 6, set_type: "Working Set", reps: @exercise.rep_range_min, intensity: 10 }
+    ]
+    dummy_sets.each do |set|
+      ds = @exercise.exercise_sets.new(order: set[:order], set_type: set[:set_type], reps: set[:reps], unit: unit_id, intensity: set[:intensity])
+      ds.save!
+    end
+    redirect_to program_workout_exercise_exercise_sets_path(@program, @workout, @exercise), notice: "Dummy sets created."
+  end
+
   private
 
   def set_program

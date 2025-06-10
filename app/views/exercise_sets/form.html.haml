@@ -1,5 +1,5 @@
 .title 
-  %h1= @exercise.name
+  %h1= [@exercise.name, "Set"].join(" - ")
 .form
   = form_with model: [@program, @workout, @exercise, @exercise_set], local: true do |f|
     .form-group
@@ -7,14 +7,14 @@
       = f.number_field :order
     .form-group
       = f.label :set_type
-      = f.text_field :set_type
+      = f.select :set_type, ["Warmup Set", "Working Set"]
     .form-group
-      = f.label :reps
+      = f.label "Reps (#{@exercise.rep_range_min} - #{@exercise.rep_range_max})"
       = f.number_field :reps
     .form-group
       = f.label :load
       .flex-row
-        = f.number_field :load, class: "form-control"
+        = f.number_field :load, class: "form-control", step: :any
         = f.collection_select :unit_id, Unit.where(unit_type: 'Weight'), :id, :name, { prompt: "Select Load Unit" }, class: "form-control"
     .form-group
       = f.label :intensity

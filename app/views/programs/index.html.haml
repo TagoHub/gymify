@@ -22,7 +22,7 @@
           %td= program.goal
           %td= program.duration
           %td= program.unit&.abbreviation
-          %td
+          %td.actions
             = link_to program_path(program), class: "btn" do
               %i.bi.bi-eye
             = link_to edit_program_path(program), class: "btn" do

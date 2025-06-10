@@ -1,7 +1,10 @@
 .title
   %h1= @exercise.name
-  = link_to new_program_workout_exercise_exercise_set_path(@program, @workout, @exercise), class: "btn btn-outline-primary btn-sm" do
+  = link_to new_program_workout_exercise_exercise_set_path(@program, @workout, @exercise), class: "btn btn-outline-primary btn-sm", title: "Add Exercise Set" do
     %i.bi.bi-plus.h4
+  - unless @exercise.exercise_sets.any?
+    = link_to dummy_sets_program_workout_exercise_path(@program, @workout, @exercise), data: { "turbo-method": :post, "turbo-confirm": "This will create 3 warmup and working sets each. Are you sure?" }, class: "btn btn-outline-primary btn-sm", title: "Quick Set Creation" do
+      %i.bi.bi-skip-end.h4
 .index
   %table
     %thead
@@ -11,6 +14,7 @@
         %th Reps
         %th Load
         %th Intensity Technique
+        %th Intensity
         %th Actions
     %tbody
       - @exercise_sets.each do |exercise_set|
@@ -20,10 +24,13 @@
           %td= exercise_set.reps
           %td= [exercise_set.load, exercise_set.unit.abbreviation].join(" ")
           %td= exercise_set.intensity_technique&.name
-          %td
+          %td= exercise_set.intensity
+          %td.actions
             = link_to program_workout_exercise_exercise_set_path(@program, @workout, @exercise, exercise_set), class: "btn" do
               %i.bi.bi-eye
             = link_to edit_program_workout_exercise_exercise_set_path(@program, @workout, @exercise, exercise_set), class: "btn" do
               %i.bi.bi-pencil
+            = link_to duplicate_program_workout_exercise_exercise_set_path(@program, @workout, @exercise, exercise_set), data: { "turbo-method": :post, "turbo-confirm": "Duplicate this set?" }, class: "btn copy" do
+              %i.bi.bi-copy
             = link_to program_workout_exercise_exercise_set_path(@program, @workout, @exercise, exercise_set), data: { "turbo-method": :delete, "turbo-confirm": "Are you sure?" }, class: "btn delete" do
               %i.bi.bi-trash

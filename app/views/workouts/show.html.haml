@@ -11,6 +11,12 @@
       %td.label Rest Days
       %td.value= @workout.rest_days
     %tr
+      %td.label Exercises
+      %td.value= @workout.exercises.map(&:name).join(", ")
+    %tr
+      %td.label Total Exercises
+      %td.value= @workout.exercises.count
+    %tr
       %td.label Created At
       %td.value= l(@workout.created_at, format: :long)
     %tr

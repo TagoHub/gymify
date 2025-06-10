@@ -29,7 +29,7 @@ class WorkoutsController < ApplicationController
   def create
     @workout = @program.workouts.new(workout_params)
     if @workout.save
-      redirect_to program_path(@program), notice: "Your workout was successfully created."
+      redirect_to program_workouts_path(@program), notice: "Your workout was successfully created."
     else
       render :form, status: :unprocessable_entity
     end

@@ -9,6 +9,7 @@
         %th Name
         %th Goal
         %th Rest Days
+        %th Exercises
         %th Actions
     %tbody
       - @workouts.each do |workout|
@@ -16,6 +17,7 @@
           %td= workout.name
           %td= workout.goal
           %td= workout.rest_days
+          %td= workout.exercises.count
           %td
             = link_to program_workout_path(@program, workout), class: "btn" do
               %i.bi.bi-eye

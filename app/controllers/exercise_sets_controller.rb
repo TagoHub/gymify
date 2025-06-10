@@ -38,11 +38,16 @@ class ExerciseSetsController < ApplicationController
   end
 
   def destroy
-    if @exercise.exercise_sets.one?
-      @exercise.destroy
-    end
     @exercise_set.destroy
     redirect_to program_workout_exercise_exercise_sets_path(@program, @workout, @exercise), notice: "Set deleted successfully."
+  end
+
+  def duplicate
+    original = ExerciseSet.find(params[:id])
+    copy = original.dup
+    copy.order = original.order + 1
+    copy.save!
+    redirect_to edit_program_workout_exercise_exercise_set_path(@program, @workout, @exercise, copy), notice: "Exercise duplicated."
   end
 
   private

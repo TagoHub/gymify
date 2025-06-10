@@ -9,7 +9,15 @@ Rails.application.routes.draw do
   resources :programs do
     resources :workouts do
       resources :exercises do
-        resources :exercise_sets
+        member do
+          post :duplicate
+          post :dummy_sets
+        end
+        resources :exercise_sets do
+          member do
+            post :duplicate
+          end
+        end
       end
     end
   end

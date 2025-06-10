@@ -15,8 +15,8 @@
     .form-group
       = f.label :rep_range
       .flex-row
-        = f.number_field :rep_range_min
-        = f.number_field :rep_range_max
+        = f.number_field :rep_range_min, placeholder: "Min"
+        = f.number_field :rep_range_max, placeholder: "Max"
     .form-group
       = f.label :rest_time
       .flex-row
@@ -24,7 +24,7 @@
         = f.collection_select :unit_id, Unit.where(unit_type: "Time"), :id, :name, prompt: "Select Time Unit"
     .form-group
       = f.label :unilateral
-      = f.select :unilateral, [["Yes", true], ["No", false]]
+      = f.select :unilateral, [["No", false], ["Yes", true]]
     .form-group
       = f.label :notes
       = f.text_field :notes

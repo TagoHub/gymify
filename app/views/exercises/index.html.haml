@@ -14,6 +14,7 @@
         %th Rest Time
         %th Unilateral
         %th Notes
+        %th Sets
         %th Actions
     %tbody
       - @exercises.each do |exercise|
@@ -31,10 +32,13 @@
             %td
               %i.bi.bi-x
           %td= exercise.notes
-          %td
+          %td= exercise.exercise_sets.count
+          %td.actions
             = link_to program_workout_exercise_path(@program, @workout, exercise), class: "btn" do
               %i.bi.bi-eye
             = link_to edit_program_workout_exercise_path(@program, @workout, exercise), class: "btn" do
               %i.bi.bi-pencil
+            = link_to duplicate_program_workout_exercise_path(@program, @workout, exercise), data: { "turbo-method": :post, "turbo-confirm": "Duplicate this exercise?" }, class: "btn copy" do
+              %i.bi.bi-copy
             = link_to program_workout_exercise_path(@program, @workout, exercise), data: { "turbo-method": :delete, "turbo-confirm": "Are you sure?" }, class: "btn delete" do
               %i.bi.bi-trash
