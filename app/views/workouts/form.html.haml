@@ -1,0 +1,15 @@
+.form
+  = form_with model: [@program, @workout], local: true do |f|
+    .form-group
+      = f.label :name
+      = f.text_field :name
+
+    .form-group
+      = f.label :goal
+      = f.text_field :goal
+
+    .form-group
+      = f.label :rest_days
+      = f.number_field :rest_days
+
+    = f.submit 'Save Workout', class: 'btn'

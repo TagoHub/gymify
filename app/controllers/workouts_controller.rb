@@ -6,15 +6,32 @@ class WorkoutsController < ApplicationController
     @workouts = @program.workouts
   end
 
-  def show; end
+  def show
+  end
 
-  def edit; end
+  def edit
+    render :form
+  end
 
   def update
     if @workout.update(workout_params)
       redirect_to program_workout_path(@program, @workout), notice: "Workout updated successfully."
     else
       render :edit, status: :unprocessable_entity
+    end
+  end
+
+  def new
+    @workout = @program.workouts.new
+    render :form
+  end
+
+  def create
+    @workout = @program.workouts.new(workout_params)
+    if @workout.save
+      redirect_to program_path(@program), notice: "Your workout was successfully created."
+    else
+      render :form, status: :unprocessable_entity
     end
   end
 
@@ -34,6 +51,6 @@ class WorkoutsController < ApplicationController
   end
 
   def workout_params
-    params.require(:workout).permit(:name, :frequency, :level, :goal, :duration, :unit_id)
+    params.require(:workout).permit(:name, :goal, :rest_days)
   end
 end

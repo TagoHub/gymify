@@ -1,0 +1,19 @@
+.title 
+  %h1= @workout.name
+  = link_to edit_program_workout_path(@program, @workout), class:  "btn btn-outline-primary btn-sm" do
+    %i.bi.bi-pencil.h5
+.show
+  %table
+    %tr
+      %td.label Goal
+      %td.value= @workout.goal
+    %tr
+      %td.label Rest Days
+      %td.value= @workout.rest_days
+    %tr
+      %td.label Created At
+      %td.value= l(@workout.created_at, format: :long)
+    %tr
+      %td.label Updated At
+      %td.value= l(@workout.updated_at, format: :long)
+

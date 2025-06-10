@@ -39,7 +39,6 @@ class ProgramsController < ApplicationController
     end
   end
 
-
   private
 
   def set_program
