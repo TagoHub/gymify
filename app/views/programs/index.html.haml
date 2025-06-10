@@ -1,5 +1,8 @@
+.title
+  %h1 My Programs
+  = link_to new_program_path(), class: "btn btn-outline-primary btn-sm" do
+    %i.bi.bi-plus.h4
 .index
-  %h1.title My Programs
   %table
     %thead
       %tr
@@ -25,4 +28,4 @@
             = link_to edit_program_path(program), class: "btn" do
               %i.bi.bi-pencil
             = link_to program_path(program), data: { "turbo-method": :delete, "turbo-confirm": "Are you sure?" }, class: "btn delete" do
-              %i.bi.bi-x
+              %i.bi.bi-trash

@@ -1,10 +1,17 @@
 @import 'bootstrap';
 
   .title {
-  text-align: center;
-  margin-bottom: 1.5rem;
-  font-size: 1.8rem;
-  color: #333;
+    display: flex;
+    justify-content: center; // or use flex-end or center as needed
+    align-items: center;
+    margin-bottom: 1.5rem;
+    font-size: 1.8rem;
+    color: #333;
+    width: 100%;
+
+    .btn {
+      margin-left: 2%;
+    }
   }
 
   .index {
@@ -156,4 +163,11 @@
     .btn:hover {
       background-color: #0056b3;
     }
+
+
+  }
+
+  .separator {
+    margin: 4vh;
+    border-bottom: 1px solid #eee;
   }

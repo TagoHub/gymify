@@ -1,5 +1,8 @@
+.title
+  %h1= @user.name
+  = link_to edit_user_path(@user), class:  "btn btn-outline-primary btn-sm" do
+    %i.bi.bi-pencil.h5
 .show
-  %h1.title= @user.name
   %table
     %tbody
       %tr
@@ -14,5 +17,4 @@
       %tr
         %td.label Height
         %td.value= [@user.height, @user.height_unit.abbreviation].join(" ")
-  
-  = link_to "Edit Profile", edit_user_path(@user), class: "btn btn-primary"
+  = link_to "Programs", programs_path(@user), class: "btn btn-primary"

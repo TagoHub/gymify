@@ -1,81 +1,28 @@
-%h1 Users
+.title
+  %h1 Users
 
-%table.user-index
-  %thead
-    %tr
-      %th Name
-      %th Email
-      %th Gender
-      %th Weight
-      %th Height
-      %th Actions
-  %tbody
-    - @users.each do |user|
+.index
+  %table
+    %thead
       %tr
-        %td= user.name
-        %td= user.email
-        %td= user.gender
-        %td= [user.weight, user.weight_unit&.abbreviation].compact.join(" ")
-        %td= [user.height, user.height_unit&.abbreviation].compact.join(" ")
-        %td
-          = link_to user_path(user), class: "btn" do
-            %i.bi.bi-eye
-          = link_to edit_user_path(user), class: "btn" do
-            %i.bi.bi-pencil
-          = link_to user_path(user), data: { "turbo-method": :delete, "turbo-confirm": "Are you sure?" }, class: "btn delete" do
-            %i.bi.bi-x
-
-
-:scss
-
-  h1 {
-    text-align: center;
-    margin-bottom: 1.5rem;
-    font-size: 1.8rem;
-    color: #333;
-  }
-
-  .user-index {
-    width: 100%;
-    max-width: 1000px;
-    margin: 2rem auto;
-    border-collapse: collapse;
-    font-family: sans-serif;
-
-    th, td {
-      padding: 0.75rem 1rem;
-      border: 1px solid #ddd;
-      text-align: left;
-    }
-
-    th {
-      background-color: #f5f5f5;
-      font-weight: bold;
-    }
-
-    tr:nth-child(even) {
-      background-color: #fafafa;
-    }
-
-    .btn {
-      margin-right: 0.5rem;
-      padding: 0.4rem 0.8rem;
-      background-color: #007bff;
-      color: white;
-      border-radius: 4px;
-      text-decoration: none;
-      font-size: 0.9rem;
-
-      &:hover {
-        background-color: #0056b3;
-      }
-
-      &.delete {
-        background-color: #dc3545;
-
-        &:hover {
-          background-color: #a71d2a;
-        }
-      }
-    }
-  }
+        %th Name
+        %th Email
+        %th Gender
+        %th Weight
+        %th Height
+        %th Actions
+    %tbody
+      - @users.each do |user|
+        %tr
+          %td= user.name
+          %td= user.email
+          %td= user.gender
+          %td= [user.weight, user.weight_unit&.abbreviation].compact.join(" ")
+          %td= [user.height, user.height_unit&.abbreviation].compact.join(" ")
+          %td
+            = link_to user_path(user), class: "btn" do
+              %i.bi.bi-eye
+            = link_to edit_user_path(user), class: "btn" do
+              %i.bi.bi-pencil
+            = link_to user_path(user), data: { "turbo-method": :delete, "turbo-confirm": "Are you sure?" }, class: "btn delete" do
+              %i.bi.bi-trash

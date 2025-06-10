@@ -1,5 +1,5 @@
 class ProgramsController < ApplicationController
-  before_action :set_program, except: :index
+  before_action :set_program, except: [:index, :new, :create]
 
   def show
   end
@@ -9,20 +9,36 @@ class ProgramsController < ApplicationController
   end
 
   def edit
+    render :form
   end
 
   def update
     if @program.update(program_params)
       redirect_to @program, notice: "Your program was successfully updated."
     else
-      render :edit, status: :unprocessable_entity
+      render :form
     end
   end
 
   def destroy
     @program.destroy
-    redirect_to users_path, notice: "User was successfully deleted."
+    redirect_to programs_path, notice: "Program was successfully deleted."
   end
+
+  def new
+    @program = current_user.programs.new
+    render :form
+  end
+
+  def create
+    @program = current_user.programs.new(program_params)
+    if @program.save
+      redirect_to @program, notice: "Your program was successfully created."
+    else
+      render :form, status: :unprocessable_entity
+    end
+  end
+
 
   private
 
