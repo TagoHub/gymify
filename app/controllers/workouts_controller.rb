@@ -40,6 +40,15 @@ class WorkoutsController < ApplicationController
     redirect_to program_workouts_path(@program), notice: "Workout deleted successfully."
   end
 
+  def start_workout
+    @exercise_set = @workout.exercise_groups.find_by(order: 1).exercises.first.exercise_sets.find_by(order: 1)
+    @exercise = @exercise_set.exercise
+    @exercise_group = @exercise.exercise_group
+    @workout = @exercise_group.workout
+    @program = @workout.program
+    render 'exercise_sets/play_set'
+  end
+
   private
 
   def set_program

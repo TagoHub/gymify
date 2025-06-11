@@ -8,6 +8,9 @@ Rails.application.routes.draw do
   resources :users
   resources :programs do
     resources :workouts do
+      member do
+        get :start_workout
+      end
       resources :exercises do
         member do
           post :duplicate
@@ -16,6 +19,8 @@ Rails.application.routes.draw do
         resources :exercise_sets do
           member do
             post :duplicate
+            get  :set_play_form
+            get  :play_set
           end
         end
       end

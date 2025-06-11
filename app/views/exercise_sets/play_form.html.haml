@@ -1,0 +1,16 @@
+.title 
+  %h1= [@exercise.name, "Set", @exercise_set.order].join(" - ")
+.form
+  = form_with model: [@program, @workout, @exercise, @exercise_set], local: true do |f|
+    = f.hidden_field :play, value: true
+    .form-group
+      = f.label "Reps (#{@exercise.rep_range_min} - #{@exercise.rep_range_max})"
+      = f.number_field :reps
+    .form-group
+      = f.label "Load (#{@exercise_set.unit.abbreviation})"
+      .flex-row
+        = f.number_field :load, class: "form-control", step: :any
+    .form-group
+      = f.label :intensity
+      = f.number_field :intensity
+    = f.submit 'Save', class: 'btn'

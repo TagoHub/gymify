@@ -2,6 +2,8 @@
   %h1= @workout.name
   = link_to edit_program_workout_path(@program, @workout), class:  "btn btn-outline-primary btn-sm" do
     %i.bi.bi-pencil.h5
+  = link_to start_workout_program_workout_path(@program, @workout), class: "btn btn-outline-success btn-sm" do
+    %i.bi.bi-play.h5
 .show
   %table
     %tr

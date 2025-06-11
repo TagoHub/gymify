@@ -63,6 +63,13 @@
         background-color: #0056b3;
       }
 
+      &.play {
+        background-color: #198754;
+        &:hover {
+          background-color: #198754;
+        }
+      }
+
       &.delete {
         background-color: #dc3545;
         &:hover {

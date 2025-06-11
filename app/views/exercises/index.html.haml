@@ -2,6 +2,8 @@
   %h1= @workout.name
   = link_to new_program_workout_exercise_path(@program, @workout), class: "btn btn-outline-primary btn-sm" do
     %i.bi.bi-plus.h4
+  = link_to start_workout_program_workout_path(@program, @workout), class: "btn btn-outline-success btn-sm" do
+    %i.bi.bi-play.h4
 .index
   %table
     %thead

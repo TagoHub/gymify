@@ -19,6 +19,8 @@
           %td= workout.rest_days
           %td= workout.exercises.count
           %td
+            = link_to start_workout_program_workout_path(@program, workout), class: "btn play" do
+              %i.bi.bi-play
             = link_to program_workout_path(@program, workout), class: "btn" do
               %i.bi.bi-eye
             = link_to edit_program_workout_path(@program, workout), class: "btn" do

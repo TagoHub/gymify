@@ -16,8 +16,22 @@ class ExerciseSetsController < ApplicationController
   end
 
   def update
-    if @exercise_set.update(exercise_set_params)
-      redirect_to program_workout_exercise_exercise_sets_path(@program, @workout, @exercise), notice: "Set updated successfully."
+    play = exercise_set_params[:play]
+    if @exercise_set.update(exercise_set_params.except(:play))
+      if play
+        @exercise_set = @exercise_set.next_set
+        if @exercise_set
+          @exercise = @exercise_set.exercise
+          @exercise_group = @exercise.exercise_group
+          @workout = @exercise_group.workout
+          @program = @workout.program
+          redirect_to play_set_program_workout_exercise_exercise_set_path(@program, @workout, @exercise, @exercise_set)
+        else
+          redirect_to program_workout_path(@program, @workout), notice: "Workout completed congratulations! Remember to rest #{@workout.rest_days} days"
+        end
+      else
+        redirect_to program_workout_exercise_exercise_sets_path(@program, @workout, @exercise), notice: "Set updated successfully."
+      end
     else
       render :form, status: :unprocessable_entity
     end
@@ -29,7 +43,7 @@ class ExerciseSetsController < ApplicationController
   end
 
   def create
-    @exercise_set = @exercise.exercise_sets.new(exercise_set_params)
+    @exercise_set = @exercise.exercise_sets.new(exercise_set_params.except(:play))
     if @exercise_set.save
       redirect_to program_workout_exercise_exercise_sets_path(@program, @workout, @exercise), notice: "Your set was successfully created."
     else
@@ -48,6 +62,16 @@ class ExerciseSetsController < ApplicationController
     copy.order = original.order + 1
     copy.save!
     redirect_to edit_program_workout_exercise_exercise_set_path(@program, @workout, @exercise, copy), notice: "Exercise duplicated."
+  end
+
+  def set_play_form
+    render :play_form
+  end
+
+  def play_set
+    @exercise = @exercise_set.exercise
+    @exercise_group = @exercise.exercise_group
+    @workout = @exercise_group.workout
   end
 
   private
@@ -69,6 +93,6 @@ class ExerciseSetsController < ApplicationController
   end
 
   def exercise_set_params
-    params.require(:exercise_set).permit(:order, :set_type, :reps, :load, :unit_id, :intensity, :intensity_technique_id, :exercise_id)
+    params.require(:exercise_set).permit(:play, :order, :set_type, :reps, :load, :unit_id, :intensity, :intensity_technique_id, :exercise_id)
   end
 end
