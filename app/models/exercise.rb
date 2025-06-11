@@ -3,6 +3,7 @@ class Exercise < ApplicationRecord
   belongs_to :instrument
   belongs_to :unit, optional: true
   has_many :exercise_sets, dependent: :destroy
+  has_one_attached :image
 
   # attributes: 
   # name String

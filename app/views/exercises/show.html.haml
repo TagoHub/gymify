@@ -3,6 +3,9 @@
   = link_to edit_program_workout_exercise_path(@program, @workout, @exercise), class:  "btn btn-outline-primary btn-sm" do
     %i.bi.bi-pencil.h5
 .show
+  .flex-row
+    - if @exercise.image.attached?
+      = image_tag url_for(@exercise.image), class: "img-fluid"
   %table
     %tr
       %td.label Order

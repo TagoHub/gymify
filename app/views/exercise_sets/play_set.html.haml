@@ -1,7 +1,12 @@
 .title 
-  %h1= [@exercise.name, @exercise_set.set_type, @exercise_set.order].join(" - ")
+  %h1= @exercise.name
+.title 
+  %h4= [@exercise_set.set_type, @exercise_set.order].join(" #")
 .title
   %h1#rest-timer.text-center.mt-3.font-bold 00:00
+.flex-row
+  - if @exercise.image.attached?
+    = image_tag url_for(@exercise.image), class: "img-fluid"
 .show
   %table
     %tr
@@ -10,27 +15,34 @@
     %tr
       %td.label Load
       %td.value= [@exercise_set.load, @exercise_set.unit.abbreviation].join(" ")
-    %tr
-      %td.label Intensity
-      %td.value= @exercise_set.intensity
+    - if @exercise_set.intensity
+      %tr
+        %td.label Intensity
+        %td.value= @exercise_set.intensity
     - if @exercise_set.intensity_technique
       %tr
         %td.label Intensity Technique
         %td.value= @exercise_set.intensity_technique&.name
-  = link_to 'Next', set_play_form_program_workout_exercise_exercise_set_path(@program, @workout, @exercise, @exercise_set), class: "btn disabled-link", id: "next-link"
+  = link_to 'Next', set_play_form_program_workout_exercise_exercise_set_path(@program, @workout, @exercise, @exercise_set), class: "btn disabled-link", id: "next-link", data: { turbo: false }
 
 :scss
   .disabled-link {
-    pointer-events: none;
+    //pointer-events: none;
     opacity: 0.5;
   }
 
+  .show td.label {
+    width: 50%;
+  }
+
 :javascript
+
   document.addEventListener("turbo:load", () => {
     const unit = "#{@exercise.unit.name}";
-    let time = #{@exercise.rest_time};
+    let time = #{@exercise_set.set_type == "Working Set" ? @exercise.rest_time : 30};
+    const warmupSet = "#{@exercise_set.set_type}";
 
-    if (unit.toLowerCase() === "minutes") {
+    if (time != 30 && unit.toLowerCase() === "minutes") {
       time *= 60;
     }
 

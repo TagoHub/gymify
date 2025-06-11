@@ -28,4 +28,7 @@
     .form-group
       = f.label :notes
       = f.text_field :notes
+    .form-group
+      = f.label :image
+      = f.file_field :image, class: "form-control"
     = f.submit 'Save', class: 'btn'

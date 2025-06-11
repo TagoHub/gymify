@@ -95,6 +95,6 @@ class ExercisesController < ApplicationController
   end
 
   def exercise_params
-    params.require(:exercise).permit(:name, :notes, :exercise_type, :rep_range_min, :rep_range_max, :rest_time, :unilateral, :exercise_group_id, :instrument_id, :unit_id)
+    params.require(:exercise).permit(:name, :image, :notes, :exercise_type, :rep_range_min, :rep_range_max, :rest_time, :unilateral, :exercise_group_id, :instrument_id, :unit_id)
   end
 end
