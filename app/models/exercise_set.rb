@@ -9,6 +9,36 @@ class ExerciseSet < ApplicationRecord
   # load Float
   # intensity Integer
 
+  def get_set_type_position
+    order = self.order
+    warmup_count = self.warmup_type_count
+    type_count = self.type_count
+    if order > warmup_count
+      [order - warmup_count, type_count].join("/")
+    else
+      [order, type_count].join("/")
+    end
+  end
+
+  def warmup_type_count
+    self.exercise.exercise_sets.where(set_type: "Warmup Set").count
+  end
+
+  def type_count
+    type = self.set_type
+    self.exercise.exercise_sets.where(set_type: type).count
+  end
+
+  def next_exercise
+    if self.next_set == nil
+      return nil
+    elsif self.exercise != self.next_set.exercise
+      return self.next_set.exercise
+    else
+      self.next_set.next_exercise
+    end
+  end
+
   def next_set
     exercise = self.exercise
     exercise_group = exercise.exercise_group

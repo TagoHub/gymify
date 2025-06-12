@@ -1,29 +1,44 @@
-.title 
-  %h1= @exercise.name
-.title 
-  %h4= [@exercise_set.set_type, @exercise_set.order].join(" #")
-.title
-  %h1#rest-timer.text-center.mt-3.font-bold 00:00
-.flex-row
-  - if @exercise.image.attached?
-    = image_tag url_for(@exercise.image), class: "img-fluid"
-.show
-  %table
-    %tr
-      %td.label= "Reps (#{[@exercise.rep_range_min, @exercise.rep_range_max].join(" - ")})"
-      %td.value= @exercise_set.reps
-    %tr
-      %td.label Load
-      %td.value= [@exercise_set.load, @exercise_set.unit.abbreviation].join(" ")
-    - if @exercise_set.intensity
-      %tr
-        %td.label Intensity
-        %td.value= @exercise_set.intensity
-    - if @exercise_set.intensity_technique
-      %tr
-        %td.label Intensity Technique
-        %td.value= @exercise_set.intensity_technique&.name
-  = link_to 'Next', set_play_form_program_workout_exercise_exercise_set_path(@program, @workout, @exercise, @exercise_set), class: "btn disabled-link", id: "next-link", data: { turbo: false }
+.flex-container
+  .flex-item
+    .title 
+      %h1= @exercise.name
+    - if @exercise.image.attached?
+      = image_tag url_for(@exercise.image), class: "img-desktop"
+  .flex-item
+    //.title 
+    //  %h4= [@exercise_set.set_type, @exercise_set.order].join(" #")
+    - if @exercise.image.attached?
+      = image_tag url_for(@exercise.image), class: "img-mobile img-fluid"
+    .show
+      .title
+        %h1#rest-timer.text-center.mt-3.font-bold 00:00
+      %table
+        %tr
+          %td.label= "Set"
+          %td.value= [@exercise_set.set_type, @exercise_set.get_set_type_position].join(" - ")
+        %tr
+          %td.label= "Reps (#{[@exercise.rep_range_min, @exercise.rep_range_max].join(" - ")})"
+          %td.value= @exercise_set.reps
+        %tr
+          %td.label Load
+          %td.value= [@exercise_set.load, @exercise_set.unit.abbreviation].join(" ")
+        - if @exercise_set.intensity
+          %tr
+            %td.label Intensity
+            %td.value= @exercise_set.intensity
+        - if @exercise_set.intensity_technique
+          %tr
+            %td.label Intensity Technique
+            %td.value= @exercise_set.intensity_technique&.name
+        - if @exercise.notes
+          %tr
+            %td.label Notes
+            %td.value= @exercise.notes
+        - if @exercise_set.next_set
+          %tr
+            %td.label Upcoming
+            %td.value= @exercise_set.next_exercise.name
+      = link_to 'Next', set_play_form_program_workout_exercise_exercise_set_path(@program, @workout, @exercise, @exercise_set), class: "btn disabled-link", id: "next-link", data: { turbo: false }
 
 :scss
   .disabled-link {
@@ -32,7 +47,41 @@
   }
 
   .show td.label {
-    width: 50%;
+    width: 30%;
+  }
+
+  .flex-container {
+    height: 60vh; 
+    display: flex;
+    flex-direction: column;
+  }
+
+  .img-desktop {
+    max-width: 800px;
+    width: 100%;
+    height: auto;
+  }
+
+  @media (min-width: 1200px) {
+    .flex-container {
+      flex-direction: row; /* switch to horizontal layout */
+    }
+    .img-mobile {
+      display: none;
+    }
+  }
+
+  @media (max-width: 1199.98px) {
+    .img-desktop {
+      display: none;
+    }
+  }
+
+  .flex-item {
+    flex: 1; /* let both divs take equal space */
+    margin: 2%;
+    margin-top: 0;
+    height: 100vh;
   }
 
 :javascript

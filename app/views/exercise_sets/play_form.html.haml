@@ -1,10 +1,10 @@
-.title 
-  %h1= @exercise.name
-.title
-  %h4= [@exercise_set.set_type, @exercise_set.order].join(" #")
 .flex-row
   .form
     = form_with model: [@program, @workout, @exercise, @exercise_set], local: true do |f|
+      .title
+        %h3= @exercise.name
+      .title
+        %h5= [@exercise_set.set_type, @exercise_set.order].join(" - ")
       = f.hidden_field :play, value: true
       .form-group
         = f.label "Reps (#{@exercise.rep_range_min} - #{@exercise.rep_range_max})"
@@ -20,6 +20,17 @@
       = f.submit 'Save', class: 'btn'
 
 :scss
+
   .form {
-    width: 80%
+    width: 80%;
+    margin-top: 0;
+    .title {
+      margin-bottom: 4px;
+    }
+    form {
+      margin-top: 0;
+    }
+    .form-group {
+      margin-bottom: 3px;
+    }
   }
