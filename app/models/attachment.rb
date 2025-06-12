@@ -1,3 +1,3 @@
 class Attachment < ApplicationRecord
-  has_many :instruments
+  has_many :exercises
 end

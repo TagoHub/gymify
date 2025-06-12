@@ -68,10 +68,9 @@ class ExercisesController < ApplicationController
     dummy_sets = [
       { order: 1, set_type: "Warmup Set", reps: 10 },
       { order: 2, set_type: "Warmup Set", reps: 5  },
-      { order: 3, set_type: "Warmup Set", reps: 3  },
-      { order: 4, set_type: "Working Set", reps: @exercise.rep_range_min, intensity: 8  },
-      { order: 5, set_type: "Working Set", reps: @exercise.rep_range_min, intensity: 9  },
-      { order: 6, set_type: "Working Set", reps: @exercise.rep_range_min, intensity: 10 }
+      { order: 3, set_type: "Working Set", reps: @exercise.rep_range_min, intensity: 8  },
+      { order: 4, set_type: "Working Set", reps: @exercise.rep_range_min, intensity: 9  },
+      { order: 5, set_type: "Working Set", reps: @exercise.rep_range_min, intensity: 10 }
     ]
     dummy_sets.each do |set|
       ds = @exercise.exercise_sets.new(order: set[:order], set_type: set[:set_type], reps: set[:reps], unit: unit_id, intensity: set[:intensity])
@@ -95,6 +94,6 @@ class ExercisesController < ApplicationController
   end
 
   def exercise_params
-    params.require(:exercise).permit(:name, :image, :notes, :exercise_type, :rep_range_min, :rep_range_max, :rest_time, :unilateral, :exercise_group_id, :instrument_id, :unit_id)
+    params.require(:exercise).permit(:name, :image, :notes, :exercise_type, :rep_range_min, :rep_range_max, :rest_time, :unilateral, :exercise_group_id, :instrument_id, :attachment_id, :unit_id)
   end
 end
