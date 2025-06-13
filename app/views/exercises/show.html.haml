@@ -3,8 +3,8 @@
   = link_to edit_program_workout_exercise_path(@program, @workout, @exercise), class:  "btn btn-outline-primary btn-sm" do
     %i.bi.bi-pencil.h5
 .show
-  .flex-row
-    - if @exercise.image.attached?
+  - if @exercise.image.attached?
+    .flex-row
       = image_tag url_for(@exercise.image), class: "img-fluid"
   %table
     %tr
@@ -16,6 +16,14 @@
     %tr
       %td.label Instrument
       %td.value= @exercise.instrument.name
+    - if @exercise.attachment
+      %tr
+        %td.label Attachment
+        %td.value= @exercise.attachment.name
+    - if @exercise.grip
+      %tr
+        %td.label Grip
+        %td.value= @exercise.grip.name
     %tr
       %td.label Rep Range
       %td.value= [@exercise.rep_range_max, @exercise.rep_range_min].join(" - ")
@@ -30,9 +38,10 @@
       - else
         %td.value
           %i.bi.bi-x
-    %tr
-      %td.label Notes
-      %td.value= @exercise.notes
+    - if @exercise.notes.present?
+      %tr
+        %td.label Notes
+        %td.value= @exercise.notes
     %tr
       %td.label Created At
       %td.value= l(@exercise.created_at, format: :long)

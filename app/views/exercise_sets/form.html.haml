@@ -20,6 +20,9 @@
       = f.label :intensity
       = f.number_field :intensity
     .form-group
+      = f.label :suggested_intensity
+      = f.number_field :suggested_intensity
+    .form-group
       = f.label :intensity_technique_id
       - options = IntensityTechnique.all.pluck(:name, :id) << ["None", nil]
       = f.select :intensity_technique_id, options

@@ -11,6 +11,7 @@ class CreateExercises < ActiveRecord::Migration[7.1]
       t.references :exercise_group, null: false, foreign_key: true
       t.references :instrument, null: false, foreign_key: true
       t.references :attachment, foreign_key: true
+      t.references :grip, foreign_key: true
       t.references :unit
 
       t.timestamps

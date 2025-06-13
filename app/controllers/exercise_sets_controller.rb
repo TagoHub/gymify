@@ -19,13 +19,14 @@ class ExerciseSetsController < ApplicationController
     play = exercise_set_params[:play]
     if @exercise_set.update(exercise_set_params.except(:play))
       if play
+        @prev_set = @exercise_set
         @exercise_set = @exercise_set.next_set
         if @exercise_set
           @exercise = @exercise_set.exercise
           @exercise_group = @exercise.exercise_group
           @workout = @exercise_group.workout
           @program = @workout.program
-          redirect_to play_set_program_workout_exercise_exercise_set_path(@program, @workout, @exercise, @exercise_set)
+          redirect_to play_set_program_workout_exercise_exercise_set_path(@program, @workout, @exercise, @exercise_set, prev_set: @prev_set)
         else
           redirect_to program_workout_path(@program, @workout), notice: "Workout completed congratulations! Remember to rest #{@workout.rest_days} days"
         end
@@ -69,6 +70,7 @@ class ExerciseSetsController < ApplicationController
   end
 
   def play_set
+    @prev_set = ExerciseSet.find(params[:prev_set]) if params[:prev_set].present?
     @exercise = @exercise_set.exercise
     @exercise_group = @exercise.exercise_group
     @workout = @exercise_group.workout
@@ -93,6 +95,7 @@ class ExerciseSetsController < ApplicationController
   end
 
   def exercise_set_params
-    params.require(:exercise_set).permit(:play, :order, :set_type, :reps, :load, :unit_id, :intensity, :intensity_technique_id, :exercise_id)
+    params.require(:exercise_set).permit(:play, :order, :set_type, :reps, :load, :unit_id, :intensity, :suggested_intensity,
+      :intensity_technique_id, :exercise_id)
   end
 end

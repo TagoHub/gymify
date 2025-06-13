@@ -1,5 +1,5 @@
 class Grip < ApplicationRecord
-  has_many :instruments
+  has_many :exercises
   # attributes: 
   # name String
 end

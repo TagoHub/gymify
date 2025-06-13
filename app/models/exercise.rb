@@ -3,6 +3,7 @@ class Exercise < ApplicationRecord
   belongs_to :instrument
   belongs_to :unit, optional: true
   belongs_to :attachment, optional: true
+  belongs_to :grip, optional: true
   has_many :exercise_sets, dependent: :destroy
   has_one_attached :image
 

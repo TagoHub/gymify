@@ -15,7 +15,7 @@
           = f.number_field :load, class: "form-control", step: :any
       - if @exercise_set.set_type == "Working Set"
         .form-group
-          = f.label :intensity
+          = f.label "Intensity (~#{@exercise_set.suggested_intensity})"
           = f.select :intensity, [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ]
       = f.submit 'Save', class: 'btn'
 

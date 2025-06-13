@@ -14,7 +14,7 @@
         %h1#rest-timer.text-center.mt-3.font-bold 00:00
       %table
         %tr
-          %td.label= "Set"
+          %td.label Set
           %td.value= [@exercise_set.set_type, @exercise_set.get_set_type_position].join(" - ")
         %tr
           %td.label= "Reps (#{[@exercise.rep_range_min, @exercise.rep_range_max].join(" - ")})"
@@ -22,15 +22,23 @@
         %tr
           %td.label Load
           %td.value= [@exercise_set.load, @exercise_set.unit.abbreviation].join(" ")
+        - if @exercise.attachment
+          %tr
+            %td.label Attachment
+            %td.value= @exercise.attachment.name
+        - if @exercise.grip
+          %tr
+            %td.label Grip
+            %td.value= @exercise.grip.name
         - if @exercise_set.intensity
           %tr
-            %td.label Intensity
+            %td.label= "Intensity (~#{@exercise_set.suggested_intensity})"
             %td.value= @exercise_set.intensity
         - if @exercise_set.intensity_technique
           %tr
             %td.label Intensity Technique
             %td.value= @exercise_set.intensity_technique&.name
-        - if @exercise.notes
+        - if @exercise.notes.present?
           %tr
             %td.label Notes
             %td.value= @exercise.notes
@@ -87,9 +95,8 @@
 :javascript
 
   document.addEventListener("turbo:load", () => {
-    const unit = "#{@exercise.unit.name}";
-    let time = #{@exercise_set.set_type == "Working Set" ? @exercise.rest_time : 30};
-    const warmupSet = "#{@exercise_set.set_type}";
+    const unit = "#{(@prev_set && @prev_set.exercise.unit.name) || 'Seconds'}";
+    let time = #{@prev_set ? (@prev_set.set_type == "Working Set" ? @prev_set.exercise.rest_time : 30) : 0};
 
     if (time != 30 && unit.toLowerCase() === "minutes") {
       time *= 60;

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_06_12_234444) do
+ActiveRecord::Schema[7.1].define(version: 2025_06_13_180753) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -68,6 +68,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_06_12_234444) do
     t.bigint "exercise_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "suggested_intensity"
     t.index ["exercise_id"], name: "index_exercise_sets_on_exercise_id"
     t.index ["intensity_technique_id"], name: "index_exercise_sets_on_intensity_technique_id"
     t.index ["unit_id"], name: "index_exercise_sets_on_unit_id"
@@ -87,8 +88,10 @@ ActiveRecord::Schema[7.1].define(version: 2025_06_12_234444) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "attachment_id"
+    t.bigint "grip_id"
     t.index ["attachment_id"], name: "index_exercises_on_attachment_id"
     t.index ["exercise_group_id"], name: "index_exercises_on_exercise_group_id"
+    t.index ["grip_id"], name: "index_exercises_on_grip_id"
     t.index ["instrument_id"], name: "index_exercises_on_instrument_id"
     t.index ["unit_id"], name: "index_exercises_on_unit_id"
   end
@@ -193,6 +196,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_06_12_234444) do
   add_foreign_key "exercise_sets", "units"
   add_foreign_key "exercises", "attachments"
   add_foreign_key "exercises", "exercise_groups"
+  add_foreign_key "exercises", "grips"
   add_foreign_key "exercises", "instruments"
   add_foreign_key "instruments", "attachments"
   add_foreign_key "instruments", "grips"

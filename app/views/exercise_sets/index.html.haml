@@ -14,6 +14,7 @@
         %th Reps
         %th Load
         %th Intensity Technique
+        %th Suggested Intensity
         %th Intensity
         %th Actions
     %tbody
@@ -24,6 +25,7 @@
           %td= exercise_set.reps
           %td= [exercise_set.load, exercise_set.unit.abbreviation].join(" ")
           %td= exercise_set.intensity_technique&.name
+          %td= exercise_set.suggested_intensity
           %td= exercise_set.intensity
           %td.actions
             = link_to program_workout_exercise_exercise_set_path(@program, @workout, @exercise, exercise_set), class: "btn" do

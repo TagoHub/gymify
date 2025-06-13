@@ -17,6 +17,9 @@
         = f.label :attachment_id
         = f.collection_select :attachment_id, Attachment.all, :id, :name, prompt: "Select Cable Attachment"
     .form-group
+      = f.label :grip_id
+      = f.collection_select :grip_id, Grip.all, :id, :name, prompt: "Select Grip (optional)"
+    .form-group
       = f.label :rep_range
       .flex-row
         = f.number_field :rep_range_min, placeholder: "Min"

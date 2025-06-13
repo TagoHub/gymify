@@ -14,7 +14,7 @@
       %td.value= @workout.rest_days
     %tr
       %td.label Exercises
-      %td.value= @workout.exercises.map(&:name).join(", ")
+      %td.value= @workout.exercise_groups.sort_by(&:order).flat_map(&:exercises).map(&:name).join(", ")
     %tr
       %td.label Total Exercises
       %td.value= @workout.exercises.count
