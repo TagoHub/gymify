@@ -1,10 +1,10 @@
 .flex-container
-  .flex-item
+  .flex-item-left
     .title 
       %h1= @exercise.name
     - if @exercise.image.attached?
       = image_tag url_for(@exercise.image), class: "img-desktop"
-  .flex-item
+  .flex-item-right
     //.title 
     //  %h4= [@exercise_set.set_type, @exercise_set.order].join(" #")
     - if @exercise.image.attached?
@@ -64,8 +64,31 @@
     flex-direction: column;
   }
 
+  .flex-item-left {
+    flex: 2;
+    margin: 2%;
+    margin-top: 0;
+    height: 100vh;
+    display: flex;                  // Make it a flex container
+    justify-content: flex-start;      // Center horizontally
+    align-items: top;           // Center vertically
+    flex-direction: column;        // Ensure vertical stacking if needed
+  }
+
+  .flex-item-right {
+    flex: 3;
+    margin: 2%;
+    margin-top: 0;
+    height: 100vh;
+    display: flex;
+    justify-content: flex-start;
+    align-items: top;
+    flex-direction: column;
+  }
+
   .img-desktop {
     max-width: 800px;
+    max-height: 800px;
     width: 100%;
     height: auto;
   }
@@ -83,13 +106,6 @@
     .img-desktop {
       display: none;
     }
-  }
-
-  .flex-item {
-    flex: 1; /* let both divs take equal space */
-    margin: 2%;
-    margin-top: 0;
-    height: 100vh;
   }
 
 :javascript
@@ -134,4 +150,14 @@
 
     updateTimer();
     const interval = setInterval(updateTimer, 1000);
+  });
+
+  document.addEventListener("turbo:load", () => {
+    document.addEventListener("keydown", (event) => {
+      const nextLink = document.getElementById("next-link");
+
+      if (event.key === "Enter" && nextLink) {
+        nextLink.click();
+      }
+    });
   });

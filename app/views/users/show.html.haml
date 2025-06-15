@@ -13,8 +13,8 @@
         %td.value= @user.gender
       %tr
         %td.label Weight
-        %td.value= [@user.weight, @user.weight_unit.abbreviation].join(" ")
+        %td.value= [@user.weight, @user.weight_unit&.abbreviation].join(" ")
       %tr
         %td.label Height
-        %td.value= [@user.height, @user.height_unit.abbreviation].join(" ")
+        %td.value= [@user.height, @user.height_unit&.abbreviation].join(" ")
   = link_to "Programs", programs_path(@user), class: "btn btn-primary"

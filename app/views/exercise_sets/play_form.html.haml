@@ -23,7 +23,7 @@
 
   .form {
     width: 80%;
-    margin-top: 0;
+    margin-top: 20px;
     .title {
       margin-bottom: 4px;
     }
@@ -34,3 +34,15 @@
       margin-bottom: 3px;
     }
   }
+
+:javascript
+  document.addEventListener("turbo:load", () => {
+    const form = document.querySelector(".form form");
+    if (!form) return;
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Enter" && !event.metaKey && !event.ctrlKey && !event.shiftKey) {
+        event.preventDefault();
+        form.submit();
+      }
+    });
+  });

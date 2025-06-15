@@ -1,6 +1,7 @@
 !!!
 %html
   %head
+    %link{ rel: "icon", type: "image/x-icon", href: asset_path("favicon.ico") }
     %title Gymify
     %meta{name: "viewport", content: "width=device-width,initial-scale=1"}
     = csrf_meta_tags
@@ -9,6 +10,43 @@
     = stylesheet_link_tag "application", "data-turbo-track": "reload"
     = javascript_importmap_tags
   %body
-    %p.notice= notice
-    %p.alert= alert
+    - if current_user
+      %nav.navbar.navbar-expand-lg.navbar-dark.bg-dark
+        .container-fluid
+          = link_to "Gymify 💪", root_path, class: "navbar-brand mb-0 h1"
+
+          %button.navbar-toggler{ type: "button", "data-bs-toggle" => "collapse", "data-bs-target" => "#navbarNav" }
+            %span.navbar-toggler-icon
+
+          #navbarNav.collapse.navbar-collapse
+            %ul.navbar-nav.me-auto
+              - if @program
+                %li.nav-item
+                  = link_to "Program", program_path(@program), class: "nav-link"
+              - if @workout
+                %li.nav-item
+                  = link_to "Workout", program_workout_path(@program, @workout), class: "nav-link"
+              - if @exercise
+                %li.nav-item
+                  = link_to "Exercise", program_workout_exercise_path(@program, @workout, @exercise), class: "nav-link"
+
+            %ul.navbar-nav.ms-auto
+              %li.nav-item
+                = link_to "My Programs", programs_path, class: "nav-link"
+              %li.nav-item
+                = link_to "Profile", user_path(current_user), class: "nav-link"
+              %li.nav-item
+                = link_to "Logout", destroy_user_session_path, data: { turbo_method: :delete }, class: "nav-link"
+
+
+    - if notice
+      .alert.alert-success.alert-dismissible.fade.show{ role: "alert" }
+        = notice
+        %button.btn-close{"data-bs-dismiss" => "alert", "aria-label" => "Close"}
+
+    - if alert
+      .alert.alert-danger.alert-dismissible.fade.show{ role: "alert" }
+        = alert
+        %button.btn-close{"data-bs-dismiss" => "alert", "aria-label" => "Close"}
+
     = yield
