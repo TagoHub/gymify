@@ -95,7 +95,7 @@
 
   @media (min-width: 1200px) {
     .flex-container {
-      flex-direction: row; /* switch to horizontal layout */
+      flex-direction: row;
     }
     .img-mobile {
       display: none;
@@ -115,7 +115,7 @@
     let time = 0;
     const prevSet = #{!!@prev_set};
     const workingSet = "#{@exercise_set&.set_type}" === "Working Set";
-    const prevWorkingSet = #{ @prev_set&.set_type == "Working Set" ? "true" : "false" };
+    const prevWorkingSet = #{@prev_set&.set_type == "Working Set" ? "true" : "false"};
 
     if (prevSet) {
       if (workingSet && prevWorkingSet) {
