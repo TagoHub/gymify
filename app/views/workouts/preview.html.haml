@@ -1,0 +1,28 @@
+.title
+  %h1= @exercise_sets.first.exercise.exercise_group.workout.name
+.index
+  %table
+    %thead
+      %tr
+        %th Exercise
+        %th Order
+        %th Type
+        %th Load
+        %th Reps
+        %th Intensity
+    - last_exercise_id = nil
+    - stripe_toggle = false
+    %tbody
+      - @exercise_sets.each do |es|
+        - if es.exercise_id != last_exercise_id
+          - stripe_toggle = !stripe_toggle
+          - last_exercise_id = es.exercise_id
+        - row_class = stripe_toggle ? 'stripe-a' : 'stripe-b'
+
+        %tr{ class: row_class }
+          %td= link_to es.exercise.name, program_workout_exercise_path(@program, @workout, es.exercise)
+          %td= es.order
+          %td= es.set_type
+          %td= es.reps
+          %td= [es.load, es.unit.abbreviation].join(" ")
+          %td= es.intensity

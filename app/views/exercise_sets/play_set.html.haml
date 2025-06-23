@@ -111,10 +111,24 @@
 :javascript
 
   document.addEventListener("turbo:load", () => {
-    const unit = "#{(@prev_set && @prev_set.exercise.unit.name) || 'Seconds'}";
-    let time = #{@prev_set ? (@prev_set.set_type == "Working Set" ? @prev_set.exercise.rest_time : 30) : 0};
+    let unit = "Seconds";
+    let time = 0;
+    const prevSet = #{!!@prev_set};
+    const workingSet = "#{@exercise_set&.set_type}" === "Working Set";
+    const prevWorkingSet = #{ @prev_set&.set_type == "Working Set" ? "true" : "false" };
 
-    if (time != 30 && unit.toLowerCase() === "minutes") {
+    if (prevSet) {
+      if (workingSet && prevWorkingSet) {
+        time = #{@prev_set&.exercise&.rest_time || 0};
+        unit = "#{@prev_set&.exercise&.unit&.name || 'Seconds'}";
+      }
+    } else {
+      time = 1;
+    }
+
+    time = time || 30;
+
+    if (unit.toLowerCase() === "minutes") {
       time *= 60;
     }
 

@@ -49,6 +49,15 @@ class WorkoutsController < ApplicationController
     render 'exercise_sets/play_set'
   end
 
+  def preview
+    @exercise_set = @workout.exercise_groups.find_by(order: 1).exercises.first.exercise_sets.find_by(order: 1)
+    @exercise_sets = [@exercise_set]
+    while @exercise_set
+      @exercise_set = @exercise_set.next_set
+      @exercise_sets << @exercise_set if @exercise_set
+    end
+  end
+
   private
 
   def set_program
