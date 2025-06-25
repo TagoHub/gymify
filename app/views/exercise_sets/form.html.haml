@@ -16,14 +16,15 @@
       .flex-row
         = f.number_field :load, class: "form-control", step: :any
         = f.collection_select :unit_id, Unit.where(unit_type: 'Weight'), :id, :name, { prompt: "Select Load Unit" }, class: "form-control"
-    .form-group
-      = f.label :intensity
-      = f.number_field :intensity
-    .form-group
-      = f.label :suggested_intensity
-      = f.number_field :suggested_intensity
-    .form-group
-      = f.label :intensity_technique_id
-      - options = IntensityTechnique.all.pluck(:name, :id) << ["None", nil]
-      = f.select :intensity_technique_id, options
+    - if @exercise_set&.set_type == "Working Set"
+      .form-group
+        = f.label :intensity
+        = f.number_field :intensity
+      .form-group
+        = f.label :suggested_intensity
+        = f.number_field :suggested_intensity
+      .form-group
+        = f.label :intensity_technique_id
+        - options = IntensityTechnique.all.pluck(:name, :id) << ["None", nil]
+        = f.select :intensity_technique_id, options
     = f.submit 'Save', class: 'btn'

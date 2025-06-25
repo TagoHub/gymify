@@ -1,6 +1,7 @@
 class WorkoutsController < ApplicationController
   before_action :set_program
   before_action :set_workout, except: [:index, :new, :create]
+  before_action :empty_workout, only: [:start_workout, :preview]
 
   def index
     @workouts = @program.workouts
@@ -59,6 +60,17 @@ class WorkoutsController < ApplicationController
   end
 
   private
+
+  def empty_workout
+    if @workout.exercise_groups.empty?
+      error = "This workout has no exercises yet. Please add exercises to start."
+    elsif @workout.exercise_groups.first.exercises.first.exercise_sets.empty?
+      error = "This workout has no sets yet. Please add sets to the first exercise to start."
+    end
+    if error
+      redirect_to program_workout_path(@program, @workout), alert: error
+    end
+  end
 
   def set_program
     @program = current_user.programs.find(params[:program_id])

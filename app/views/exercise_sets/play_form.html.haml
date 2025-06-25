@@ -7,16 +7,15 @@
         %h5= [@exercise_set.set_type, @exercise_set.order].join(" - ")
       = f.hidden_field :play, value: true
       .form-group
-        = f.label :reps, "Reps (#{@exercise.rep_range_min} - #{@exercise.rep_range_max})"
+        = f.label :reps, ["Reps", @exercise_set.suggested_rep_range].join(" ")
         = f.number_field :reps
       .form-group
-        - max_load = [@exercise.max_load, @exercise_set.unit.abbreviation].join(" ")
-        = f.label :load, "Load (max: #{max_load})"
+        = f.label :load, "Load (~#{@exercise_set.suggested_load} #{@exercise_set.unit.abbreviation})"
         .flex-row
           = f.number_field :load, class: "form-control", step: :any
       - if @exercise_set.set_type == "Working Set"
         .form-group
-          = f.label "Intensity (~#{@exercise_set.suggested_intensity})"
+          = f.label @exercise_set.suggested_intensity ? "Intensity (~#{@exercise_set.suggested_intensity})" : "Intensity"
           = f.select :intensity, [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ]
       = f.submit 'Save', class: 'btn'
 

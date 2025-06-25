@@ -1,4 +1,6 @@
 class ExerciseSet < ApplicationRecord
+  include UniversalMethods
+
   belongs_to :unit
   belongs_to :intensity_technique, optional: true
   belongs_to :exercise
@@ -9,6 +11,51 @@ class ExerciseSet < ApplicationRecord
   # load Float
   # intensity Integer
 
+  WARMUP = [
+    [
+      {
+        relative_load: 0.6,
+        reps: 8,
+      }
+    ],
+    [ 
+      {
+        relative_load: 0.5,
+        reps: 8,
+      },{
+        relative_load: 0.7,
+        reps: 5,
+      }
+    ],
+    [ 
+      {
+        relative_load: 0.45,
+        reps: 8,
+      },{
+        relative_load: 0.65,
+        reps: 5,
+      },{
+        relative_load: 0.85,
+        reps: 3,
+      }
+    ],
+    [ 
+      {
+        relative_load: 0.45,
+        reps: 8,
+      },{
+        relative_load: 0.6,
+        reps: 5,
+      },{
+        relative_load: 0.75,
+        reps: 4,
+      },{
+        relative_load: 0.85,
+        reps: 3,
+      }
+    ]
+  ]
+
   def get_set_type_position
     order = self.order
     warmup_count = self.warmup_type_count
@@ -17,6 +64,28 @@ class ExerciseSet < ApplicationRecord
       [order - warmup_count, type_count].join("/")
     else
       [order, type_count].join("/")
+    end
+  end
+
+  def suggested_load
+    additional_max_load = self.exercise.max_load || 0.0
+    if self.set_type == "Warmup Set"
+      suggested_warmup = ExerciseSet::WARMUP[self.warmup_type_count - 1]
+      instrument_weight = get_load(self.exercise.instrument.weight, self.exercise.instrument.unit, self.unit)
+      max_load = additional_max_load + instrument_weight
+      suggested_load = max_load * suggested_warmup[self.order - 1][:relative_load] - instrument_weight
+      suggested_load < 0 ? 0.0 : suggested_load.round(1)
+    else
+      additional_max_load
+    end
+  end
+
+  def suggested_rep_range
+    if self.set_type == "Warmup Set"
+      suggested_warmup = ExerciseSet::WARMUP[self.warmup_type_count - 1]
+      "(~#{suggested_warmup[self.order - 1][:reps]})"
+    else
+      "(#{self.exercise.rep_range_min} - #{self.exercise.rep_range_max})"
     end
   end
 

@@ -21,8 +21,10 @@
         %td.label Estimated Duration:
         %td.value= [@program.duration, @program.unit.abbreviation].join(" ")
   = link_to "Workouts", program_workouts_path(@program), class: "btn btn-primary"
-.separator
-.show-width
-  .flex-row
-    - @program.workouts.each do |workout|
-      = link_to workout.name, start_workout_program_workout_path(@program, workout), class: "btn btn-success btn-md"
+- if @program.workouts.any?
+  .separator
+  .show-width
+    .flex-row
+      - @program.workouts.each do |workout|
+        = link_to workout.name, start_workout_program_workout_path(@program, workout), class: "btn btn-success btn-md"
+  .separator

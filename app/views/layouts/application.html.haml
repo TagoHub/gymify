@@ -20,13 +20,13 @@
 
           #navbarNav.collapse.navbar-collapse
             %ul.navbar-nav.me-auto
-              - if @program
+              - if @program&.persisted?
                 %li.nav-item
                   = link_to "Program", program_path(@program), class: "nav-link"
-              - if @workout
+              - if @workout&.persisted?
                 %li.nav-item
                   = link_to "Workout", program_workout_path(@program, @workout), class: "nav-link"
-              - if @exercise
+              - if @exercise&.persisted?
                 %li.nav-item
                   = link_to "Exercise", program_workout_exercise_path(@program, @workout, @exercise), class: "nav-link"
 
