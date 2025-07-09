@@ -11,6 +11,10 @@ class Exercise < ApplicationRecord
     self.exercise_sets.maximum(:load)
   end
 
+  def max_rep
+    self.exercise_sets.where(set_type: "Working Set").maximum(:reps)
+  end
+
   # attributes: 
   # name String
   # notes String

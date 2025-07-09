@@ -12,7 +12,7 @@
       = f.label "Reps (#{@exercise.rep_range_min} - #{@exercise.rep_range_max})"
       = f.number_field :reps
     .form-group
-      = f.label :load
+      = f.label :load, "Load (~#{@exercise_set.suggested_load} #{@exercise_set.unit.abbreviation})"
       .flex-row
         = f.number_field :load, class: "form-control", step: :any
         = f.collection_select :unit_id, Unit.where(unit_type: 'Weight'), :id, :name, { prompt: "Select Load Unit" }, class: "form-control"

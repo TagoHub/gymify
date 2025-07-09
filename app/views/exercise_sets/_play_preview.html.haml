@@ -1,0 +1,20 @@
+.index 
+  - ex_reps_n_loads = @exercise.exercise_sets.order(:order).pluck(:reps, :load, :order)
+  %table
+    %tr
+      %td Reps
+      - ex_reps_n_loads.each do |r, l, o|
+        %td{class: @exercise_set.order == o ? 'highlight' : ''}= r
+    %tr
+      %td Load
+      - ex_reps_n_loads.each do |r, l, o|
+        %td{class: @exercise_set.order == o ? 'highlight' : ''}= display_number(l)
+  %br
+
+:scss
+  .index {
+    table {
+      width: 60%;
+    }
+    position: relative;
+  }

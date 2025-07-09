@@ -7,17 +7,29 @@
         %h5= [@exercise_set.set_type, @exercise_set.order].join(" - ")
       = f.hidden_field :play, value: true
       .form-group
-        = f.label :reps, ["Reps", @exercise_set.suggested_rep_range].join(" ")
-        = f.number_field :reps
+        .flex-row.space-between
+          .flex-row.flex-start
+            = f.label :reps, ["Reps", @exercise_set.suggested_rep_range].join(" ")
+          .flex-row.flex-end
+            = ["Suggest: ", @exercise_set.suggested_reps].join(" ")
+            %div{ type: "button", onclick: "copyPaste('#{@exercise.max_rep}', 'reps')", style: "margin-left: 10px;"}
+              %i.bi.bi-clipboard
+        = f.number_field :reps, id: 'reps'
       .form-group
-        = f.label :load, "Load (~#{@exercise_set.suggested_load} #{@exercise_set.unit.abbreviation})"
-        .flex-row
-          = f.number_field :load, class: "form-control", step: :any
+        .flex-row.space-between
+          .flex-row.flex-start
+            = f.label :load
+          .flex-row.flex-end
+            = ["Suggest: ", display_number(@exercise_set.suggested_load), @exercise_set.unit.abbreviation].join(" ")
+            %div{ type: "button", onclick: "copyPaste('#{@exercise_set.suggested_load.to_s}', 'load')", style: "margin-left: 10px;"}
+              %i.bi.bi-clipboard
+        = f.number_field :load, id: 'load', class: "form-control", step: :any, value: display_number(f.object.load)
       - if @exercise_set.set_type == "Working Set"
         .form-group
           = f.label @exercise_set.suggested_intensity ? "Intensity (~#{@exercise_set.suggested_intensity})" : "Intensity"
           = f.select :intensity, [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ]
       = f.submit 'Save', class: 'btn'
+= render 'play_preview'
 
 :scss
 
@@ -36,6 +48,12 @@
   }
 
 :javascript
+
+  function copyPaste(text, id) {
+    field = document.getElementById(id);
+    field.value = text
+  }
+
   document.addEventListener("turbo:load", () => {
     const form = document.querySelector(".form form");
     if (!form) return;

@@ -7,9 +7,11 @@
         %th Exercise
         %th Order
         %th Type
+        %th Rep Range
         %th Reps
         %th Load
         %th Intensity
+        %th Intensity Technique
     - last_exercise_id = nil
     - stripe_toggle = false
     %tbody
@@ -18,10 +20,13 @@
           - stripe_toggle = !stripe_toggle
           - last_exercise_id = es.exercise_id
         - row_class = stripe_toggle ? 'stripe-a' : 'stripe-b'
+        - row_class += ' highlight' if es.last_set?
         %tr{ class: row_class }
           %td= link_to es.exercise.name, program_workout_exercise_path(@program, @workout, es.exercise)
           %td= es.order
           %td= es.set_type
+          %td= es.suggested_rep_range
           %td= es.reps
           %td= [es.load, es.unit.abbreviation].join(" ")
           %td= es.intensity
+          %td= es.intensity_technique&.name

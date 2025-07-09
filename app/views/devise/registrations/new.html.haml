@@ -1,18 +1,19 @@
-.title
-  %h2 Welcome to Gymify!
-.title
-  %h5 Please Sign Up
-= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f|
-  = render "devise/shared/error_messages", resource: resource
-  .field
-    = f.label :email
-    = f.email_field :email, autofocus: true, autocomplete: "email"
-  .field
-    = f.label :password
-    = f.password_field :password, autocomplete: "new-password"
-  .field
-    = f.label :password_confirmation
-    = f.password_field :password_confirmation, autocomplete: "new-password"
-  = render "devise/shared/links"
-  .actions
-    = f.submit "Sign up"
+.session
+  .title
+    %h2 Welcome to Gymify!
+  .title
+    %h5 Please Sign Up
+  = form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f|
+    = render "devise/shared/error_messages", resource: resource
+    .field
+      = f.label :email
+      = f.email_field :email, autofocus: true, autocomplete: "email"
+    .field
+      = f.label :password
+      = f.password_field :password, autocomplete: "new-password"
+    .field
+      = f.label :password_confirmation
+      = f.password_field :password_confirmation, autocomplete: "new-password"
+    = render "devise/shared/links"
+    .actions
+      = f.submit "Sign up"

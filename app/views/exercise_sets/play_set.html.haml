@@ -24,8 +24,8 @@
           %td.label= ["Reps", @exercise_set.suggested_rep_range].join(" ")
           %td.value= @exercise_set.reps
         %tr
-          %td.label= "Load (~#{@exercise_set.suggested_load} #{@exercise_set.unit.abbreviation})"
-          %td.value= [@exercise_set.load, @exercise_set.unit.abbreviation].join(" ")
+          %td.label= "Load (~#{display_number(@exercise_set.suggested_load)} #{@exercise_set.unit.abbreviation})"
+          %td.value= [display_number(@exercise_set.load), @exercise_set.unit.abbreviation].join(" ")
         - if @exercise.attachment
           %tr
             %td.label Attachment
@@ -47,10 +47,17 @@
             %td.label Upcoming
             %td.value= @exercise_set.next_exercise.name
       = link_to 'Next', set_play_form_program_workout_exercise_exercise_set_path(@program, @workout, @exercise, @exercise_set), class: "btn disabled-link", id: "next-link", data: { turbo: false }
+= render 'exercise_sets/play_preview'
 
 :scss
+  .index {
+    table {
+      width: 60%;
+    }
+    position: relative;
+  }
+
   .disabled-link {
-    //pointer-events: none;
     opacity: 0.5;
   }
 
@@ -59,7 +66,6 @@
   }
 
   .flex-container {
-    height: 60vh; 
     display: flex;
     flex-direction: column;
   }
@@ -69,10 +75,10 @@
     margin: 2%;
     margin-top: 0;
     height: 100vh;
-    display: flex;                  // Make it a flex container
-    justify-content: flex-start;      // Center horizontally
-    align-items: top;           // Center vertically
-    flex-direction: column;        // Ensure vertical stacking if needed
+    display: flex;
+    justify-content: flex-start;
+    align-items: top;
+    flex-direction: column;
   }
 
   .flex-item-right {
@@ -87,14 +93,18 @@
   }
 
   .img-desktop {
-    max-width: 800px;
-    max-height: 800px;
-    width: 100%;
+    max-height: 400px;
+    max-width: 100%;
     height: auto;
+    width: auto;
+    display: block;
+    margin: 0 auto; // optional: centers the image
+    object-fit: contain; // optional, for good scaling in constrained areas
   }
 
   @media (min-width: 1200px) {
     .flex-container {
+      height: 500px;
       flex-direction: row;
     }
     .img-mobile {
