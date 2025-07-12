@@ -16,7 +16,7 @@
       .flex-row
         = f.number_field :load, class: "form-control", step: :any
         = f.collection_select :unit_id, Unit.where(unit_type: 'Weight'), :id, :name, { prompt: "Select Load Unit" }, class: "form-control"
-    - if @exercise_set&.set_type == "Working Set"
+    - if @exercise_set.working_set?
       .form-group
         = f.label :intensity
         = f.number_field :intensity

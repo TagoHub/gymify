@@ -66,32 +66,40 @@ class ExerciseSet < ApplicationRecord
 
   def suggested_load
     additional_max_load = exercise.max_load || 0.0
-    if set_type == "Warmup Set"
+    instrument_weight = get_load(exercise.instrument.weight, exercise.instrument.unit, unit)
+    max_load = additional_max_load + instrument_weight
+    if working_set?
+      exercise.maxed_rep_range? ? (additional_max_load + 0.1*max_load).round(1) : additional_max_load
+    else
       suggested_warmup = ExerciseSet::WARMUP[warmup_type_count - 1]
-      instrument_weight = get_load(exercise.instrument.weight, exercise.instrument.unit, unit)
-      max_load = additional_max_load + instrument_weight
       suggested_load = max_load * suggested_warmup[order - 1][:relative_load] - instrument_weight
       suggested_load < 0 ? 0.0 : suggested_load.round(1)
-    else
-      additional_max_load
     end
   end
 
   def suggested_rep_range
-    if set_type == "Warmup Set"
+    if working_set?
+      "(#{exercise.rep_range_min} - #{exercise.rep_range_max})"
+    else
       suggested_warmup = ExerciseSet::WARMUP[warmup_type_count - 1]
       "(~#{suggested_warmup[order - 1][:reps]})"
-    else
-      "(#{exercise.rep_range_min} - #{exercise.rep_range_max})"
     end
   end
 
   def suggested_reps
-    if set_type == "Warmup Set"
+    if working_set?
+      if exercise.maxed_rep_range?
+        exercise.rep_range_min
+      elsif exercise.same_reps? 
+        exercise.max_reps + 1
+      elsif load < exercise.max_load
+        exercise.working_sets.where(load: exercise.max_load).first.reps
+      else
+        exercise.max_reps
+      end
+    else
       suggested_warmup = ExerciseSet::WARMUP[warmup_type_count - 1]
       suggested_warmup[order - 1][:reps].to_i
-    else
-      exercise.max_rep.to_i
     end
   end
 
@@ -117,6 +125,10 @@ class ExerciseSet < ApplicationRecord
   def last_set?
     return true if !next_set || (exercise != next_set.exercise && exercise != next_set&.next_set&.exercise)
     false
+  end
+
+  def working_set?
+    set_type == "Working Set"
   end
 
   def next_set

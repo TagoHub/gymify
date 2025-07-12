@@ -21,28 +21,39 @@
             %td.label Intensity Technique
             %td.value= @exercise_set.intensity_technique&.name
         %tr
-          %td.label= ["Reps", @exercise_set.suggested_rep_range].join(" ")
-          %td.value= @exercise_set.reps
+          %td.label= @exercise_set.working_set? ? ["Reps", @exercise_set.suggested_rep_range].join(" ") : "Reps" 
+          %td.value
+            = @exercise_set.reps
+            - if @exercise_set.reps != @exercise_set.suggested_reps
+              %i.bi.bi-arrow-right-circle.text-primary
+              = @exercise_set.suggested_reps
         %tr
-          %td.label= "Load (~#{display_number(@exercise_set.suggested_load)} #{@exercise_set.unit.abbreviation})"
-          %td.value= [display_number(@exercise_set.load), @exercise_set.unit.abbreviation].join(" ")
+          %td.label= "Load"
+          %td.value
+            = [display_number(@exercise_set.load), @exercise_set.unit.abbreviation].join(" ")
+            - if (@exercise_set.load - @exercise_set.suggested_load).abs > 0.4
+              %i.bi.bi-arrow-right-circle.text-primary
+              = [display_number(@exercise_set.suggested_load), @exercise_set.unit.abbreviation].join(" ")
+        - if @exercise_set.intensity
+          %tr
+            %td.label= "Intensity"
+            %td.value
+              = @exercise_set.intensity
+              - if @exercise_set.intensity != @exercise_set.suggested_intensity
+                %i.bi.bi-arrow-right-circle.text-primary
+                = @exercise_set.suggested_intensity
         - if @exercise.attachment
           %tr
             %td.label Attachment
-            %td.value= @exercise.attachment.name
-        - if @exercise.grip
-          %tr
-            %td.label Grip
-            %td.value= @exercise.grip.name
-        - if @exercise_set.intensity
-          %tr
-            %td.label= @exercise_set.suggested_intensity ? "Intensity (~#{@exercise_set.suggested_intensity})" : "Intensity"
-            %td.value= @exercise_set.intensity
+            %td.value
+              = @exercise.attachment.name
+              - if @exercise.grip
+                = [" -", @exercise.grip.name].join(" ")
         - if @exercise.notes.present?
           %tr
             %td.label Notes
             %td.value= @exercise.notes
-        - if @exercise_set.next_set && @exercise_set.next_exercise
+        - if @exercise_set.next_set && @exercise_set.next_exercise && @exercise_set.last_set?
           %tr
             %td.label Upcoming
             %td.value= @exercise_set.next_exercise.name
@@ -125,7 +136,7 @@
     let time = 0;
     const prevSet = #{!!@prev_set};
     const workingSet = "#{@exercise_set&.set_type}" === "Working Set";
-    const prevWorkingSet = #{@prev_set&.set_type == "Working Set" ? "true" : "false"};
+    const prevWorkingSet = #{@prev_set&.working_set? ? "true" : "false"};
 
     if (prevSet) {
       if (workingSet && prevWorkingSet) {
