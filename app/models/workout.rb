@@ -3,6 +3,10 @@ class Workout < ApplicationRecord
   has_many :exercise_groups, dependent: :destroy
   has_many :exercises, through: :exercise_groups
 
+  def max_sets_count type
+    exercises.map{ |e| e.send(type).count }.max || 0
+  end
+
   # attributes: 
   # name String
   # goal String

@@ -1,0 +1,32 @@
+.index 
+  %table
+    - exercises = @workout.exercises.order(:order)
+    - warmup_count = @workout.max_sets_count(:warmup_sets)
+    - working_count = @workout.max_sets_count(:working_sets)
+    %tbody
+      - exercises.each do |ex|
+        %tr
+          %td= ex.name 
+          - ex.warmup_sets.each do |ex_set|
+            %td
+              = ex_set.reps
+              %i.bi.bi-x
+              = ex_set.load
+              = ex_set.unit.abbreviation
+          - if (warmup_count - ex.warmup_sets.count) > 0
+            - (warmup_count - ex.warmup_sets.count).times do
+              %td
+          - intenisty_count = 0
+          - ex.working_sets.each do |ex_set|
+            %td{ class: 'highlight' }
+              = ex_set.reps
+              %i.bi.bi-x
+              = ex_set.load
+              = ex_set.unit.abbreviation
+            - if ex_set.intensity_technique
+              - intenisty_count += 1
+              %td{ class: 'highlight' }= ex_set.intensity_technique.name
+          - if (working_count - ex.working_sets.count - intenisty_count) > 0
+            - (working_count - ex.working_sets.count - intenisty_count).times do
+              %td
+  %br

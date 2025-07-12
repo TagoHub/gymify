@@ -27,6 +27,10 @@ class Exercise < ApplicationRecord
     exercise_sets.where(set_type: "Working Set").order(:order)
   end
 
+  def warmup_sets
+    exercise_sets.where(set_type: "Warmup Set").order(:order)
+  end
+
   # attributes: 
   # name String
   # notes String
