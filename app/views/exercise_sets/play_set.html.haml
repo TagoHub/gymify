@@ -1,71 +1,82 @@
 .flex-container
   .flex-item-left
     .title 
-      %h1= @exercise.name
+      %h1.text-center.mt-3.font-bold= @exercise.name
     - if @exercise.image.attached?
       = image_tag url_for(@exercise.image), class: "img-desktop"
   .flex-item-right
-    //.title 
-    //  %h4= [@exercise_set.set_type, @exercise_set.order].join(" #")
     - if @exercise.image.attached?
       = image_tag url_for(@exercise.image), class: "img-mobile img-fluid"
-    .show
-      .title
-        %h1#rest-timer.text-center.mt-3.font-bold 00:00
-      %table
-        %tr
-          %td.label Set
-          %td.value= [@exercise_set.set_type, @exercise_set.get_set_type_position].join(" - ")
-        - if @exercise_set.intensity_technique
+    .flex-row.center
+      .show.left
+        .title
+          %h1#rest-timer.text-center.mt-3.font-bold 00:00
+      .index.desktop.right
+        .title
+          %h1.text-center.mt-3 Sets
+    .flex-row.space-between
+      .show.left
+        %table
           %tr
-            %td.label Intensity Technique
-            %td.value= @exercise_set.intensity_technique&.name
-        %tr
-          %td.label= @exercise_set.working_set? ? ["Reps", @exercise_set.suggested_rep_range].join(" ") : "Reps" 
-          %td.value
-            = @exercise_set.reps
-            - if @exercise_set.reps != @exercise_set.suggested_reps
-              %i.bi.bi-arrow-right-circle.text-primary
-              = @exercise_set.suggested_reps
-        %tr
-          %td.label= "Load"
-          %td.value
-            = [display_number(@exercise_set.load), @exercise_set.unit.abbreviation].join(" ")
-            - if (@exercise_set.load - @exercise_set.suggested_load).abs > 0.4
-              %i.bi.bi-arrow-right-circle.text-primary
-              = [display_number(@exercise_set.suggested_load), @exercise_set.unit.abbreviation].join(" ")
-        - if @exercise_set.intensity
+            %td.label Set
+            %td.value= [@exercise_set.set_type, @exercise_set.get_set_type_position].join(" - ")
+          - if @exercise_set.intensity_technique
+            %tr
+              %td.label Intensity Technique
+              %td.value.text-primary= @exercise_set.intensity_technique&.name
           %tr
-            %td.label= "Intensity"
+            %td.label= @exercise_set.working_set? ? ["Reps", @exercise_set.suggested_rep_range].join(" ") : "Reps" 
             %td.value
-              = @exercise_set.intensity
-              - if @exercise_set.intensity != @exercise_set.suggested_intensity
+              = @exercise_set.reps
+              - if @exercise_set.reps != @exercise_set.suggested_reps
                 %i.bi.bi-arrow-right-circle.text-primary
-                = @exercise_set.suggested_intensity
-        - if @exercise.attachment
+                = @exercise_set.suggested_reps
           %tr
-            %td.label Attachment
+            %td.label= "Load"
             %td.value
-              = @exercise.attachment.name
-              - if @exercise.grip
-                = [" -", @exercise.grip.name].join(" ")
-        - if @exercise.notes.present?
-          %tr
-            %td.label Notes
-            %td.value= @exercise.notes
-        - if @exercise_set.next_set && @exercise_set.next_exercise && @exercise_set.last_set?
-          %tr
-            %td.label Upcoming
-            %td.value= @exercise_set.next_exercise.name
-      = link_to 'Next', set_play_form_program_workout_exercise_exercise_set_path(@program, @workout, @exercise, @exercise_set), class: "btn disabled-link", id: "next-link", data: { turbo: false }
-= render 'exercise_sets/play_preview'
-
+              = [display_number(@exercise_set.load), @exercise_set.unit.abbreviation].join(" ")
+              - if (@exercise_set.load - @exercise_set.suggested_load).abs > 0.4
+                %i.bi.bi-arrow-right-circle.text-primary
+                = [display_number(@exercise_set.suggested_load), @exercise_set.unit.abbreviation].join(" ")
+          - if @exercise_set.intensity
+            %tr
+              %td.label= "Intensity"
+              %td.value
+                = @exercise_set.intensity
+                - if @exercise_set.intensity != @exercise_set.suggested_intensity
+                  %i.bi.bi-arrow-right-circle.text-primary
+                  = @exercise_set.suggested_intensity
+          - if @exercise.attachment
+            %tr
+              %td.label Attachment
+              %td.value
+                = @exercise.attachment.name
+                - if @exercise.grip
+                  = [" -", @exercise.grip.name].join(" ")
+          - if @exercise.notes.present?
+            %tr
+              %td.label Notes
+              %td.value= @exercise.notes
+          - if @exercise_set.next_set && @exercise_set.next_exercise && (@exercise_set.last_set? || @exercise_set.is_superset?)
+            %tr
+              %td.label Upcoming
+              %td.value= @exercise_set.next_exercise.name
+      = render 'exercise_sets/play_preview'
+.show
+  = link_to 'Next', set_play_form_program_workout_exercise_exercise_set_path(@program, @workout, @exercise, @exercise_set), class: "btn disabled-link", id: "next-link", data: { turbo: false }
+  %br
 :scss
-  .index {
-    table {
-      width: 60%;
-    }
-    position: relative;
+
+  .show.left {
+    width: 52%;
+  }
+
+  .index.right {
+    width: 42%;
+  }
+
+  .flex-row {
+    align-items: flex-start;
   }
 
   .disabled-link {
@@ -124,8 +135,11 @@
   }
 
   @media (max-width: 1199.98px) {
-    .img-desktop {
+    .img-desktop, .desktop {
       display: none;
+    }
+    .center {
+      justify-content: center;
     }
   }
 

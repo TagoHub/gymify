@@ -28,7 +28,8 @@ class ExerciseSetsController < ApplicationController
           @program = @workout.program
           redirect_to play_set_program_workout_exercise_exercise_set_path(@program, @workout, @exercise, @exercise_set, prev_set: @prev_set)
         else
-          redirect_to program_workout_path(@program, @workout), notice: "Workout completed congratulations! Remember to rest #{@workout.rest_days} days"
+          message = @workout.rest_days > 0 ? "Workout completed congratulations! Remember to rest #{@workout.rest_days} days" : "Workout completed congratulations!"
+          redirect_to program_workout_path(@program, @workout), notice: message
         end
       else
         redirect_to program_workout_exercise_exercise_sets_path(@program, @workout, @exercise), notice: "Set updated successfully."

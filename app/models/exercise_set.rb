@@ -69,7 +69,7 @@ class ExerciseSet < ApplicationRecord
     instrument_weight = get_load(exercise.instrument.weight, exercise.instrument.unit, unit)
     max_load = additional_max_load + instrument_weight
     if working_set?
-      exercise.maxed_rep_range? ? (additional_max_load + 0.1*max_load).round(1) : additional_max_load
+      (exercise.maxed_rep_range? && !last_set?) ? (additional_max_load + 0.1*max_load).round(1) : additional_max_load
     else
       suggested_warmup = ExerciseSet::WARMUP[warmup_type_count - 1]
       suggested_load = max_load * suggested_warmup[order - 1][:relative_load] - instrument_weight
@@ -88,9 +88,9 @@ class ExerciseSet < ApplicationRecord
 
   def suggested_reps
     if working_set?
-      if exercise.maxed_rep_range?
+      if exercise.maxed_rep_range? && !last_set?
         exercise.rep_range_min
-      elsif exercise.same_reps? 
+      elsif exercise.same_reps? && !last_set?
         exercise.max_reps + 1
       elsif load < exercise.max_load
         exercise.working_sets.where(load: exercise.max_load).first.reps
@@ -122,9 +122,12 @@ class ExerciseSet < ApplicationRecord
     end
   end
 
+  def is_superset?
+    exercise.exercise_group.exercises.count > 1
+  end
+
   def last_set?
-    return true if !next_set || (exercise != next_set.exercise && exercise != next_set&.next_set&.exercise)
-    false
+    !next_set || (exercise != next_set.exercise && exercise != next_set&.next_set&.exercise)
   end
 
   def working_set?

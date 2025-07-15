@@ -29,6 +29,9 @@
               - if @exercise&.persisted?
                 %li.nav-item
                   = link_to "Exercise", program_workout_exercise_path(@program, @workout, @exercise), class: "nav-link"
+              - if ["play_set", "start_workout", "set_play_form"].include?(controller.action_name) 
+                %li.nav-item
+                  = link_to "Preview", preview_workout_program_workout_path(@program, @workout), class: "nav-link", target: "_blank"
 
             %ul.navbar-nav.ms-auto
               %li.nav-item

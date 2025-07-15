@@ -1,6 +1,6 @@
 .title
   %h1= @program.name
-  = link_to new_program_workout_path(@program), class: "btn btn-outline-primary btn-sm" do
+  = link_to new_program_workout_path(@program), class: "btn btn-outline-primary btn-sm", title: "Add workout" do
     %i.bi.bi-plus.h4
 .index
   %table
@@ -19,11 +19,13 @@
           %td= workout.rest_days
           %td= workout.exercises.count
           %td
-            = link_to start_workout_program_workout_path(@program, workout), class: "btn play" do
+            = link_to start_workout_program_workout_path(@program, workout), class: "btn play", title: "Start workout" do
               %i.bi.bi-play
-            = link_to program_workout_path(@program, workout), class: "btn" do
+            = link_to preview_workout_program_workout_path(@program, workout), class: "btn", title: "Preview workout" do
+              %i.bi.bi-eyeglasses
+            = link_to program_workout_path(@program, workout), class: "btn", title: "View workout" do
               %i.bi.bi-eye
-            = link_to edit_program_workout_path(@program, workout), class: "btn" do
+            = link_to edit_program_workout_path(@program, workout), class: "btn", title: "Edit workout" do
               %i.bi.bi-pencil
-            = link_to program_workout_path(@program, workout), data: { "turbo-method": :delete, "turbo-confirm": "Are you sure?" }, class: "btn delete" do
+            = link_to program_workout_path(@program, workout), data: { "turbo-method": :delete, "turbo-confirm": "Are you sure?" }, class: "btn delete", title: "Delete workout" do
               %i.bi.bi-trash

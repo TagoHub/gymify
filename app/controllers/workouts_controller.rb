@@ -1,7 +1,7 @@
 class WorkoutsController < ApplicationController
   before_action :set_program
   before_action :set_workout, except: [:index, :new, :create]
-  before_action :empty_workout, only: [:start_workout]
+  before_action :empty_workout, only: [:start_workout, :preview_workout]
 
   def index
     @workouts = @program.workouts
@@ -48,6 +48,9 @@ class WorkoutsController < ApplicationController
     @workout = @exercise_group.workout
     @program = @workout.program
     render 'exercise_sets/play_set'
+  end
+
+  def preview_workout
   end
 
   private

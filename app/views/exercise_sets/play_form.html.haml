@@ -35,9 +35,19 @@
                 %i.bi.bi-clipboard-check.text-primary
           = f.select :intensity, [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ], id: 'intensity'
       = f.submit 'Save', class: 'btn'
-= render 'play_preview'
+= render 'horizontal_play_preview'
+.mobile
+  = render 'play_preview'
 
 :scss
+
+  .desktop.index {
+    table.preview {
+      max-width: 800px;
+      margin: 0 auto;
+      width: auto;
+    }
+  }
 
   .form {
     width: 80%;
@@ -53,6 +63,19 @@
     }
     i {
       margin-left: 10px;
+    }
+  }
+
+  
+  @media (min-width: 1200px) {
+    .mobile {
+      display: none;
+    }
+  }
+
+  @media (max-width: 1199.98px) {
+    .desktop {
+      display: none;
     }
   }
 

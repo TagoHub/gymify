@@ -10,6 +10,7 @@ Rails.application.routes.draw do
     resources :workouts do
       member do
         get :start_workout
+        get :preview_workout
       end
       resources :exercises do
         member do

@@ -1,20 +1,30 @@
-.index 
-  - ex_reps_n_loads = @exercise.exercise_sets.order(:order).pluck(:reps, :load, :order)
-  %table
-    %tr
-      %td Reps
-      - ex_reps_n_loads.each do |r, l, o|
-        %td{class: @exercise_set.order == o ? 'highlight' : ''}= r
-    %tr
-      %td Load
-      - ex_reps_n_loads.each do |r, l, o|
-        %td{class: @exercise_set.order == o ? 'highlight' : ''}= display_number(l)
-  %br
+
+.index.right
+  %table.preview
+    %tbody
+      - warmup_sets = @exercise.exercise_group.exercises.flat_map{ |e| e.warmup_sets }.sort_by{ |es| es.order}
+      - working_sets = @exercise.exercise_group.exercises.flat_map{ |e| e.working_sets }.sort_by{ |es| es.order}
+      - warmup_sets.each do |ex_set|
+        %tr
+          %td{ class: @exercise_set.order == ex_set.order ? 'highlight-2' : '' }
+            = ex_set.reps
+            %i.bi.bi-x
+            = display_number(ex_set.load)
+            = ex_set.unit.abbreviation
+      - working_sets.each do |ex_set|
+        %tr
+          %td{ class: @exercise_set.order == ex_set.order ? 'highlight-2' : 'highlight' }
+            = ex_set.reps
+            %i.bi.bi-x
+            = display_number(ex_set.load)
+            = ex_set.unit.abbreviation
+        - if ex_set.intensity_technique
+          %tr
+            %td{ class: @exercise_set.order == ex_set.order ? 'highlight-2' : 'highlight' }= ex_set.intensity_technique.name
 
 :scss
   .index {
-    table {
-      width: 60%;
+    table.preview {
+      max-width: 150px;
     }
-    position: relative;
   }
