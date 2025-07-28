@@ -66,10 +66,6 @@ class ExerciseSetsController < ApplicationController
     redirect_to edit_program_workout_exercise_exercise_set_path(@program, @workout, @exercise, copy), notice: "Exercise duplicated."
   end
 
-  def set_play_form
-    render :play_form
-  end
-
   def play_set
     @prev_set = ExerciseSet.find(params[:prev_set]) if params[:prev_set].present?
     @exercise = @exercise_set.exercise

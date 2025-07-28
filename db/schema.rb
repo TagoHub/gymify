@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_06_13_180753) do
+ActiveRecord::Schema[7.1].define(version: 2025_07_28_032039) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -89,6 +89,8 @@ ActiveRecord::Schema[7.1].define(version: 2025_06_13_180753) do
     t.datetime "updated_at", null: false
     t.bigint "attachment_id"
     t.bigint "grip_id"
+    t.integer "hole"
+    t.boolean "body_weight", default: false
     t.index ["attachment_id"], name: "index_exercises_on_attachment_id"
     t.index ["exercise_group_id"], name: "index_exercises_on_exercise_group_id"
     t.index ["grip_id"], name: "index_exercises_on_grip_id"

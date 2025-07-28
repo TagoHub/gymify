@@ -1,5 +1,5 @@
 class ProgramsController < ApplicationController
-  before_action :set_program, except: [:index, :new, :create]
+  before_action :set_program, except: [:index, :new, :create, :quick_start]
 
   def show
   end
@@ -37,6 +37,10 @@ class ProgramsController < ApplicationController
     else
       render :form, status: :unprocessable_entity
     end
+  end
+
+  def quick_start
+    @programs = current_user.programs
   end
 
   private

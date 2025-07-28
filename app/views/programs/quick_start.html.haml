@@ -1,0 +1,18 @@
+- if @programs.any?
+  - @programs.each do |program|
+    .show-width
+      .flex-row
+        %h2= program.name
+      - program.workouts.each do |workout|
+        .flex-row
+          = link_to workout.name, start_workout_program_workout_path(program, workout), class: "btn btn-success btn-md"
+    .separator
+
+:scss
+
+  .show-width {
+    .flex-row {
+      padding-top: 15px;
+      padding-bottom: 15px;
+    }
+  }

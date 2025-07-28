@@ -9,7 +9,7 @@
     %link{rel: "stylesheet", href: "https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"}
     = stylesheet_link_tag "application", "data-turbo-track": "reload"
     = javascript_importmap_tags
-  %body
+  %body{ data: { turbo: "false" } }
     - if current_user
       %nav.navbar.navbar-expand-lg.navbar-dark.bg-dark
         .container-fluid
@@ -39,7 +39,7 @@
               %li.nav-item
                 = link_to "Profile", user_path(current_user), class: "nav-link"
               %li.nav-item
-                = link_to "Logout", destroy_user_session_path, data: { turbo_method: :delete }, class: "nav-link"
+                = button_to "Logout", destroy_user_session_path, method: :delete, data: { no_turbolink: true }, class: "nav-link"
 
 
     - if notice

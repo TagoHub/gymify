@@ -14,12 +14,24 @@
       %td.label Type
       %td.value= @exercise.exercise_type
     %tr
+      %td.label Include Body Weight
+      - if @exercise.body_weight 
+        %td.value
+          %i.bi.bi-check
+      - else
+        %td.value
+          %i.bi.bi-x
+    %tr
       %td.label Instrument
       %td.value= @exercise.instrument.name
     - if @exercise.attachment
       %tr
         %td.label Attachment
         %td.value= @exercise.attachment.name
+    - if @exercise.hole
+      %tr
+        %td.label Hole Position
+        %td.value= @exercise.hole
     - if @exercise.grip
       %tr
         %td.label Grip

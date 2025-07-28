@@ -32,7 +32,7 @@
               %i.bi.bi-eye
             = link_to edit_program_workout_exercise_exercise_set_path(@program, @workout, @exercise, exercise_set), class: "btn" do
               %i.bi.bi-pencil
-            = link_to duplicate_program_workout_exercise_exercise_set_path(@program, @workout, @exercise, exercise_set), data: { "turbo-method": :post, "turbo-confirm": "Duplicate this set?" }, class: "btn copy" do
+            = button_to duplicate_program_workout_exercise_exercise_set_path(@program, @workout, @exercise, exercise_set), "method": :post, "confirm": "Duplicate this set?", class: "btn copy" do
               %i.bi.bi-copy
-            = link_to program_workout_exercise_exercise_set_path(@program, @workout, @exercise, exercise_set), data: { "turbo-method": :delete, "turbo-confirm": "Are you sure?" }, class: "btn delete" do
+            = button_to program_workout_exercise_exercise_set_path(@program, @workout, @exercise, exercise_set), "method": :delete, "confirm": "Are you sure?", class: "btn delete" do
               %i.bi.bi-trash

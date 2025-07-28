@@ -8,71 +8,71 @@
     - if @exercise.image.attached?
       = image_tag url_for(@exercise.image), class: "img-mobile img-fluid"
     .flex-row.center
-      .show.left
+      .show
         .title
           %h1#rest-timer.text-center.mt-3.font-bold 00:00
-      .index.desktop.right
-        .title
-          %h1.text-center.mt-3 Sets
-    .flex-row.space-between
-      .show.left
-        %table
+    .flex-row
+      = render 'exercise_sets/play_form'
+    .show
+      %table
+        - if @exercise_set.working_set?
           %tr
-            %td.label Set
-            %td.value= [@exercise_set.set_type, @exercise_set.get_set_type_position].join(" - ")
-          - if @exercise_set.intensity_technique
-            %tr
-              %td.label Intensity Technique
-              %td.value.text-primary= @exercise_set.intensity_technique&.name
+            %td.label Rep Range
+            %td.value= @exercise_set.rep_range
+        - if @exercise.instrument
           %tr
-            %td.label= @exercise_set.working_set? ? ["Reps", @exercise_set.suggested_rep_range].join(" ") : "Reps" 
+            %td.label Instrument
             %td.value
-              = @exercise_set.reps
-              - if @exercise_set.reps != @exercise_set.suggested_reps
-                %i.bi.bi-arrow-right-circle.text-primary
-                = @exercise_set.suggested_reps
+              - if @exercise.instrument.weight > 0
+                = [@exercise.instrument.name, display_number(@exercise.instrument.weight), @exercise.instrument.unit.abbreviation].join(" ")
+              - elsif @exercise.hole
+                = [@exercise.instrument.name, "-", display_nth(@exercise.hole), "from top"].join(" ")
+              - else 
+                = @exercise.instrument.name
+        - if @exercise.grip && !@exercise.attachment
           %tr
-            %td.label= "Load"
+            %td.label Grip
             %td.value
-              = [display_number(@exercise_set.load), @exercise_set.unit.abbreviation].join(" ")
-              - if (@exercise_set.load - @exercise_set.suggested_load).abs > 0.4
-                %i.bi.bi-arrow-right-circle.text-primary
-                = [display_number(@exercise_set.suggested_load), @exercise_set.unit.abbreviation].join(" ")
-          - if @exercise_set.intensity
-            %tr
-              %td.label= "Intensity"
-              %td.value
-                = @exercise_set.intensity
-                - if @exercise_set.intensity != @exercise_set.suggested_intensity
-                  %i.bi.bi-arrow-right-circle.text-primary
-                  = @exercise_set.suggested_intensity
-          - if @exercise.attachment
-            %tr
-              %td.label Attachment
-              %td.value
-                = @exercise.attachment.name
-                - if @exercise.grip
-                  = [" -", @exercise.grip.name].join(" ")
-          - if @exercise.notes.present?
-            %tr
-              %td.label Notes
-              %td.value= @exercise.notes
-          - if @exercise_set.next_set && @exercise_set.next_exercise && (@exercise_set.last_set? || @exercise_set.is_superset?)
-            %tr
-              %td.label Upcoming
-              %td.value= @exercise_set.next_exercise.name
-      = render 'exercise_sets/play_preview'
+              = @exercise.grip.name
+        - if @exercise.attachment
+          %tr
+            %td.label Attachment
+            %td.value
+              = @exercise.attachment.name
+              - if @exercise.grip
+                = [" -", @exercise.grip.name].join(" ")
+        - if @exercise.notes.present?
+          %tr
+            %td.label Notes
+            %td.value= @exercise.notes
+        - if @exercise_set.next_set && @exercise_set.last_set?
+          %tr
+            %td.label{ rowspan: 2 } Upcoming
+            %td.value= @exercise_set.next_set.exercise.name
+          %tr
+            %td.value
+              = @exercise_set.next_exercise.instrument.name
+              = @exercise_set.next_set.load
+              %i.bi.bi-arrow-right
+              = @exercise_set.next_set.suggested_load
+              = @exercise_set.next_set.unit.abbreviation
+- last_set = @exercise.exercise_group.exercises.flat_map{ |e| e.working_sets }.select{ |es| es.last_set? }.first 
 .show
-  = link_to 'Next', set_play_form_program_workout_exercise_exercise_set_path(@program, @workout, @exercise, @exercise_set), class: "btn disabled-link", id: "next-link", data: { turbo: false }
+  = form_with model: last_set, url: program_workout_exercise_exercise_set_path(@program, @workout, last_set.exercise, last_set), method: :patch, local: true, html: { id: last_set.id } do |f|
+    = f.hidden_field :play, value: true, id: "play-#{last_set.id}"
+    = f.hidden_field :reps, value: last_set.reps, id: "reps-#{last_set.id}"
+    = f.hidden_field :load, value: display_number(last_set.load), step: :any, id: "load-#{last_set.id}"
+    = f.hidden_field :intensity, value: last_set.intensity, id: "intensity-#{last_set.id}"
+    %button.h5{ type: "submit", title: "Skip to next exercise", id: "next-link", class: "btn" } Next Exercise
   %br
+
 :scss
 
-  .show.left {
-    width: 52%;
-  }
+  .show {
+    form {
+      border: none;
 
-  .index.right {
-    width: 42%;
+    }
   }
 
   .flex-row {
@@ -93,7 +93,7 @@
   }
 
   .flex-item-left {
-    flex: 2;
+    flex: 1;
     margin: 2%;
     margin-top: 0;
     height: 100vh;
@@ -104,7 +104,7 @@
   }
 
   .flex-item-right {
-    flex: 3;
+    flex: 1;
     margin: 2%;
     margin-top: 0;
     height: 100vh;
@@ -122,6 +122,10 @@
     display: block;
     margin: 0 auto; // optional: centers the image
     object-fit: contain; // optional, for good scaling in constrained areas
+  }
+
+  .img-mobile {
+    max-height: 200px;
   }
 
   @media (min-width: 1200px) {
@@ -168,25 +172,12 @@
     }
 
     const timerEl = document.getElementById("rest-timer");
-    const nextLink = document.getElementById("next-link");
-
-    // Disable the link initially
-    if (nextLink) {
-      nextLink.classList.add("disabled-link");
-    }
-
     if (!timerEl) return;
 
     const updateTimer = () => {
       if (time <= 0) {
         timerEl.textContent = "GO!";
         timerEl.classList.add("text-danger");
-
-        // Enable the link
-        if (nextLink) {
-          nextLink.classList.remove("disabled-link");
-        }
-
         clearInterval(interval);
         return;
       }
@@ -199,14 +190,4 @@
 
     updateTimer();
     const interval = setInterval(updateTimer, 1000);
-  });
-
-  document.addEventListener("turbo:load", () => {
-    document.addEventListener("keydown", (event) => {
-      const nextLink = document.getElementById("next-link");
-
-      if (event.key === "Enter" && nextLink) {
-        nextLink.click();
-      }
-    });
   });

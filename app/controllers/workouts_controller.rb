@@ -47,7 +47,7 @@ class WorkoutsController < ApplicationController
     @exercise_group = @exercise.exercise_group
     @workout = @exercise_group.workout
     @program = @workout.program
-    render 'exercise_sets/play_set'
+    redirect_to play_set_program_workout_exercise_exercise_set_path(@program, @workout, @exercise, @exercise_set, prev_set: nil)
   end
 
   def preview_workout

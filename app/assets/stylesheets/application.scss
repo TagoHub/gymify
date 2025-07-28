@@ -1,6 +1,14 @@
 @import 'bootstrap';
 @import 'devise';
 
+
+  .nav-item form {
+    background: none;
+    border: none;
+    margin: 0;
+    padding: 0;
+  }
+
   .title {
     display: flex;
     justify-content: center; // or use flex-end or center as needed
@@ -37,6 +45,17 @@
     }
   }
 
+  .highlight {
+    background-color: #0000000c;
+  }
+
+  .highlight-2 {
+    background-color: #409cff75;
+  }
+
+  .hidden {
+    display: none;
+  }
   
   .img-fluid {
     max-width: 100%;
@@ -94,14 +113,6 @@
 
     .stripe-b {
       background-color: #fafafa;
-    }
-
-    .highlight {
-      background-color: #0000000c;
-    }
-
-    .highlight-2 {
-      background-color: #007bff75;
     }
 
     .btn {
