@@ -42,7 +42,7 @@
                 %i.bi.text-primary{class: (ex_set.intensity == ex_set.suggested_intensity) ? 'hidden' : (ex_set.intensity > ex_set.suggested_intensity) ? 'bi-arrow-down' : 'bi-arrow-up'}
               %td.highlight-2
                 %button.h5{ type: "submit", title: "Keep last performed set", id: "submit-#{ex_set.id}", class: "bi bi-fast-forward-circle text-primary" }
-          %tr{id: "set-row-#{ex_set.id}"}
+          %tr{id: "set-row-#{ex_set.id}", class: ("highlight-2 current-set-row" if current_set)}
             = form_with model: ex_set, url: program_workout_exercise_exercise_set_path(@program, @workout, @exercise, ex_set), method: :patch, local: true, html: { id: ex_set.id } do |f|
               = f.hidden_field :play, value: true, id: "play-#{ex_set.id}"
               %td{ class: current_set ? 'highlight-2' : '' }
@@ -96,7 +96,7 @@
                 %i.bi.text-primary{class: (ex_set.intensity == ex_set.suggested_intensity) ? 'hidden' : (ex_set.intensity > ex_set.suggested_intensity) ? 'bi-arrow-down' : 'bi-arrow-up'}
               %td.highlight-2
                 %button.h5{ type: "submit", title: "Keep last performed set", id: "submit-#{ex_set.id}", class: "bi bi-fast-forward-circle text-primary" }
-          %tr{id: "set-row-#{ex_set.id}"}
+          %tr{id: "set-row-#{ex_set.id}", class: ("highlight-2 current-set-row" if current_set)}
             = form_with model: ex_set, url: program_workout_exercise_exercise_set_path(@program, @workout, @exercise, ex_set), method: :patch, local: true, html: { id: ex_set.id } do |f|
               = f.hidden_field :play, value: true, id: "play-#{ex_set.id}"
               %td{ class: current_set ? 'highlight-2' : 'highlight' }
@@ -221,3 +221,10 @@
     field = document.getElementById(id);
     field.value = text
   }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    const currentRow = document.querySelector(".current-set-row");
+    if (currentRow) {
+      currentRow.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+  });

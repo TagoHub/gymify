@@ -2,3 +2,46 @@
 import "@hotwired/turbo-rails"
 import "controllers"
 import "bootstrap"
+
+window.showToast = function(message, options = {}) {
+  const {
+    type = "dark",
+    delay = 3000,
+    icon = ""
+  } = options;
+
+  const container = document.getElementById("toast-container");
+  if (!container) return;
+
+  const toastId = `toast-${Date.now()}`;
+
+  const toastEl = document.createElement("div");
+  toastEl.className = `toast align-items-center text-white bg-${type} border-0 mb-2`;
+  toastEl.setAttribute("role", "alert");
+  toastEl.setAttribute("aria-live", "assertive");
+  toastEl.setAttribute("aria-atomic", "true");
+  toastEl.id = toastId;
+
+  toastEl.innerHTML = `
+    <div class="d-flex">
+      <div class="toast-body">
+        ${icon ? icon + " " : ""}${message}
+      </div>
+      <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+    </div>
+  `;
+
+  container.appendChild(toastEl);
+
+  const toast = new bootstrap.Toast(toastEl, { delay });
+  toast.show();
+
+  toastEl.addEventListener("hidden.bs.toast", () => {
+    toastEl.remove();
+  });
+}
+
+window.playSound = function() {
+  const audio = new Audio('/assets/notification.mp3');
+  audio.play().catch((e) => console.error("Audio failed to play:", e));
+};

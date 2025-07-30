@@ -26,7 +26,7 @@
               - if @exercise.instrument.weight > 0
                 = [@exercise.instrument.name, display_number(@exercise.instrument.weight), @exercise.instrument.unit.abbreviation].join(" ")
               - elsif @exercise.hole
-                = [@exercise.instrument.name, "-", display_nth(@exercise.hole), "from top"].join(" ")
+                = [@exercise.instrument.name, "-", display_nth(@exercise.hole), "hole from top"].join(" ")
               - else 
                 = @exercise.instrument.name
         - if @exercise.grip && !@exercise.attachment
@@ -53,9 +53,13 @@
             %td.value
               = @exercise_set.next_exercise.instrument.name
               = @exercise_set.next_set.load
-              %i.bi.bi-arrow-right
-              = @exercise_set.next_set.suggested_load
+              - if @exercise_set.next_set.load != @exercise_set.next_set.suggested_load
+                %i.bi.bi-arrow-right
+                = @exercise_set.next_set.suggested_load
               = @exercise_set.next_set.unit.abbreviation
+              - if @exercise_set.next_exercise.instrument.name == "Cable"
+                = " - " + @exercise_set.next_exercise.attachment.name if @exercise_set.next_exercise.attachment
+                = " - " + display_nth(@exercise_set.next_exercise.hole) + " Hole" if @exercise_set.next_exercise.hole
 - last_set = @exercise.exercise_group.exercises.flat_map{ |e| e.working_sets }.select{ |es| es.last_set? }.first 
 .show
   = form_with model: last_set, url: program_workout_exercise_exercise_set_path(@program, @workout, last_set.exercise, last_set), method: :patch, local: true, html: { id: last_set.id } do |f|
@@ -150,16 +154,17 @@
 :javascript
 
   document.addEventListener("turbo:load", () => {
-    let unit = "Seconds";
     let time = 0;
     const prevSet = #{!!@prev_set};
     const workingSet = "#{@exercise_set&.set_type}" === "Working Set";
+    const unilateral = #{@prev_set&.exercise&.unilateral || false};
     const prevWorkingSet = #{@prev_set&.working_set? ? "true" : "false"};
+    const duration = #{@prev_set&.exercise&.rest_time || 0};
+    const unit = "#{@prev_set&.exercise&.unit&.name || 'Seconds'}";
 
     if (prevSet) {
       if (workingSet && prevWorkingSet) {
-        time = #{@prev_set&.exercise&.rest_time || 0};
-        unit = "#{@prev_set&.exercise&.unit&.name || 'Seconds'}";
+        time = duration
       }
     } else {
       time = 1;
@@ -176,10 +181,16 @@
 
     const updateTimer = () => {
       if (time <= 0) {
+        playSound();
+        showToast(`<i class="bi bi-rocket-takeoff me-2"></i>Go!`, { type: "primary", delay: 10000 });
         timerEl.textContent = "GO!";
         timerEl.classList.add("text-danger");
         clearInterval(interval);
         return;
+      }
+      if (time === Math.floor(duration)/2 && unilateral) {
+        playSound();
+        showToast(`<i class="bi bi-arrow-repeat me-2"></i>Switch sides!`, { type: "primary", delay: 10000 });
       }
 
       const minutes = Math.floor(time / 60);
