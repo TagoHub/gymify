@@ -17,16 +17,17 @@ class ExerciseSetsController < ApplicationController
 
   def update
     play = exercise_set_params[:play]
-    if @exercise_set.update(exercise_set_params.except(:play))
+    @alternate = exercise_set_params[:alternate]
+    if @exercise_set.update(exercise_set_params.except(:play, :alternate))
       if play
         @prev_set = @exercise_set
-        @exercise_set = @exercise_set.next_set
+        @exercise_set = @exercise_set.next_set unless @alternate
         if @exercise_set
           @exercise = @exercise_set.exercise
           @exercise_group = @exercise.exercise_group
           @workout = @exercise_group.workout
           @program = @workout.program
-          redirect_to play_set_program_workout_exercise_exercise_set_path(@program, @workout, @exercise, @exercise_set, prev_set: @prev_set)
+          redirect_to play_set_program_workout_exercise_exercise_set_path(@program, @workout, @exercise, @exercise_set, prev_set: @prev_set, alternate: @alternate)
         else
           message = @workout.rest_days > 0 ? "Workout completed congratulations! Remember to rest #{@workout.rest_days} days" : "Workout completed congratulations!"
           redirect_to program_workout_path(@program, @workout), notice: message
@@ -71,6 +72,7 @@ class ExerciseSetsController < ApplicationController
     @exercise = @exercise_set.exercise
     @exercise_group = @exercise.exercise_group
     @workout = @exercise_group.workout
+    @alternate = params[:alternate]
   end
 
   private
@@ -93,6 +95,6 @@ class ExerciseSetsController < ApplicationController
 
   def exercise_set_params
     params.require(:exercise_set).permit(:play, :order, :set_type, :reps, :load, :unit_id, :intensity, :suggested_intensity,
-      :intensity_technique_id, :exercise_id)
+      :intensity_technique_id, :exercise_id, :alternate)
   end
 end

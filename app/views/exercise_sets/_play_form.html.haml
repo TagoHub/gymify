@@ -14,122 +14,31 @@
           %td.text{ colspan: 6, class: 'highlight-2'}
             %i.bi.bi-rocket-takeoff
             %span.fw-bold Superset
-      - all_sets = @exercise.exercise_group.all_sets
-      - working_sets, warmup_sets = all_sets.partition{ |es| es.working_set? }
-      - working_sets = working_sets
-      - warmup_sets = warmup_sets
-      - warmup_sets.each do |ex_set|
+      - working_sets, warmup_sets = @exercise.exercise_group.all_sets.partition{ |es| es.working_set? }
+      - all_sets = warmup_sets + working_sets
+      - all_sets.each do |ex_set|
         - current_set = @exercise_set.id == ex_set.id
         - if current_set 
-          = form_with model: ex_set, url: program_workout_exercise_exercise_set_path(@program, @workout, @exercise, ex_set), method: :patch, local: true, html: { id: ex_set.id } do |f|
-            = f.hidden_field :play, value: true, id: "play-#{ex_set.id}"
-            = f.hidden_field :reps, value: ex_set.reps, id: "reps-#{ex_set.id}"
-            = f.hidden_field :load, value: display_number(ex_set.load), step: :any, id: "load-#{ex_set.id}"
-            = f.hidden_field :intensity, value: ex_set.intensity, id: "intensity-#{ex_set.id}"
-            %tr
-              %td.highlight-2
-                = ex_set.reps
-                %i.bi.text-primary{class: (ex_set.reps == ex_set.suggested_reps) ? 'hidden' : (ex_set.reps > ex_set.suggested_reps) ? 'bi-arrow-down' : 'bi-arrow-up'}
-              %td.highlight-2.cross
-                %i.bi.bi-x
-              %td.highlight-2
-                = display_number(ex_set.load)
-                %i.bi.text-primary{class: (ex_set.load == ex_set.suggested_load) ? 'hidden' : (ex_set.load > ex_set.suggested_load) ? 'bi-arrow-down' : 'bi-arrow-up'}
-              %td.highlight-2
-                = ex_set.unit.abbreviation
-              %td.highlight-2
-                = ex_set.intensity
-                %i.bi.text-primary{class: (ex_set.intensity == ex_set.suggested_intensity) ? 'hidden' : (ex_set.intensity > ex_set.suggested_intensity) ? 'bi-arrow-down' : 'bi-arrow-up'}
-              %td.highlight-2
-                %button.h5{ type: "submit", title: "Keep last performed set", id: "submit-#{ex_set.id}", class: "bi bi-fast-forward-circle text-primary" }
-          %tr{id: "set-row-#{ex_set.id}", class: ("highlight-2 current-set-row" if current_set)}
-            = form_with model: ex_set, url: program_workout_exercise_exercise_set_path(@program, @workout, @exercise, ex_set), method: :patch, local: true, html: { id: ex_set.id } do |f|
-              = f.hidden_field :play, value: true, id: "play-#{ex_set.id}"
-              %td{ class: current_set ? 'highlight-2' : '' }
-                = f.number_field :reps, value: ex_set.suggested_reps, id: "reps-#{ex_set.id}"
-              %td.cross{ class: current_set ? 'highlight-2' : '' }
-                %i.bi.bi-x
-              %td{ class: current_set ? 'highlight-2' : '' }
-                = f.number_field :load, value: display_number(ex_set.suggested_load), step: :any, id: "load-#{ex_set.id}"
-              %td.cross{ class: current_set ? 'highlight-2' : '' } 
-                = ex_set.unit.abbreviation
-              %td{ class: current_set ? 'highlight-2' : '' }
-              %td{ class: current_set ? 'highlight-2' : '' }
-                - button_class = (@exercise_set.order > ex_set.order || @prev_set&.id == ex_set.id) ? "text-success" : (current_set) ? "text-primary" : "hidden"
-                %button.h5{ type: "submit", title: "Mark as complete", id: "submit-#{ex_set.id}", class: "bi bi-check-circle #{button_class}" }
+          = render 'skip_current_set_form'
+          %tr.highlight-2.current-set-row{ id: "set-row-#{ex_set.id}" }
+            = render 'current_set_form', locals: {}
         - else
-          %tr{id: "set-row-#{ex_set.id}"}
+          %tr{id: "set-row-#{ex_set.id}", class: ex_set.working_set? ? 'highlight' : '' }
             = form_with model: ex_set, url: program_workout_exercise_exercise_set_path(@program, @workout, @exercise, ex_set), method: :patch, local: true, html: { id: ex_set.id } do |f|
               = f.hidden_field :play, value: true, id: "play-#{ex_set.id}"
-              %td{ class: current_set ? 'highlight-2' : '' }
-                = f.number_field :reps, value: ex_set.reps, id: "reps-#{ex_set.id}"
-              %td.cross{ class: current_set ? 'highlight-2' : '' }
-                %i.bi.bi-x
-              %td{ class: current_set ? 'highlight-2' : '' }
-                = f.number_field :load, value: display_number(ex_set.load), step: :any, id: "load-#{ex_set.id}"
-              %td.cross{ class: current_set ? 'highlight-2' : '' } 
-                = ex_set.unit.abbreviation
-              %td{ class: current_set ? 'highlight-2' : '' }
-              %td{ class: current_set ? 'highlight-2' : '' }
-                - button_class = (@exercise_set.order > ex_set.order || @prev_set&.id == ex_set.id) ? "bi bi-check-circle-fill text-success" : (current_set) ? "bi bi-check-circle text-primary" : "hidden"
-                %button{ type: "submit", title: "Mark as complete", id: "submit-#{ex_set.id}", class: button_class }
-      - working_sets.each do |ex_set|
-        - current_set = @exercise_set.id == ex_set.id
-        - if current_set 
-          = form_with model: ex_set, url: program_workout_exercise_exercise_set_path(@program, @workout, @exercise, ex_set), method: :patch, local: true, html: { id: ex_set.id } do |f|
-            = f.hidden_field :play, value: true, id: "play-#{ex_set.id}"
-            = f.hidden_field :reps, value: ex_set.reps, id: "reps-#{ex_set.id}"
-            = f.hidden_field :load, value: display_number(ex_set.load), step: :any, id: "load-#{ex_set.id}"
-            = f.hidden_field :intensity, value: ex_set.intensity, id: "intensity-#{ex_set.id}"
-            %tr
-              %td.highlight-2
-                = ex_set.reps
-                %i.bi.text-primary{class: (ex_set.reps == ex_set.suggested_reps) ? 'hidden' : (ex_set.reps > ex_set.suggested_reps) ? 'bi-arrow-down' : 'bi-arrow-up'}
-              %td.highlight-2.cross
-                %i.bi.bi-x
-              %td.highlight-2
-                = display_number(ex_set.load)
-                %i.bi.text-primary{class: (ex_set.load == ex_set.suggested_load) ? 'hidden' : (ex_set.load > ex_set.suggested_load) ? 'bi-arrow-down' : 'bi-arrow-up'}
-              %td.highlight-2= ex_set.unit.abbreviation
-              %td.highlight-2
-                = ex_set.intensity
-                %i.bi.text-primary{class: (ex_set.intensity == ex_set.suggested_intensity) ? 'hidden' : (ex_set.intensity > ex_set.suggested_intensity) ? 'bi-arrow-down' : 'bi-arrow-up'}
-              %td.highlight-2
-                %button.h5{ type: "submit", title: "Keep last performed set", id: "submit-#{ex_set.id}", class: "bi bi-fast-forward-circle text-primary" }
-          %tr{id: "set-row-#{ex_set.id}", class: ("highlight-2 current-set-row" if current_set)}
-            = form_with model: ex_set, url: program_workout_exercise_exercise_set_path(@program, @workout, @exercise, ex_set), method: :patch, local: true, html: { id: ex_set.id } do |f|
-              = f.hidden_field :play, value: true, id: "play-#{ex_set.id}"
-              %td{ class: current_set ? 'highlight-2' : 'highlight' }
-                .flex-row
-                  = f.number_field :reps, value: ex_set.suggested_reps, id: "reps-#{ex_set.id}"
-              %td.cross{ class: current_set ? 'highlight-2' : 'highlight' }
-                %i.bi.bi-x
-              %td{ class: current_set ? 'highlight-2' : 'highlight' }
-                = f.number_field :load, value: display_number(ex_set.suggested_load), step: :any, id: "load-#{ex_set.id}"
-              %td.cross{ class: current_set ? 'highlight-2' : 'highlight' }
-                = ex_set.unit.abbreviation
-              %td{ class: current_set ? 'highlight-2' : 'highlight' }
-                = f.number_field :intensity, value: ex_set.suggested_intensity, id: "intensity-#{ex_set.id}"
-              %td{ class: current_set ? 'highlight-2' : 'highlight' }
-                - button_class = (@exercise_set.order > ex_set.order || @prev_set&.id == ex_set.id) ? "text-success" : (current_set) ? "text-primary" : "hidden"
-                %button.h5{ type: "submit", title: "Mark as complete", id: "submit-#{ex_set.id}", class: "bi bi-check-circle #{button_class}" }
-        - else
-          %tr{id: "set-row-#{ex_set.id}"}
-            = form_with model: ex_set, url: program_workout_exercise_exercise_set_path(@program, @workout, @exercise, ex_set), method: :patch, local: true, html: { id: ex_set.id } do |f|
-              = f.hidden_field :play, value: true, id: "play-#{ex_set.id}"
-              %td{ class: current_set ? 'highlight-2' : 'highlight' }
+              %td
                 .flex-row
                   = f.number_field :reps, value: ex_set.reps, id: "reps-#{ex_set.id}"
-              %td.cross{ class: current_set ? 'highlight-2' : 'highlight' }
+              %td.cross
                 %i.bi.bi-x
-              %td{ class: current_set ? 'highlight-2' : 'highlight' }
+              %td
                 = f.number_field :load, value: display_number(ex_set.load), step: :any, id: "load-#{ex_set.id}"
-              %td.cross{ class: current_set ? 'highlight-2' : 'highlight' }
+              %td.cross
                 = ex_set.unit.abbreviation
-              %td{ class: current_set ? 'highlight-2' : 'highlight' }
+              %td
                 = f.number_field :intensity, value: ex_set.intensity, id: "intensity-#{ex_set.id}"
-              %td{ class: current_set ? 'highlight-2' : 'highlight' }
-                - button_class = (@exercise_set.order > ex_set.order || @prev_set&.id == ex_set.id) ? "bi bi-check-circle-fill text-success" : (current_set) ? "bi bi-check-circle text-primary" : "hidden"
+              %td
+                - button_class = (@exercise_set.order > ex_set.order || @prev_set&.id == ex_set.id) ? "bi bi-check-circle-fill text-success" : "hidden"
                 %button{ type: "submit", title: "Mark as complete", id: "submit-#{ex_set.id}", class: button_class } 
         - if ex_set.intensity_technique
           %tr

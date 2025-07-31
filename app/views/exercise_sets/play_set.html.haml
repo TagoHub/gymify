@@ -7,10 +7,8 @@
   .flex-item-right
     - if @exercise.image.attached?
       = image_tag url_for(@exercise.image), class: "img-mobile img-fluid"
-    .flex-row.center
-      .show
-        .title
-          %h1#rest-timer.text-center.mt-3.font-bold 00:00
+    %div#fixed-timer-bar
+      %h1#rest-timer 00:00
     .flex-row
       = render 'exercise_sets/play_form'
     .show
@@ -68,7 +66,7 @@
                   = " - " + display_nth(ex_set.exercise.hole) + " Hole" if ex_set.exercise.hole
 - last_set = @exercise.exercise_group.exercises.flat_map{ |e| e.working_sets }.select{ |es| es.last_set? }.first 
 .show
-  = form_with model: last_set, url: program_workout_exercise_exercise_set_path(@program, @workout, last_set.exercise, last_set), method: :patch, local: true, html: { id: last_set.id } do |f|
+  = form_with model: last_set, url: program_workout_exercise_exercise_set_path(@program, @workout, last_set.exercise, last_set), method: :patch, local: true, html: { id: "next" } do |f|
     = f.hidden_field :play, value: true, id: "play-#{last_set.id}"
     = f.hidden_field :reps, value: last_set.reps, id: "reps-#{last_set.id}"
     = f.hidden_field :load, value: display_number(last_set.load), step: :any, id: "load-#{last_set.id}"
@@ -81,7 +79,15 @@
   .show {
     form {
       border: none;
-
+    }
+    form#next {
+      padding: 0;
+      margin: 0;
+      align-items: center;
+      #next-link {
+        margin-top: 20px;
+        margin-bottom: 20px;
+      }
     }
   }
 
@@ -102,9 +108,25 @@
     flex-direction: column;
   }
 
+  #fixed-timer-bar {
+    position: sticky;
+    top: 0;
+    left: 0;
+    right: 0;
+    margin-top: 5%;
+    margin-bottom: 5%;
+    z-index: 1050;
+    background: rgba(32, 32, 32, 0.85);
+    color: #fff;
+    text-align: center;
+    padding: 0.5rem 1rem;
+    font-size: 1.5rem;
+    font-weight: bold;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+  }
+
   .flex-item-left {
     flex: 1;
-    margin: 2%;
     margin-top: 0;
     height: 100vh;
     display: flex;
@@ -115,7 +137,6 @@
 
   .flex-item-right {
     flex: 1;
-    margin: 2%;
     margin-top: 0;
     height: 100vh;
     display: flex;
@@ -164,12 +185,10 @@
     const prevSet = #{!!@prev_set};
     const workingSet = "#{@exercise_set&.set_type}" === "Working Set";
     const unilateral = #{@exercise_set&.exercise&.unilateral || false};
+    const alternate = #{!!@alternate};
     const prevWorkingSet = #{@prev_set&.working_set? ? "true" : "false"};
     let duration = #{(@exercise_set&.exercise&.unilateral ? @exercise_set&.exercise&.rest_time : @prev_set&.exercise&.rest_time) || 0};
     const unit = "#{@prev_set&.exercise&.unit&.name || 'Seconds'}";
-    if (unilateral) {
-      duration += 40;
-    }
     // Set time based on previous set
     if (prevSet) {
       if (workingSet && prevWorkingSet) {
@@ -184,9 +203,13 @@
         time = 30;
       }
     }
-    // Set time to 1 if workout just started
+    // Set time to 5 if workout just started
     else {
       time = 5;
+    }
+    // Reduce time by half for unilateral exercises
+    if (unilateral) {
+      time /= 2;
     }
     // Select timer element
     const timerEl = document.getElementById("rest-timer");
@@ -196,22 +219,23 @@
       // Notify if rest time is over
       if (time <= 0) {
         if (unilateral) {
-          playSound();
-          showToast(`<i class="bi bi-rocket-takeoff me-2"></i>Go with left side!`, { type: "primary", delay: 10000 });
+          if (alternate) {
+            playSound();
+            timerEl.innerHTML = `<i class="bi bi-rocket-takeoff me-2"></i>Do right side!`;
+          }
+          else {
+            playSound();
+            timerEl.innerHTML = `<i class="bi bi-rocket-takeoff me-2"></i>Do left side!`;
+          }
         }
         else {
           playSound();
-          showToast(`<i class="bi bi-rocket-takeoff me-2"></i>Go!`, { type: "primary", delay: 10000 });
+          //showToast(`<i class="bi bi-rocket-takeoff me-2"></i>Go!`, { type: "primary", delay: 10000 });
+          timerEl.innerHTML = `<i class="bi bi-rocket-takeoff me-2"></i>Go!`;
         }
-        timerEl.textContent = "GO!";
         timerEl.classList.add("text-danger");
         clearInterval(interval);
         return;
-      }
-      // Notify at half rest time for unilateral exercises
-      if (time === (Math.floor(duration) - 10) && unilateral) {
-        playSound();
-        showToast(`<i class="bi bi-rocket-takeoff me-2"></i>Go with right side!`, { type: "primary", delay: 10000 });
       }
       // Change timer text to minutes:seconds format
       const minutes = Math.floor(time / 60);

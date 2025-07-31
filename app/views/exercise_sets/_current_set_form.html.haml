@@ -1,0 +1,16 @@
+= form_with model: @exercise_set, url: program_workout_exercise_exercise_set_path(@program, @workout, @exercise, @exercise_set), method: :patch, local: true, html: { id: @exercise_set.id } do |f|
+  = f.hidden_field :play, value: true, id: "play-#{@exercise_set.id}"
+  = f.hidden_field :alternate, value: true, id: "alternate-#{@exercise_set.id}" if @exercise.unilateral && !@alternate
+  %td
+    .flex-row
+      = f.number_field :reps, value: @exercise_set.suggested_reps, id: "reps-#{@exercise_set.id}"
+  %td.cross
+    %i.bi.bi-x
+  %td
+    = f.number_field :load, value: display_number(@exercise_set.suggested_load), step: :any, id: "load-#{@exercise_set.id}"
+  %td.cross
+    = @exercise_set.unit.abbreviation
+  %td
+    = f.number_field :intensity, value: @exercise_set.suggested_intensity, id: "intensity-#{@exercise_set.id}" if @exercise_set.working_set?
+  %td
+    %button.h5{ type: "submit", title: "Mark as complete", id: "submit-#{@exercise_set.id}", class: "bi bi-check-circle text-primary" }

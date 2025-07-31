@@ -1,0 +1,21 @@
+= form_with model: @exercise_set, url: program_workout_exercise_exercise_set_path(@program, @workout, @exercise, @exercise_set), method: :patch, local: true, html: { id: @exercise_set.id } do |f|
+  = f.hidden_field :play, value: true, id: "play-#{@exercise_set.id}"
+  = f.hidden_field :reps, value: @exercise_set.reps, id: "reps-#{@exercise_set.id}"
+  = f.hidden_field :load, value: display_number(@exercise_set.load), step: :any, id: "load-#{@exercise_set.id}"
+  = f.hidden_field :intensity, value: @exercise_set.intensity, id: "intensity-#{@exercise_set.id}"
+  = f.hidden_field :alternate, value: true, id: "alternate-#{@exercise_set.id}" if @exercise.unilateral && !@alternate
+  %tr.highlight-2
+    %td
+      = @exercise_set.reps
+      %i.bi.text-primary{class: (@exercise_set.reps == @exercise_set.suggested_reps) ? 'hidden' : (@exercise_set.reps > @exercise_set.suggested_reps) ? 'bi-arrow-down' : 'bi-arrow-up'}
+    %td.cross
+      %i.bi.bi-x
+    %td
+      = display_number(@exercise_set.load)
+      %i.bi.text-primary{class: (@exercise_set.load == @exercise_set.suggested_load) ? 'hidden' : (@exercise_set.load > @exercise_set.suggested_load) ? 'bi-arrow-down' : 'bi-arrow-up'}
+    %td= @exercise_set.unit.abbreviation
+    %td
+      = @exercise_set.intensity
+      %i.bi.text-primary{class: (@exercise_set.intensity == @exercise_set.suggested_intensity) ? 'hidden' : (@exercise_set.intensity > @exercise_set.suggested_intensity) ? 'bi-arrow-down' : 'bi-arrow-up'}
+    %td
+      %button.h5{ type: "submit", title: "Keep last performed set", id: "submit-#{@exercise_set.id}", class: "bi bi-fast-forward-circle text-primary" }
