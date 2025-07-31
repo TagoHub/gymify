@@ -24,11 +24,13 @@
             %td.label Instrument
             %td.value
               - if @exercise.instrument.weight > 0
-                = [@exercise.instrument.name, display_number(@exercise.instrument.weight), @exercise.instrument.unit.abbreviation].join(" ")
+                = [@exercise.instrument.name, " ", "(", display_number(@exercise.instrument.weight), @exercise.instrument.unit.abbreviation, ")"].join("")
               - elsif @exercise.hole
-                = [@exercise.instrument.name, "-", display_nth(@exercise.hole), "hole from top"].join(" ")
+                = [@exercise.instrument.name, "-", display_nth(@exercise.hole), "Hole from top"].join(" ")
               - else 
                 = @exercise.instrument.name
+              - if @exercise.unilateral
+                = " - Unilateral"
         - if @exercise.grip && !@exercise.attachment
           %tr
             %td.label Grip
@@ -46,20 +48,24 @@
             %td.label Notes
             %td.value= @exercise.notes
         - if @exercise_set.next_set && @exercise_set.last_set?
-          %tr
-            %td.label{ rowspan: 2 } Upcoming
-            %td.value= @exercise_set.next_set.exercise.name
-          %tr
-            %td.value
-              = @exercise_set.next_exercise.instrument.name
-              = @exercise_set.next_set.load
-              - if @exercise_set.next_set.load != @exercise_set.next_set.suggested_load
-                %i.bi.bi-arrow-right
-                = @exercise_set.next_set.suggested_load
-              = @exercise_set.next_set.unit.abbreviation
-              - if @exercise_set.next_exercise.instrument.name == "Cable"
-                = " - " + @exercise_set.next_exercise.attachment.name if @exercise_set.next_exercise.attachment
-                = " - " + display_nth(@exercise_set.next_exercise.hole) + " Hole" if @exercise_set.next_exercise.hole
+          - upcoming_ex_sets = @exercise_set.next_set.exercise.exercise_group.all_sets.select{ |es| es.order == 1 }
+          - upcoming_ex_sets.each_with_index do |ex_set, index|
+            %tr
+              %td.label{ rowspan: 2 }
+                = "Upcoming"
+                = " ##{index+1}" if upcoming_ex_sets.size > 1
+              %td.value= ex_set.exercise.name
+            %tr
+              %td.value
+                = ex_set.exercise.instrument.name
+                = ex_set.load
+                - if ex_set.load != ex_set.suggested_load
+                  %i.bi.bi-arrow-right
+                  = ex_set.suggested_load
+                = ex_set.unit.abbreviation
+                - if ex_set.exercise.instrument.name == "Cable"
+                  = " - " + ex_set.exercise.attachment.name if ex_set.exercise.attachment
+                  = " - " + display_nth(ex_set.exercise.hole) + " Hole" if ex_set.exercise.hole
 - last_set = @exercise.exercise_group.exercises.flat_map{ |e| e.working_sets }.select{ |es| es.last_set? }.first 
 .show
   = form_with model: last_set, url: program_workout_exercise_exercise_set_path(@program, @workout, last_set.exercise, last_set), method: :patch, local: true, html: { id: last_set.id } do |f|
@@ -157,42 +163,57 @@
     let time = 0;
     const prevSet = #{!!@prev_set};
     const workingSet = "#{@exercise_set&.set_type}" === "Working Set";
-    const unilateral = #{@prev_set&.exercise&.unilateral || false};
+    const unilateral = #{@exercise_set&.exercise&.unilateral || false};
     const prevWorkingSet = #{@prev_set&.working_set? ? "true" : "false"};
-    const duration = #{@prev_set&.exercise&.rest_time || 0};
+    let duration = #{(@exercise_set&.exercise&.unilateral ? @exercise_set&.exercise&.rest_time : @prev_set&.exercise&.rest_time) || 0};
     const unit = "#{@prev_set&.exercise&.unit&.name || 'Seconds'}";
-
+    if (unilateral) {
+      duration += 40;
+    }
+    // Set time based on previous set
     if (prevSet) {
       if (workingSet && prevWorkingSet) {
         time = duration
+        // Convert to seconds if rest time is in minutes
+        if (unit.toLowerCase() === "minutes") {
+          time *= 60;
+        }
       }
-    } else {
-      time = 1;
+      // Set time to 30 seconds if warmup set
+      else {
+        time = 30;
+      }
     }
-
-    time = time || 30;
-
-    if (unit.toLowerCase() === "minutes") {
-      time *= 60;
+    // Set time to 1 if workout just started
+    else {
+      time = 5;
     }
-
+    // Select timer element
     const timerEl = document.getElementById("rest-timer");
     if (!timerEl) return;
-
+    // Update timer text and notify user if necessary
     const updateTimer = () => {
+      // Notify if rest time is over
       if (time <= 0) {
-        playSound();
-        showToast(`<i class="bi bi-rocket-takeoff me-2"></i>Go!`, { type: "primary", delay: 10000 });
+        if (unilateral) {
+          playSound();
+          showToast(`<i class="bi bi-rocket-takeoff me-2"></i>Go with left side!`, { type: "primary", delay: 10000 });
+        }
+        else {
+          playSound();
+          showToast(`<i class="bi bi-rocket-takeoff me-2"></i>Go!`, { type: "primary", delay: 10000 });
+        }
         timerEl.textContent = "GO!";
         timerEl.classList.add("text-danger");
         clearInterval(interval);
         return;
       }
-      if (time === Math.floor(duration)/2 && unilateral) {
+      // Notify at half rest time for unilateral exercises
+      if (time === (Math.floor(duration) - 10) && unilateral) {
         playSound();
-        showToast(`<i class="bi bi-arrow-repeat me-2"></i>Switch sides!`, { type: "primary", delay: 10000 });
+        showToast(`<i class="bi bi-rocket-takeoff me-2"></i>Go with right side!`, { type: "primary", delay: 10000 });
       }
-
+      // Change timer text to minutes:seconds format
       const minutes = Math.floor(time / 60);
       const seconds = time % 60;
       timerEl.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
