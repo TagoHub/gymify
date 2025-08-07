@@ -46,7 +46,7 @@ class ProgramsController < ApplicationController
   private
 
   def set_program
-    @program = current_user.programs.find(params[:id])
+    @program = Program.find(params[:id])
   end
 
   def program_params

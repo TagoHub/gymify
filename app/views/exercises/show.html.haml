@@ -1,7 +1,8 @@
 .title 
   %h1= @exercise.name
-  = link_to edit_program_workout_exercise_path(@program, @workout, @exercise), class:  "btn btn-outline-primary btn-sm" do
-    %i.bi.bi-pencil.h5
+  - if current_user.programs.include?(@program)
+    = link_to edit_program_workout_exercise_path(@program, @workout, @exercise), class:  "btn btn-outline-primary btn-sm" do
+      %i.bi.bi-pencil.h5
 .show
   - if @exercise.image.attached?
     .flex-row

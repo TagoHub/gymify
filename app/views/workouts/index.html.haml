@@ -1,7 +1,8 @@
 .title
   %h1= @program.name
-  = link_to new_program_workout_path(@program), class: "btn btn-outline-primary btn-sm", title: "Add workout" do
-    %i.bi.bi-plus.h4
+  - if current_user.programs.include?(@program) 
+    = link_to new_program_workout_path(@program), class: "btn btn-outline-primary btn-sm", title: "Add workout" do
+      %i.bi.bi-plus.h4
 .index
   %table
     %thead
@@ -25,7 +26,8 @@
               %i.bi.bi-eyeglasses
             = link_to program_workout_path(@program, workout), class: "btn", title: "View workout" do
               %i.bi.bi-eye
-            = link_to edit_program_workout_path(@program, workout), class: "btn", title: "Edit workout" do
-              %i.bi.bi-pencil
-            = link_to program_workout_path(@program, workout), data: { "turbo-method": :delete, "turbo-confirm": "Are you sure?" }, class: "btn delete", title: "Delete workout" do
-              %i.bi.bi-trash
+            - if current_user.programs.include?(@program)
+              = link_to edit_program_workout_path(@program, workout), class: "btn", title: "Edit workout" do
+                %i.bi.bi-pencil
+              = link_to program_workout_path(@program, workout), data: { "turbo-method": :delete, "turbo-confirm": "Are you sure?" }, class: "btn delete", title: "Delete workout" do
+                %i.bi.bi-trash

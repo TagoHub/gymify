@@ -25,7 +25,8 @@
           %td.actions
             = link_to program_path(program), class: "btn" do
               %i.bi.bi-eye
-            = link_to edit_program_path(program), class: "btn" do
-              %i.bi.bi-pencil
-            = link_to program_path(program), data: { "turbo-method": :delete, "turbo-confirm": "Are you sure?" }, class: "btn delete" do
-              %i.bi.bi-trash
+            - if current_user.programs.include?(program)
+              = link_to edit_program_path(program), class: "btn" do
+                %i.bi.bi-pencil
+              = link_to program_path(program), data: { "turbo-method": :delete, "turbo-confirm": "Are you sure?" }, class: "btn delete" do
+                %i.bi.bi-trash

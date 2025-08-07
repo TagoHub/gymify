@@ -1,7 +1,8 @@
 .title 
   %h1= @exercise_set.order
-  = link_to edit_program_workout_exercise_exercise_set_path(@program, @workout, @exercise, @exercise_set), class:  "btn btn-outline-primary btn-sm" do
-    %i.bi.bi-pencil.h5
+  - if current_user.programs.include?(@program)
+    = link_to edit_program_workout_exercise_exercise_set_path(@program, @workout, @exercise, @exercise_set), class:  "btn btn-outline-primary btn-sm" do
+      %i.bi.bi-pencil.h5
 .show
   %table
     %tr

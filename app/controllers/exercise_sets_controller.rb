@@ -78,7 +78,7 @@ class ExerciseSetsController < ApplicationController
   private
 
   def set_program
-    @program = current_user.programs.find(params[:program_id])
+    @program = Program.find(params[:program_id])
   end
 
   def set_workout

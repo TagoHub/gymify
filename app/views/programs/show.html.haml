@@ -1,7 +1,8 @@
 .title
   %h1 Program
-  = link_to edit_program_path(@program), class:  "btn btn-outline-primary btn-sm" do
-    %i.bi.bi-pencil.h5
+  - if current_user.programs.include?(@program) 
+    = link_to edit_program_path(@program), class:  "btn btn-outline-primary btn-sm" do
+      %i.bi.bi-pencil.h5
 .show
   %table
     %tbody
@@ -17,9 +18,10 @@
       %tr
         %td.label Level:
         %td.value= @program.level
-      %tr
-        %td.label Estimated Duration:
-        %td.value= [@program.duration, @program.unit.abbreviation].join(" ")
+      - if @program.duration
+        %tr
+          %td.label Estimated Duration:
+          %td.value= [@program.duration, @program.unit.abbreviation].join(" ")
   = link_to "Workouts", program_workouts_path(@program), class: "btn btn-primary"
 - if @program.workouts.any?
   .separator
