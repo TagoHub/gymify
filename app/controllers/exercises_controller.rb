@@ -1,7 +1,7 @@
 class ExercisesController < ApplicationController
-  before_action :set_program
-  before_action :set_workout
-  before_action :set_exercise, except: [:index, :new, :create]
+  before_action :set_program, except: [:templates]
+  before_action :set_workout, except: [:templates]
+  before_action :set_exercise, except: [:index, :new, :create, :templates]
 
   def index
     @exercises = @workout.exercise_groups.order(:order).includes(:exercises).flat_map(&:exercises)
@@ -15,10 +15,14 @@ class ExercisesController < ApplicationController
   end
 
   def update
-    if @exercise.update(exercise_params)
-      redirect_to program_workout_exercises_path(@program, @workout), notice: "Exercise updated successfully."
+    if current_user.programs.include?(@program)
+      if @exercise.update(exercise_params)
+        redirect_to program_workout_exercises_path(@program, @workout), notice: "Exercise updated successfully."
+      else
+        render :form, status: :unprocessable_entity
+      end
     else
-      render :form, status: :unprocessable_entity
+      redirect_to program_workout_exercises_path(@program, @workout), alert: "You are not allowed to edit this exercise."
     end
   end
 
@@ -56,6 +60,20 @@ class ExercisesController < ApplicationController
     redirect_to program_workout_exercises_path(@program, @workout), notice: "Exercise deleted successfully."
   end
 
+  def templates
+    template_exercises = Exercise.where(template: true).includes(:instrument, :unit, :muscles)
+    @muscle_group = MuscleGroup.find(params[:muscle_group]) if params[:muscle_group]
+    @muscle_group ||= MuscleGroup.find_by(name: "Back")
+    @muscle = Muscle.find(params[:muscle]) if params[:muscle]
+    @template_exercises = template_exercises.where(primary_muscle_group_id: @muscle_group)
+    if @muscle
+      @template_exercises = @template_exercises.select{ |e| e.muscles.include?(@muscle) }
+    end
+    @select_options = MuscleGroup.where(template: true).order(created_at: :asc)
+    @workout = @template_exercises.first&.exercise_group&.workout
+    @program = @workout&.program
+  end
+
   def duplicate
     original = Exercise.find(params[:id])
     copy = original.dup
@@ -82,7 +100,7 @@ class ExercisesController < ApplicationController
   private
 
   def set_program
-    @program = current_user.programs.find(params[:program_id])
+    @program = Program.find(params[:program_id])
   end
 
   def set_workout

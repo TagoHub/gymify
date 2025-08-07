@@ -38,19 +38,21 @@
               %td
                 = f.number_field :intensity, value: ex_set.intensity, id: "intensity-#{ex_set.id}"
               %td
-                - button_class = (@exercise_set.order > ex_set.order || @prev_set&.id == ex_set.id) ? "bi bi-check-circle-fill text-success" : "hidden"
-                %button{ type: "submit", title: "Mark as complete", id: "submit-#{ex_set.id}", class: button_class } 
+                - if current_user.programs.include?(@program)
+                  - button_class = (@exercise_set.order > ex_set.order || @prev_set&.id == ex_set.id) ? "bi bi-check-circle-fill text-success" : "hidden"
+                  %button{ type: "submit", title: "Mark as complete", id: "submit-#{ex_set.id}", class: button_class } 
         - if ex_set.intensity_technique
           %tr
             %td.text{ colspan: 6, class: current_set ? 'highlight-2' : 'highlight'}
               %i.bi.bi-rocket-takeoff
               %span.fw-bold= ex_set.intensity_technique.name
-      = form_with model: @exercise, url: program_workout_exercise_path(@program, @workout, @exercise), method: :patch, local: true, html: { id: @exercise.id, target: "_blank" } do |f|
-        %td Notes
-        %td{ colspan: 4}
-          = f.text_field :notes, value: @exercise.notes, id: "notes-#{@exercise.id}"
-        %td
-          %button.h5.bi.bi-pencil-square.text-primary{ type: "submit", title: "Mark as complete", id: "submit-#{@exercise.id}"} 
+      - if current_user.programs.include?(@program)
+        = form_with model: @exercise, url: program_workout_exercise_path(@program, @workout, @exercise), method: :patch, local: true, html: { id: @exercise.id, target: "_blank" } do |f|
+          %td Notes
+          %td{ colspan: 4}
+            = f.text_field :notes, value: @exercise.notes, id: "notes-#{@exercise.id}"
+          %td
+            %button.h5.bi.bi-pencil-square.text-primary{ type: "submit", title: "Mark as complete", id: "submit-#{@exercise.id}"} 
 
 
 

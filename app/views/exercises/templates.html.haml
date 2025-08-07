@@ -1,0 +1,139 @@
+.scroll-container
+  .scroll-row
+    - @select_options.each do |mg|
+      = link_to mg.name, exercise_templates_path(muscle_group: mg.id), class: mg == @muscle_group ? "btn btn-outline-primary btn-md me-2" : "btn btn-primary btn-md me-2"
+.scroll-container
+  .scroll-row
+    - @muscle_group.muscles.each do |m|
+      = link_to m.name, exercise_templates_path(muscle_group: @muscle_group.id, muscle: m.id), class: m == @muscle ? "btn btn-outline-secondary btn-md me-2" : "btn btn-secondary btn-md me-2"
+
+.separator
+//.title
+//  %h1
+//    = "Exercises for " + @muscle_group.name.capitalize
+//    = " - " + @muscle.name if @muscle
+//.separator
+.flex-row.cards
+  - @template_exercises.each do |exercise|
+    - if exercise.image.attached?
+      .card-wrapper
+        = link_to program_workout_exercise_path(@program, @workout, exercise), class: "text-decoration-none" do
+          .card.text-center
+            .card-img-container
+              = image_tag url_for(exercise.image), class: "card-img-top"
+              .card-hover-overlay
+                %div.card-hover-text
+                  = exercise.muscles.map{ |m| m.name }.join(', ')
+            .card-body
+              %h4.card-title= exercise.name
+
+:scss
+
+  .scroll-container {
+    width: 90vw;
+    margin: auto;
+    margin-top: 20px;
+  }
+
+  .scroll-row {
+    display: flex;
+    justify-content: center; // default for large screens
+    overflow-x: auto;
+    white-space: nowrap;
+    gap: 10px;
+    padding: 10px 20px;
+
+    scroll-snap-type: x mandatory;
+    scrollbar-width: thin;
+    scrollbar-color: #888 transparent;
+
+    &::-webkit-scrollbar {
+      height: 8px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: #888;
+      border-radius: 4px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    @media (max-width: 1199.98px) {
+      justify-content: flex-start;
+    }
+  }
+
+
+
+  .flex-row.cards {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 40px; // adjust as needed
+    justify-content: center; // optional for center alignment
+  }
+
+  .card-wrapper {
+    position: relative;
+    .card {
+      width: 300px;
+      height: 300px;
+      overflow: hidden;
+      transition: transform 0.2s ease-in-out;
+      border: 1px solid #eeeeee; // customize thickness and color
+      border-radius: 8px;
+    }
+
+    .card-body {
+      display: flex;
+      align-items: center;      // vertical center
+      justify-content: center;  // horizontal center (optional)
+      height: 100px;            // or flex-grow if you want it dynamic
+      padding: 0 10px;
+      text-align: center;
+    }
+
+    .card:hover {
+      transform: scale(1.02);
+    }
+
+    .card-img-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 200px;
+      padding: 10px;
+    }
+
+    .card-img-top {
+      max-height: 100%;
+      object-fit: contain;
+    }
+
+    .card-hover-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5); // dark mask
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity 0.3s ease-in-out;
+      text-align: center;
+      padding: 10px;
+    }
+
+    .card-img-container:hover .card-hover-overlay {
+      opacity: 1;
+    }
+
+    .card-hover-text {
+      font-size: 1rem;
+      font-weight: bold;
+    }
+  }

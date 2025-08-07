@@ -13,4 +13,5 @@
   %td
     = f.number_field :intensity, value: @exercise_set.suggested_intensity, id: "intensity-#{@exercise_set.id}" if @exercise_set.working_set?
   %td
-    %button.h5{ type: "submit", title: "Mark as complete", id: "submit-#{@exercise_set.id}", class: "bi bi-check-circle text-primary" }
+    - if current_user.programs.include?(@program)
+      %button.h5{ type: "submit", title: "Mark as complete", id: "submit-#{@exercise_set.id}", class: "bi bi-check-circle text-primary" }

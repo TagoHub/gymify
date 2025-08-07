@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_07_28_032039) do
+ActiveRecord::Schema[7.1].define(version: 2025_08_05_001329) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -57,6 +57,15 @@ ActiveRecord::Schema[7.1].define(version: 2025_07_28_032039) do
     t.index ["workout_id"], name: "index_exercise_groups_on_workout_id"
   end
 
+  create_table "exercise_muscles", force: :cascade do |t|
+    t.bigint "exercise_id", null: false
+    t.bigint "muscle_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["exercise_id"], name: "index_exercise_muscles_on_exercise_id"
+    t.index ["muscle_id"], name: "index_exercise_muscles_on_muscle_id"
+  end
+
   create_table "exercise_sets", force: :cascade do |t|
     t.string "set_type"
     t.integer "reps"
@@ -91,6 +100,8 @@ ActiveRecord::Schema[7.1].define(version: 2025_07_28_032039) do
     t.bigint "grip_id"
     t.integer "hole"
     t.boolean "body_weight", default: false
+    t.boolean "template", default: false
+    t.integer "primary_muscle_group_id"
     t.index ["attachment_id"], name: "index_exercises_on_attachment_id"
     t.index ["exercise_group_id"], name: "index_exercises_on_exercise_group_id"
     t.index ["grip_id"], name: "index_exercises_on_grip_id"
@@ -128,6 +139,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_07_28_032039) do
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "template", default: false
   end
 
   create_table "muscles", force: :cascade do |t|
@@ -174,6 +186,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_07_28_032039) do
     t.bigint "height_unit_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "admin", default: false
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["height_unit_id"], name: "index_users_on_height_unit_id"
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
@@ -193,6 +206,8 @@ ActiveRecord::Schema[7.1].define(version: 2025_07_28_032039) do
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "exercise_groups", "workouts"
+  add_foreign_key "exercise_muscles", "exercises"
+  add_foreign_key "exercise_muscles", "muscles"
   add_foreign_key "exercise_sets", "exercises"
   add_foreign_key "exercise_sets", "intensity_techniques"
   add_foreign_key "exercise_sets", "units"
