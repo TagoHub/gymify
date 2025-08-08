@@ -6,7 +6,10 @@
       = image_tag url_for(@exercise.image), class: "img-desktop"
   .flex-item-right
     - if @exercise.image.attached?
-      = image_tag url_for(@exercise.image), class: "img-mobile img-fluid"
+      .image-wrapper
+        = image_tag url_for(@exercise.image), alt: "", class: "exercise-img img-mobile img-fluid", loading: "lazy", data: { behavior: "image-loader" }
+        .spinner.hidden
+          %i.bi.bi-arrow-repeat
     %div#fixed-timer-bar
       %h1#rest-timer 00:00
     .flex-row
@@ -178,6 +181,40 @@
     }
   }
 
+  .image-wrapper {
+    position: relative;
+    height: 200px; // Prevent layout shift
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .exercise-img {
+      max-height: 100%;
+      max-width: 100%;
+      display: none; // Hide until loaded
+    }
+
+    .spinner {
+      position: absolute;
+      font-size: 2rem;
+      animation: spin 1s linear infinite;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    @keyframes spin {
+      from {
+        transform: rotate(0deg);
+      }
+      to {
+        transform: rotate(360deg);
+      }
+    }
+  }
+
+
 :javascript
 
   document.addEventListener("turbo:load", () => {
@@ -246,4 +283,18 @@
 
     updateTimer();
     const interval = setInterval(updateTimer, 1000);
+  });
+
+  document.addEventListener("DOMContentLoaded", () => {
+    const images = document.querySelectorAll("[data-behavior='image-loader']");
+
+    images.forEach((img) => {
+      const wrapper = img.closest(".image-wrapper");
+      const spinner = wrapper.querySelector(".spinner");
+
+      img.addEventListener("load", () => {
+        img.style.display = "block";
+        spinner.classList.add("hidden");
+      });
+    });
   });
