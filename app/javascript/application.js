@@ -41,7 +41,20 @@ window.showToast = function(message, options = {}) {
   });
 }
 
-window.playSound = function() {
-  const audio = new Audio('/assets/notification.mp3');
-  audio.play().catch((e) => console.error("Audio failed to play:", e));
+window.playSound = function () {
+  fetch('/assets/notification.mp3')
+    .then(response => response.arrayBuffer())
+    .then(arrayBuffer => {
+      const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      if (audioContext.state === 'suspended') {
+        audioContext.resume();
+      }
+      return audioContext.decodeAudioData(arrayBuffer).then(buffer => {
+        const source = audioContext.createBufferSource();
+        source.buffer = buffer;
+        source.connect(audioContext.destination);
+        source.start(0);
+      });
+    })
+    .catch((e) => console.error("Audio failed to play:", e));
 };
