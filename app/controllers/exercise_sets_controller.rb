@@ -41,7 +41,8 @@ class ExerciseSetsController < ApplicationController
   end
 
   def new
-    @exercise_set = @exercise.exercise_sets.new(order: (@exercise.exercise_sets.map(&:order).max || 0) + 1)
+    order = (@exercise.exercise_sets.map(&:order).max || 0) + 1
+    @exercise_set = @exercise.exercise_sets.new(order: order, set_type: "Working Set" )
     render :form
   end
 
@@ -64,7 +65,7 @@ class ExerciseSetsController < ApplicationController
     copy = original.dup
     copy.order = original.order + 1
     copy.save!
-    redirect_to edit_program_workout_exercise_exercise_set_path(@program, @workout, @exercise, copy), notice: "Exercise duplicated."
+    redirect_to program_workout_exercise_exercise_sets_path(@program, @workout, @exercise), notice: "Exercise duplicated."
   end
 
   def play_set
