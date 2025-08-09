@@ -2,6 +2,18 @@
 import "@hotwired/turbo-rails"
 import "controllers"
 import "bootstrap"
+import "tom-select"
+
+document.addEventListener("DOMContentLoaded", () => {
+  const selectEl = document.querySelector("#exercise-select");
+  if (selectEl) {
+    new window.TomSelect(selectEl, {
+      plugins: ['remove_button'],
+      maxItems: null,
+      searchField: "text"
+    });
+  }
+});
 
 window.showToast = function(message, options = {}) {
   const {

@@ -5,6 +5,7 @@
       %i.bi.bi-book.h5
     = link_to new_program_workout_exercise_path(@program, @workout), class: "btn btn-outline-primary btn-sm" do
       %i.bi.bi-pencil.h5
+
 .form
   = form_with model: [@program, @workout], local: true do |f|
     .form-group
@@ -21,8 +22,6 @@
           options_from_collection_for_select(@template_exercises, :id, :name, @workout.exercise_ids),
           { include_blank: false },
           multiple: true,
-          class: "form-control",
-          size: 10,
           id: "exercise-select"
 
     = f.submit 'Save Workout', class: 'btn btn-primary'
@@ -39,19 +38,25 @@
   )};
 
   document.addEventListener("DOMContentLoaded", () => {
-    const muscleSelect = document.getElementById("muscle-group-select");
-    const exerciseSelect = document.getElementById("exercise-select");
+    const tom = new TomSelect("#exercise-select", {
+      plugins: ['remove_button'],
+      maxItems: null,
+      searchField: "name",
+      valueField: "id",
+      labelField: "name",
+      options: allExercises
+    });
 
+    const muscleSelect = document.getElementById("muscle-group-select");
     muscleSelect.addEventListener("change", (event) => {
       const muscleGroupId = parseInt(event.target.value);
-      exerciseSelect.innerHTML = "";
-
-      const filtered = allExercises.filter(ex => ex.muscle_group_id === muscleGroupId);
-      filtered.forEach(ex => {
-        const opt = document.createElement("option");
-        opt.value = ex.id;
-        opt.textContent = ex.name;
-        exerciseSelect.appendChild(opt);
-      });
+      tom.clearOptions();
+      if (!isNaN(muscleGroupId)) {
+        const filtered = allExercises.filter(ex => ex.muscle_group_id === muscleGroupId);
+        tom.addOptions(filtered);
+      } else {
+        tom.addOptions(allExercises);
+      }
+      tom.refreshOptions(false);
     });
   });

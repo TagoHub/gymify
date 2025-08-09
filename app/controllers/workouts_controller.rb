@@ -16,21 +16,27 @@ class WorkoutsController < ApplicationController
   end
 
   def update
-    if workout_params[:exercise_ids].present?
-      original_ids = workout_params[:exercise_ids].reject(&:blank?)
-      original_exercises = Exercise.where(id: original_ids)
-      current_order = (@workout&.exercise_groups.maximum(:order).to_i || 0) + 1
-      original_exercises.each_with_index do |ex, i|
-        ex_group = ExerciseGroup.create!(
-          workout: @workout,
-          order: current_order + i,
-          superset: nil
-        )
-        new_ex = ex.dup
-        new_ex.exercise_group = ex_group
-        new_ex.save!
+    exercise_ids = workout_params[:exercise_ids]&.reject(&:blank?)
+    new_exercises = []
+    if exercise_ids.present?
+      ActiveRecord::Base.transaction do
+        existing_names = @workout.exercise_groups.includes(:exercises).flat_map { |eg| eg.exercises.pluck(:name) }.uniq
+        existing_exercises = Exercise.where(template: true, name: existing_names)
+        new_exercises = Exercise.where(id: exercise_ids) - existing_exercises
+        starting_order = (@workout&.exercise_groups&.maximum(:order)&.to_i || 0) + 1
+        new_exercises.each_with_index do |exercise, index|
+          ex_group = ExerciseGroup.create!(
+            workout: @workout,
+            order: starting_order + index,
+            superset: nil
+          )
+          exercise.dup.tap do |copy|
+            copy.exercise_group = ex_group
+            copy.save!
+          end
+        end
       end
-      redirect_to program_workout_path(@program, @workout), notice: "Added new exercises to workout."
+      redirect_to program_workout_path(@program, @workout), notice: "Added #{new_exercises.size} new exercise(s) to workout."
     elsif @workout.update(workout_params)
       redirect_to program_workout_path(@program, @workout), notice: "Workout updated successfully."
     else
