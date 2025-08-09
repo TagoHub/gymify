@@ -1,0 +1,16 @@
+.title
+  %h1 Quick Set Creation
+  = link_to new_program_workout_exercise_exercise_set_path(@program, @workout, @exercise), class: "btn btn-outline-primary btn-sm", title: "Create Custom Exercise Set" do
+    %i.bi.bi-pencil.h5
+.form
+  = form_with model: [@program, @workout, @exercise], local: true do |f|
+    .form-group
+      = f.label :warmup_sets
+      = f.number_field :warmup_sets, class: "form-control", value: 0
+    .form-group
+      = f.label :working_sets
+      = f.number_field :working_sets, class: "form-control", value: 3
+    .form-group
+      = f.label :unit_id, "Additional Load Unit"
+      = f.collection_select :unit_id, Unit.where(unit_type: "Weight"), :id, :name, { prompt: "Select Unit" }, class: "form-control"
+    = f.submit "Save", class: "btn btn-primary"

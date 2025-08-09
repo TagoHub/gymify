@@ -58,3 +58,15 @@ window.playSound = function () {
     })
     .catch((e) => console.error("Audio failed to play:", e));
 };
+
+document.addEventListener("DOMContentLoaded", () => {
+  document.body.addEventListener("click", (event) => {
+    const el = event.target.closest("[data-confirm]");
+    if (el) {
+      const message = el.getAttribute("data-confirm");
+      if (!confirm(message)) {
+        event.preventDefault();
+      }
+    }
+  });
+});

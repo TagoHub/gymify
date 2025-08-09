@@ -3,6 +3,7 @@ class ExerciseSetsController < ApplicationController
   before_action :set_workout
   before_action :set_exercise
   before_action :set_exercise_set, except: [:index, :new, :create]
+  before_action :authorize_exercise_set, only: [:new, :create, :destroy, :edit, :update]
 
   def index
     @exercise_sets = @exercise.exercise_sets.order(:order)
@@ -92,6 +93,12 @@ class ExerciseSetsController < ApplicationController
 
   def set_exercise_set
     @exercise_set = @exercise.exercise_sets.find(params[:id])
+  end
+
+  def authorize_exercise_set
+    unless authorize
+      redirect_to program_workout_exercise_exercise_sets_path(@program, @workout, @exercise), alert: "Not allowed to modify this set."
+    end
   end
 
   def exercise_set_params

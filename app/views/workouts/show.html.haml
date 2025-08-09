@@ -1,11 +1,12 @@
 .title 
   %h1= @workout.name
-  = link_to start_workout_program_workout_path(@program, @workout), class: "btn btn-outline-success btn-sm" do
-    %i.bi.bi-play.h5
+  - if @workout.exercise_groups.any?
+    = link_to start_workout_program_workout_path(@program, @workout), class: "btn btn-outline-success btn-sm" do
+      %i.bi.bi-play.h5
   - if current_user.programs.include?(@program)
     = link_to edit_program_workout_path(@program, @workout), class: "btn btn-outline-primary btn-sm" do
       %i.bi.bi-pencil.h5
-    = link_to add_template_program_workout_path(@program, @workout), class: "btn btn-outline-primary btn-sm" do
+    = link_to copy_exercise_program_workout_path(@program, @workout), class: "btn btn-outline-primary btn-sm" do
       %i.bi.bi-plus.h5
 .show
   %table
@@ -19,13 +20,8 @@
       %td.label Exercises
       %td.value= @workout.exercise_groups.sort_by(&:order).flat_map(&:exercises).map(&:name).join(", ")
     %tr
-      %td.label Total Exercises
+      %td.label Exercises Count
       %td.value= @workout.exercises.count
-    %tr
-      %td.label Created At
-      %td.value= l(@workout.created_at, format: :long)
-    %tr
-      %td.label Updated At
-      %td.value= l(@workout.updated_at, format: :long)
-  = link_to 'Exercises', program_workout_exercises_path(@program, @workout), class: "btn"
+  - if @workout.exercise_groups.any?
+    = link_to 'Exercises', program_workout_exercises_path(@program, @workout), class: "btn"
 = render 'workouts/preview'

@@ -20,14 +20,15 @@
           %td= workout.rest_days
           %td= workout.exercises.count
           %td
-            = link_to start_workout_program_workout_path(@program, workout), class: "btn play", title: "Start workout" do
-              %i.bi.bi-play
-            = link_to preview_workout_program_workout_path(@program, workout), class: "btn", title: "Preview workout" do
-              %i.bi.bi-eyeglasses
+            - if workout.exercises.any?
+              = link_to start_workout_program_workout_path(@program, workout), class: "btn play", title: "Start workout" do
+                %i.bi.bi-play
+              = link_to preview_workout_program_workout_path(@program, workout), class: "btn", title: "Preview workout" do
+                %i.bi.bi-eyeglasses
             = link_to program_workout_path(@program, workout), class: "btn", title: "View workout" do
               %i.bi.bi-eye
             - if current_user.programs.include?(@program)
               = link_to edit_program_workout_path(@program, workout), class: "btn", title: "Edit workout" do
                 %i.bi.bi-pencil
-              = link_to program_workout_path(@program, workout), data: { "turbo-method": :delete, "turbo-confirm": "Are you sure?" }, class: "btn delete", title: "Delete workout" do
+              = button_to program_workout_path(@program, workout), method: :delete, data: { confirm: "Are you sure?" }, class: "btn delete link" do
                 %i.bi.bi-trash

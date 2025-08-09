@@ -3,7 +3,7 @@
   = link_to start_workout_program_workout_path(@program, @workout), class: "btn btn-outline-success btn-sm" do
     %i.bi.bi-play.h4
   - if current_user.programs.include?(@program)
-    = link_to add_template_program_workout_path(@program, @workout), class: "btn btn-outline-primary btn-sm" do
+    = link_to copy_exercise_program_workout_path(@program, @workout), class: "btn btn-outline-primary btn-sm" do
       %i.bi.bi-plus.h4
 .index
   %table
@@ -42,7 +42,7 @@
             - if current_user.programs.include?(@program)
               = link_to edit_program_workout_exercise_path(@program, @workout, exercise), class: "btn" do
                 %i.bi.bi-pencil
-              = link_to duplicate_program_workout_exercise_path(@program, @workout, exercise), data: { "turbo-method": :post, "turbo-confirm": "Duplicate this exercise?" }, class: "btn copy" do
+              = button_to duplicate_program_workout_exercise_path(@program, @workout, exercise), method: :post, data: { confirm: "Duplicate selected exercise?" }, class: "btn copy link" do
                 %i.bi.bi-copy
-              = link_to program_workout_exercise_path(@program, @workout, exercise), data: { "turbo-method": :delete, "turbo-confirm": "Are you sure?" }, class: "btn delete" do
+              = button_to program_workout_exercise_path(@program, @workout, exercise), method: :delete, data: { confirm: "Are you sure?" }, class: "btn delete link" do
                 %i.bi.bi-trash

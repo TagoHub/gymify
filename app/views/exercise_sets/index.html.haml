@@ -1,11 +1,8 @@
 .title
   %h1= @exercise.name
   - if current_user.programs.include?(@program) 
-    = link_to new_program_workout_exercise_exercise_set_path(@program, @workout, @exercise), class: "btn btn-outline-primary btn-sm", title: "Add Exercise Set" do
+    = link_to quick_sets_creation_program_workout_exercise_path(@program, @workout, @exercise), class:  "btn btn-outline-primary btn-sm" do
       %i.bi.bi-plus.h4
-    - unless @exercise.exercise_sets.any?
-      = link_to dummy_sets_program_workout_exercise_path(@program, @workout, @exercise), data: { "turbo-method": :post, "turbo-confirm": "This will create 3 warmup and working sets each. Are you sure?" }, class: "btn btn-outline-primary btn-sm", title: "Quick Set Creation" do
-        %i.bi.bi-skip-end.h4
 .index
   %table
     %thead
@@ -34,7 +31,7 @@
             - if current_user.programs.include?(@program) 
               = link_to edit_program_workout_exercise_exercise_set_path(@program, @workout, @exercise, exercise_set), class: "btn" do
                 %i.bi.bi-pencil
-              = button_to duplicate_program_workout_exercise_exercise_set_path(@program, @workout, @exercise, exercise_set), "method": :post, "confirm": "Duplicate this set?", class: "btn copy" do
+              = button_to duplicate_program_workout_exercise_exercise_set_path(@program, @workout, @exercise, exercise_set), "method": :post, "confirm": "Duplicate this set?", class: "btn link" do
                 %i.bi.bi-copy
-              = button_to program_workout_exercise_exercise_set_path(@program, @workout, @exercise, exercise_set), "method": :delete, "confirm": "Are you sure?", class: "btn delete" do
+              = button_to program_workout_exercise_exercise_set_path(@program, @workout, @exercise, exercise_set), method: :delete, data: { confirm: "Are you sure?" }, class: "btn delete link" do
                 %i.bi.bi-trash

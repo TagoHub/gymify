@@ -12,14 +12,14 @@ Rails.application.routes.draw do
     get :quick_start
     resources :workouts do
       member do
-        get :add_template
+        get :copy_exercise
         get :start_workout
         get :preview_workout
       end
       resources :exercises do
         member do
           post :duplicate
-          post :dummy_sets
+          get :quick_sets_creation
         end
         resources :exercise_sets do
           member do

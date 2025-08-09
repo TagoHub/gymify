@@ -23,10 +23,4 @@
     %tr
       %td.label Intensity Technique
       %td.value= @exercise_set.intensity_technique&.name
-    %tr
-      %td.label Created At
-      %td.value= l(@exercise_set.created_at, format: :long)
-    %tr
-      %td.label Updated At
-      %td.value= l(@exercise_set.updated_at, format: :long)
   = link_to 'Sets', program_workout_exercise_exercise_sets_path(@program, @workout, @exercise), class: "btn"

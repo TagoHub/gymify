@@ -2,6 +2,7 @@ class ExercisesController < ApplicationController
   before_action :set_program, except: [:templates]
   before_action :set_workout, except: [:templates]
   before_action :set_exercise, except: [:index, :new, :create, :templates]
+  before_action :authorize_exercise, only: [:new, :create, :destroy, :edit, :update]
 
   def index
     @exercises = @workout.exercise_groups.order(:order).includes(:exercises).flat_map(&:exercises)
@@ -15,14 +16,26 @@ class ExercisesController < ApplicationController
   end
 
   def update
-    if current_user.programs.include?(@program)
-      if @exercise.update(exercise_params)
-        redirect_to program_workout_exercises_path(@program, @workout), notice: "Exercise updated successfully."
-      else
-        render :form, status: :unprocessable_entity
+    warmup_sets = exercise_params[:warmup_sets]&.to_i
+    working_sets = exercise_params[:working_sets]&.to_i
+    unit = exercise_params[:unit_id]&.to_i
+    if warmup_sets && working_sets && unit
+      current_set = 1
+      warmup_sets.times do
+        ds = @exercise.exercise_sets.new(order: current_set, set_type: "Warmup Set", reps: 5, unit_id: unit, intensity: 5)
+        ds.save!
+        current_set += 1
       end
+      working_sets.times do
+        ds = @exercise.exercise_sets.new(order: current_set, set_type: "Working Set", reps: @exercise.rep_range_min, unit_id: unit, intensity: 8)
+        ds.save!
+        current_set += 1
+      end
+      redirect_to program_workout_exercise_exercise_sets_path(@program, @workout, @exercise), notice: "Exercise sets created successfully."
+    elsif @exercise.update(exercise_params)
+      redirect_to program_workout_exercises_path(@program, @workout), notice: "Exercise updated successfully."
     else
-      redirect_to program_workout_exercises_path(@program, @workout), alert: "You are not allowed to edit this exercise."
+      render :form, status: :unprocessable_entity
     end
   end
 
@@ -81,20 +94,7 @@ class ExercisesController < ApplicationController
     redirect_to edit_program_workout_exercise_path(@program, @workout, copy), notice: "Exercise duplicated."
   end
 
-  def dummy_sets
-    unit_id = current_user.weight_unit&.id || Unit.where(unit_type: "Weight").first
-    dummy_sets = [
-      { order: 1, set_type: "Warmup Set", reps: 10 },
-      { order: 2, set_type: "Warmup Set", reps: 5  },
-      { order: 3, set_type: "Working Set", reps: @exercise.rep_range_min, intensity: 8  },
-      { order: 4, set_type: "Working Set", reps: @exercise.rep_range_min, intensity: 9  },
-      { order: 5, set_type: "Working Set", reps: @exercise.rep_range_min, intensity: 10 }
-    ]
-    dummy_sets.each do |set|
-      ds = @exercise.exercise_sets.new(order: set[:order], set_type: set[:set_type], reps: set[:reps], unit: unit_id, intensity: set[:intensity])
-      ds.save!
-    end
-    redirect_to program_workout_exercise_exercise_sets_path(@program, @workout, @exercise), notice: "Dummy sets created."
+  def quick_sets_creation
   end
 
   private
@@ -111,8 +111,14 @@ class ExercisesController < ApplicationController
     @exercise = @workout.exercises.find(params[:id])
   end
 
+  def authorize_exercise
+    unless authorize
+      redirect_to program_workout_exercises_path(@program, @workout), alert: "Not allowed to modify this exercise."
+    end
+  end
+
   def exercise_params
     params.require(:exercise).permit(:name, :image, :notes, :exercise_type, :rep_range_min, :rep_range_max, :rest_time, :unilateral, :exercise_group_id,
-      :body_weight, :instrument_id, :attachment_id, :hole, :grip_id, :unit_id)
+      :body_weight, :instrument_id, :attachment_id, :hole, :grip_id, :unit_id, :warmup_sets, :working_sets)
   end
 end

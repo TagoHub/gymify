@@ -2,6 +2,7 @@ class WorkoutsController < ApplicationController
   before_action :set_program
   before_action :set_workout, except: [:index, :new, :create]
   before_action :empty_workout, only: [:start_workout, :preview_workout]
+  before_action :authorize_workout, only: [:new, :create, :destroy, :edit, :update]
 
   def index
     @workouts = @program.workouts
@@ -15,7 +16,22 @@ class WorkoutsController < ApplicationController
   end
 
   def update
-    if @workout.update(workout_params)
+    if workout_params[:exercise_ids].present?
+      original_ids = workout_params[:exercise_ids].reject(&:blank?)
+      original_exercises = Exercise.where(id: original_ids)
+      current_order = (@workout&.exercise_groups.maximum(:order).to_i || 0) + 1
+      original_exercises.each_with_index do |ex, i|
+        ex_group = ExerciseGroup.create!(
+          workout: @workout,
+          order: current_order + i,
+          superset: nil
+        )
+        new_ex = ex.dup
+        new_ex.exercise_group = ex_group
+        new_ex.save!
+      end
+      redirect_to program_workout_path(@program, @workout), notice: "Added new exercises to workout."
+    elsif @workout.update(workout_params)
       redirect_to program_workout_path(@program, @workout), notice: "Workout updated successfully."
     else
       render :edit, status: :unprocessable_entity
@@ -30,7 +46,7 @@ class WorkoutsController < ApplicationController
   def create
     @workout = @program.workouts.new(workout_params)
     if @workout.save
-      redirect_to program_workouts_path(@program), notice: "Your workout was successfully created."
+      redirect_to program_workout_path(@program, @workout), notice: "Your workout was successfully created."
     else
       render :form, status: :unprocessable_entity
     end
@@ -39,6 +55,11 @@ class WorkoutsController < ApplicationController
   def destroy
     @workout.destroy
     redirect_to program_workouts_path(@program), notice: "Workout deleted successfully."
+  end
+
+  def copy_exercise
+    @template_exercises = Exercise.where(template: true).includes(:primary_muscle_group)
+    @muscle_groups = MuscleGroup.where(template: true).order(created_at: :asc)
   end
 
   def start_workout
@@ -67,14 +88,20 @@ class WorkoutsController < ApplicationController
   end
 
   def set_program
-    @program = current_user.programs.find(params[:program_id])
+    @program = Program.find(params[:program_id])
   end
 
   def set_workout
     @workout = @program.workouts.find(params[:id])
   end
 
+  def authorize_workout
+    unless authorize
+      redirect_to program_workouts_path(@program), alert: "Not allowed to modify this workout."
+    end
+  end
+
   def workout_params
-    params.require(:workout).permit(:name, :goal, :rest_days)
+    params.require(:workout).permit(:name, :goal, :rest_days, exercise_ids: [])
   end
 end

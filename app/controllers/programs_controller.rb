@@ -1,5 +1,6 @@
 class ProgramsController < ApplicationController
   before_action :set_program, except: [:index, :new, :create, :quick_start]
+  before_action :authorize_program, only: [:destroy, :edit, :update]
 
   def show
   end
@@ -47,6 +48,12 @@ class ProgramsController < ApplicationController
 
   def set_program
     @program = Program.find(params[:id])
+  end
+
+  def authorize_program
+    unless authorize
+      redirect_to programs_path(), alert: "Not allowed to modify this program."
+    end
   end
 
   def program_params

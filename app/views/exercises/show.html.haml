@@ -3,6 +3,8 @@
   - if current_user.programs.include?(@program)
     = link_to edit_program_workout_exercise_path(@program, @workout, @exercise), class:  "btn btn-outline-primary btn-sm" do
       %i.bi.bi-pencil.h5
+    = link_to quick_sets_creation_program_workout_exercise_path(@program, @workout, @exercise), class:  "btn btn-outline-primary btn-sm" do
+      %i.bi.bi-plus.h5
 .show
   - if @exercise.image.attached?
     .flex-row
@@ -55,10 +57,5 @@
       %tr
         %td.label Notes
         %td.value= @exercise.notes
-    %tr
-      %td.label Created At
-      %td.value= l(@exercise.created_at, format: :long)
-    %tr
-      %td.label Updated At
-      %td.value= l(@exercise.updated_at, format: :long)
-  = link_to 'Sets', program_workout_exercise_exercise_sets_path(@program, @workout, @exercise), class: "btn"
+  - if @exercise.exercise_sets.any?
+    = link_to 'Sets', program_workout_exercise_exercise_sets_path(@program, @workout, @exercise), class: "btn"

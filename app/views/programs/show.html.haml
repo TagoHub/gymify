@@ -3,6 +3,8 @@
   - if current_user.programs.include?(@program) 
     = link_to edit_program_path(@program), class:  "btn btn-outline-primary btn-sm" do
       %i.bi.bi-pencil.h5
+    = link_to new_program_workout_path(@program), class: "btn btn-outline-primary btn-sm", title: "Add workout" do
+      %i.bi.bi-plus.h5
 .show
   %table
     %tbody
@@ -22,7 +24,7 @@
         %tr
           %td.label Estimated Duration:
           %td.value= [@program.duration, @program.unit.abbreviation].join(" ")
-  = link_to "Workouts", program_workouts_path(@program), class: "btn btn-primary"
+  = link_to "Workouts", program_workouts_path(@program), class: "btn btn-primary" if @program.workouts.any?
 - if @program.workouts.any?
   .separator
   .show-width
