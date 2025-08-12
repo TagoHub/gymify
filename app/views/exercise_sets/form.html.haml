@@ -7,15 +7,15 @@
       = f.number_field :order
     .form-group
       = f.label :set_type
-      = f.select :set_type, ["Working Set", "Warmup Set"]
+      = f.select :set_type, @set_types
     .form-group
       = f.label "Reps (#{@exercise.rep_range_min} - #{@exercise.rep_range_max})"
       = f.number_field :reps
-    .form-group
-      = f.label :load, "Load (~#{@exercise_set.suggested_load} #{@exercise_set&.unit&.abbreviation})"
-      .flex-row
-        = f.number_field :load, class: "form-control", step: :any
-        = f.collection_select :unit_id, Unit.where(unit_type: 'Weight'), :id, :name, { prompt: "Select Load Unit" }, class: "form-control"
+    .form-group-inline
+      = f.label :load
+    .form-group-inline
+      = f.number_field :load, class: "form-control", step: :any
+      = f.collection_select :unit_id, @units, :id, :name, { prompt: "Select Load Unit" }, class: "form-control"
     - if @exercise_set.working_set?
       .form-group
         = f.label :intensity
@@ -25,6 +25,5 @@
         = f.number_field :suggested_intensity
       .form-group
         = f.label :intensity_technique_id
-        - options = IntensityTechnique.all.pluck(:name, :id) << ["None", nil]
-        = f.select :intensity_technique_id, options
+        = f.select :intensity_technique_id, @techniques
     = f.submit 'Save', class: 'btn'

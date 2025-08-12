@@ -5,39 +5,43 @@
       = f.text_field :name
     .form-group
       = f.label :exercise_group_id, "Workout Priority"
-      = f.collection_select :exercise_group_id, @workout.exercise_groups.order(:order), :id, :order, prompt: "Select Order Priority"
+      = f.collection_select :exercise_group_id, @exercise_groups, :id, :order, prompt: "Select Order Priority"
     .form-group
       = f.label :exercise_type
-      = f.select :exercise_type, ["Compound", "Isolation"]
+      = f.select :exercise_type, @exercise_types
     .form-group
       = f.label :body_weight, "Include Body Weight"
-      = f.select :body_weight, [["No", false], ["Yes", true]]
+      = f.select :body_weight, @boolean
     .form-group
       = f.label :instrument_id
-      = f.collection_select :instrument_id, Instrument.all, :id, :name, prompt: "Select Instrument"
+      = f.collection_select :instrument_id, @instruments, :id, :name, prompt: "Select Instrument"
     - if @exercise&.instrument&.name == "Cable"
       .form-group
         = f.label :attachment_id
-        = f.collection_select :attachment_id, Attachment.all, :id, :name, prompt: "Select Cable Attachment"
+        = f.collection_select :attachment_id, @attachments, :id, :name, prompt: "Select Cable Attachment"
       .form-group
         = f.label :hole, "Cable Position From Top"
         = f.number_field :hole, placeholder: "Position on Cable (optional)", step: 1
     .form-group
       = f.label :grip_id
-      = f.collection_select :grip_id, Grip.all, :id, :name, prompt: "Select Grip (optional)"
-    .form-group
+      = f.collection_select :grip_id, @grips, :id, :name, prompt: "Select Grip (optional)"
+    .form-group-inline
       = f.label :rep_range
-      .flex-row
+    .form-group-inline
+      .field
         = f.number_field :rep_range_min, placeholder: "Min"
+      .field
         = f.number_field :rep_range_max, placeholder: "Max"
-    .form-group
+    .form-group-inline
       = f.label :rest_time
-      .flex-row
+    .form-group-inline
+      .field
         = f.number_field :rest_time
-        = f.collection_select :unit_id, Unit.where(unit_type: "Time"), :id, :name, prompt: "Select Time Unit"
+      .field
+        = f.collection_select :unit_id, @units, :id, :name, prompt: "Select Time Unit"
     .form-group
       = f.label :unilateral
-      = f.select :unilateral, [["No", false], ["Yes", true]]
+      = f.select :unilateral, @boolean
     .form-group
       = f.label :notes
       = f.text_field :notes

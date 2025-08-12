@@ -3,6 +3,7 @@ class ExercisesController < ApplicationController
   before_action :set_workout, except: [:templates]
   before_action :set_exercise, except: [:index, :new, :create, :templates]
   before_action :authorize_exercise, only: [:new, :create, :destroy, :edit, :update]
+  before_action :form_options, only: [:new, :create, :edit, :update]
 
   def index
     @exercises = @workout.exercise_groups.order(:order).includes(:exercises).flat_map(&:exercises)
@@ -22,12 +23,12 @@ class ExercisesController < ApplicationController
     if warmup_sets && working_sets && unit
       current_set = 1
       warmup_sets.times do
-        ds = @exercise.exercise_sets.new(order: current_set, set_type: "Warmup Set", reps: 5, unit_id: unit, intensity: 5)
+        ds = @exercise.exercise_sets.new(order: current_set, set_type: "Warmup Set", reps: 5, unit_id: unit, suggested_intensity: 5)
         ds.save!
         current_set += 1
       end
       working_sets.times do
-        ds = @exercise.exercise_sets.new(order: current_set, set_type: "Working Set", reps: @exercise.rep_range_min, unit_id: unit, intensity: 8)
+        ds = @exercise.exercise_sets.new(order: current_set, set_type: "Working Set", reps: @exercise.rep_range_min, unit_id: unit, suggested_intensity: 8)
         ds.save!
         current_set += 1
       end
@@ -109,6 +110,16 @@ class ExercisesController < ApplicationController
 
   def set_exercise
     @exercise = @workout.exercises.find(params[:id])
+  end
+
+  def form_options
+    @exercise_groups = @workout.exercise_groups.order(:order)
+    @exercise_types = ["Compound", "Isolation"]
+    @boolean = [["No", false], ["Yes", true]]
+    @instruments =  Instrument.all
+    @attachments = Attachment.all
+    @grips = Grip.all
+    @units = Unit.where(unit_type: "Time")
   end
 
   def authorize_exercise

@@ -12,7 +12,7 @@
       %i.bi.bi-x
     %td
       = display_number(@exercise_set.load)
-      %i.bi.text-primary{class: (@exercise_set.load == @exercise_set.suggested_load) ? 'hidden' : (@exercise_set.load > @exercise_set.suggested_load) ? 'bi-arrow-down' : 'bi-arrow-up'}
+      %i.bi.text-primary{class: (@exercise_set.load == @exercise_set.suggested_load) ? 'hidden' : ((@exercise_set.load || 0) > @exercise_set.suggested_load) ? 'bi-arrow-down' : 'bi-arrow-up'}
     %td= @exercise_set.unit.abbreviation
     %td
       = @exercise_set.intensity

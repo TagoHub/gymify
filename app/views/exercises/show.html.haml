@@ -41,7 +41,7 @@
         %td.value= @exercise.grip.name
     %tr
       %td.label Rep Range
-      %td.value= [@exercise.rep_range_max, @exercise.rep_range_min].join(" - ")
+      %td.value= [@exercise.rep_range_min, @exercise.rep_range_max].join(" - ")
     %tr
       %td.label Rest Time
       %td.value= [@exercise.rest_time, @exercise.unit.abbreviation].join(" ")

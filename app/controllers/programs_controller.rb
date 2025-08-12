@@ -1,6 +1,7 @@
 class ProgramsController < ApplicationController
   before_action :set_program, except: [:index, :new, :create, :quick_start]
   before_action :authorize_program, only: [:destroy, :edit, :update]
+  before_action :form_options, only: [:new, :create, :edit, :update]
 
   def show
   end
@@ -28,6 +29,7 @@ class ProgramsController < ApplicationController
 
   def new
     @program = current_user.programs.new
+    @program.unit ||= Unit.find_by(name: "Minutes")
     render :form
   end
 
@@ -48,6 +50,11 @@ class ProgramsController < ApplicationController
 
   def set_program
     @program = Program.find(params[:id])
+  end
+
+  def form_options
+    @units = Unit.where(unit_type: "Time")
+    @levels = ['Beginner', 'Intermediate', 'Advanced', 'All levels']
   end
 
   def authorize_program

@@ -4,6 +4,7 @@ class ExerciseSetsController < ApplicationController
   before_action :set_exercise
   before_action :set_exercise_set, except: [:index, :new, :create]
   before_action :authorize_exercise_set, only: [:new, :create, :destroy, :edit, :update]
+  before_action :form_options, only: [:new, :create, :edit, :update]
 
   def index
     @exercise_sets = @exercise.exercise_sets.order(:order)
@@ -93,6 +94,12 @@ class ExerciseSetsController < ApplicationController
 
   def set_exercise_set
     @exercise_set = @exercise.exercise_sets.find(params[:id])
+  end
+
+  def form_options
+    @set_types = ["Working Set", "Warmup Set"]
+    @units = Unit.where(unit_type: 'Weight')
+    @techniques = IntensityTechnique.all.pluck(:name, :id) << ["None", nil]
   end
 
   def authorize_exercise_set

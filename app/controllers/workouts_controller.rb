@@ -22,9 +22,11 @@ class WorkoutsController < ApplicationController
       ActiveRecord::Base.transaction do
         existing_names = @workout.exercise_groups.includes(:exercises).flat_map { |eg| eg.exercises.pluck(:name) }.uniq
         existing_exercises = Exercise.where(template: true, name: existing_names)
-        new_exercises = Exercise.where(id: exercise_ids) - existing_exercises
+        existing_ids = existing_exercises.pluck(:id)
+        new_exercise_ids = exercise_ids.map(&:to_i) - existing_ids
+        ordered_new_exercises = new_exercise_ids.map { |id| Exercise.find(id) }
         starting_order = (@workout&.exercise_groups&.maximum(:order)&.to_i || 0) + 1
-        new_exercises.each_with_index do |exercise, index|
+        ordered_new_exercises.each_with_index do |exercise, index|
           ex_group = ExerciseGroup.create!(
             workout: @workout,
             order: starting_order + index,
@@ -32,7 +34,11 @@ class WorkoutsController < ApplicationController
           )
           exercise.dup.tap do |copy|
             copy.exercise_group = ex_group
+            copy.template = false
             copy.save!
+            if exercise.image.attached?
+              copy.image.attach(exercise.image.blob)
+            end
           end
         end
       end

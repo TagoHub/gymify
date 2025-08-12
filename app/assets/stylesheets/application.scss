@@ -214,6 +214,15 @@
       margin-bottom: 6px;
     }
 
+    .form-group-inline {
+      display: flex;
+      gap: 1rem;
+
+      .field {
+        flex: 1;
+      }
+    }
+
     label {
       display: block;
       margin-bottom: 0.4rem;

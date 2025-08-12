@@ -94,13 +94,13 @@ class ExerciseSet < ApplicationRecord
   end
 
   def suggested_reps
-    return reps if intensity && intensity > suggested_intensity
+    return reps if intensity && suggested_intensity && (intensity > suggested_intensity)
     if working_set?
       if exercise.maxed_rep_range? && !last_set?
         exercise.rep_range_min
       elsif exercise.same_reps? && !last_set?
         exercise.max_reps + 1
-      elsif load < exercise.max_load
+      elsif exercise.max_load && (load < exercise.max_load)
         exercise.working_sets.where(load: exercise.max_load).first.reps
       else
         exercise.max_reps
