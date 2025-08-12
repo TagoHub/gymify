@@ -254,19 +254,22 @@
     // Update timer text and notify user if necessary
     const updateTimer = () => {
       // Notify if rest time is over
+      // Play sound has a delay of 0.5 seconds
+      if (time === 1) {
+        setTimeout(() => {
+          playSound();
+        }, 500);
+      }
       if (time <= 0) {
         if (unilateral) {
           if (alternate) {
-            playSound();
             timerEl.innerHTML = `<i class="bi bi-rocket-takeoff me-2"></i>Do right side!`;
           }
           else {
-            playSound();
             timerEl.innerHTML = `<i class="bi bi-rocket-takeoff me-2"></i>Do left side!`;
           }
         }
         else {
-          playSound();
           //showToast(`<i class="bi bi-rocket-takeoff me-2"></i>Go!`, { type: "primary", delay: 10000 });
           timerEl.innerHTML = `<i class="bi bi-rocket-takeoff me-2"></i>Go!`;
         }
