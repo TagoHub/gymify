@@ -3,7 +3,7 @@ class ExerciseSetsController < ApplicationController
   before_action :set_workout
   before_action :set_exercise
   before_action :set_exercise_set, except: [:index, :new, :create]
-  before_action :authorize_exercise_set, only: [:new, :create, :destroy, :edit, :update]
+  before_action :authorize_exercise_set, only: [:new, :create, :destroy, :edit]
   before_action :form_options, only: [:new, :create, :edit, :update]
 
   def index

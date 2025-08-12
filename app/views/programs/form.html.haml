@@ -6,7 +6,7 @@
       = f.text_field :name, required: true, class: "form-control"
     .form-group
       = f.label :frequency, "Workouts per Week"
-      = f.number_field :frequency, required: true, class: "form-control"
+      = f.number_field :frequency, step: 1, required: true, class: "form-control"
     .form-group
       = f.label :level
       = f.select :level, @levels, {}, class: "form-control"

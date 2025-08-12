@@ -2,7 +2,7 @@
   = form_with model: [@program, @workout, @exercise], local: true do |f|
     .form-group
       = f.label :name
-      = f.text_field :name
+      = f.text_field :name, required: true
     .form-group
       = f.label :exercise_group_id, "Workout Priority"
       = f.collection_select :exercise_group_id, @exercise_groups, :id, :order, prompt: "Select Order Priority"
@@ -14,7 +14,7 @@
       = f.select :body_weight, @boolean
     .form-group
       = f.label :instrument_id
-      = f.collection_select :instrument_id, @instruments, :id, :name, prompt: "Select Instrument"
+      = f.collection_select :instrument_id, @instruments, :id, :name
     - if @exercise&.instrument&.name == "Cable"
       .form-group
         = f.label :attachment_id
@@ -29,22 +29,22 @@
       = f.label :rep_range
     .form-group-inline
       .field
-        = f.number_field :rep_range_min, placeholder: "Min"
+        = f.number_field :rep_range_min, placeholder: "Min", required: true
       .field
-        = f.number_field :rep_range_max, placeholder: "Max"
+        = f.number_field :rep_range_max, placeholder: "Max", required: true
     .form-group-inline
       = f.label :rest_time
     .form-group-inline
       .field
-        = f.number_field :rest_time
+        = f.number_field :rest_time, required: true
       .field
-        = f.collection_select :unit_id, @units, :id, :name, prompt: "Select Time Unit"
+        = f.collection_select :unit_id, @units, :id, :name
     .form-group
       = f.label :unilateral
       = f.select :unilateral, @boolean
     .form-group
       = f.label :notes
-      = f.text_field :notes
+      = f.text_field :notes, placeholder: "Additional information (Optional)"
     .form-group
       = f.label :image
       = f.file_field :image, class: "form-control"

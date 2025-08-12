@@ -4,7 +4,7 @@
   = form_with model: [@program, @workout, @exercise, @exercise_set], local: true do |f|
     .form-group
       = f.label :order
-      = f.number_field :order
+      = f.number_field :order, required: true, step: 1
     .form-group
       = f.label :set_type
       = f.select :set_type, @set_types
