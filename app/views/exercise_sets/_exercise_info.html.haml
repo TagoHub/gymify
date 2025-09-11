@@ -1,0 +1,41 @@
+%table
+  - if upcomming 
+    %tr
+      %td.label Load
+      %td.value
+        = exercise_set.load
+        - if exercise_set.load != exercise_set.suggested_load
+          %i.bi.bi-arrow-right.text-primary
+          = exercise_set.suggested_load
+        = exercise_set.unit.abbreviation
+  %tr
+    %td.label Rep Range
+    %td.value= exercise_set.rep_range
+  - if exercise.instrument
+    %tr
+      %td.label Instrument
+      %td.value
+        - if exercise.instrument.weight > 0
+          = [exercise.instrument.name, " ", "(", display_number(exercise.instrument.weight), exercise.instrument.unit.abbreviation, ")"].join("")
+        - elsif exercise.hole
+          = [exercise.instrument.name, "-", display_nth(exercise.hole), "Hole from top"].join(" ")
+        - else 
+          = exercise.instrument.name
+        - if exercise.unilateral
+          = " - Unilateral"
+  - if exercise.grip && !exercise.attachment
+    %tr
+      %td.label Grip
+      %td.value
+        = exercise.grip.name
+  - if exercise.attachment
+    %tr
+      %td.label Attachment
+      %td.value
+        = exercise.attachment.name
+        - if exercise.grip
+          = [" -", exercise.grip.name].join(" ")
+  - if exercise.notes.present?
+    %tr
+      %td.label Notes
+      %td.value= exercise.notes
