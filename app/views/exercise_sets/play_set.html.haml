@@ -22,7 +22,7 @@
     .flex-row
       = render 'exercise_sets/play_form'
     .show
-      = render 'exercise_sets/exercise_info', exercise_set: @exercise_set, exercise: @exercise, upcomming: false
+      = render 'exercise_sets/exercise_info', exercise_set: @exercise_set, exercise: @exercise, upcoming: false
       - if last_set.next_set
         - upcoming_ex_sets = last_set.next_set.exercise.exercise_group.all_sets.select { |es| es.order == 1 }
         .accordion.accordion-flush.border-top.border-bottom#upcomingAccordion
@@ -35,7 +35,7 @@
                   aria: { expanded: "false", controls: "collapse-#{index}" }
                 }
                   = "Upcoming"
-                  = " ##{index+1}" if upcoming_ex_sets.size > 1
+                  = " #{index+1}" if upcoming_ex_sets.size > 1
                   = " – #{ex_set.exercise.name}"
 
               .accordion-collapse.collapse{
@@ -44,7 +44,7 @@
                 data: { "bs-parent": "#upcomingAccordion" }
               }
                 .accordion-body
-                  = render 'exercise_sets/exercise_info', exercise_set: ex_set, exercise: ex_set.exercise, upcomming: true
+                  = render 'exercise_sets/exercise_info', exercise_set: ex_set, exercise: ex_set.exercise, upcoming: true
 .show
   = form_with model: last_set, url: program_workout_exercise_exercise_set_path(@program, @workout, last_set.exercise, last_set), method: :patch, local: true, html: { id: "next" } do |f|
     = f.hidden_field :play, value: true, id: "play-#{last_set.id}"
