@@ -20,6 +20,8 @@
 
           #navbarNav.collapse.navbar-collapse
             %ul.navbar-nav.me-auto
+              %li.nav-item
+                = link_to "Exercises", exercise_templates_path(), class: "nav-link"
               - if @program&.persisted?
                 %li.nav-item
                   = link_to "Program", program_path(@program), class: "nav-link"
