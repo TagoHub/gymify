@@ -4,7 +4,6 @@
   = f.hidden_field :load, value: display_number(@exercise_set.load), step: :any, id: "load-#{@exercise_set.id}"
   = f.hidden_field :intensity, value: @exercise_set.intensity, id: "intensity-#{@exercise_set.id}"
   = f.hidden_field :alternate, value: true, id: "alternate-#{@exercise_set.id}" if @exercise.unilateral && !@alternate
-  = f.hidden_field :current_set_index, value: (!@alternate ? @current_set_index + 1 : @current_set_index), id: "current-set-index-#{@exercise_set.id}"
   %tr.highlight-2
     %td
       = @exercise_set.reps

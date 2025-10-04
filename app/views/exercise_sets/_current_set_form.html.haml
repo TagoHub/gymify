@@ -1,7 +1,6 @@
 = form_with model: @exercise_set, url: program_workout_exercise_exercise_set_path(@program, @workout, @exercise, @exercise_set), method: :patch, local: true, html: { id: @exercise_set.id } do |f|
   = f.hidden_field :play, value: true, id: "play-#{@exercise_set.id}"
   = f.hidden_field :alternate, value: true, id: "alternate-#{@exercise_set.id}" if @exercise.unilateral && !@alternate
-  = f.hidden_field :current_set_index, value: (!@alternate ? @current_set_index + 1 : @current_set_index), id: "current-set-index-#{@exercise_set.id}"
   %td
     .flex-row
       = f.number_field :reps, value: @exercise_set.suggested_reps, id: "reps-#{@exercise_set.id}"

@@ -20,8 +20,7 @@ class ExerciseSetsController < ApplicationController
   def update
     play = exercise_set_params[:play]
     @alternate = exercise_set_params[:alternate]
-    @current_set_index = exercise_set_params[:current_set_index]
-    if @exercise_set.update(exercise_set_params.except(:play, :alternate, :current_set_index))
+    if @exercise_set.update(exercise_set_params.except(:play, :alternate))
       if play
         @prev_set = @exercise_set
         @exercise_set = @exercise_set.next_set unless @alternate
@@ -30,7 +29,7 @@ class ExerciseSetsController < ApplicationController
           @exercise_group = @exercise.exercise_group
           @workout = @exercise_group.workout
           @program = @workout.program
-          redirect_to play_set_program_workout_exercise_exercise_set_path(@program, @workout, @exercise, @exercise_set, prev_set: @prev_set, alternate: @alternate, current_set_index: @current_set_index)
+          redirect_to play_set_program_workout_exercise_exercise_set_path(@program, @workout, @exercise, @exercise_set, prev_set: @prev_set, alternate: @alternate)
         else
           message = @workout.rest_days > 0 ? "Workout completed congratulations! Remember to rest #{@workout.rest_days} days" : "Workout completed congratulations!"
           redirect_to program_workout_path(@program, @workout), notice: message
@@ -77,8 +76,8 @@ class ExerciseSetsController < ApplicationController
     @exercise_group = @exercise.exercise_group
     @workout = @exercise_group.workout
     @all_sets = sets_count.to_f
-    @current_set_index = (params[:current_set_index] || 0).to_f
-    @progress = ((@current_set_index/@all_sets)*100).round(0)
+    @set_index = set_index.to_f
+    @progress = ((@set_index/@all_sets)*100).round(0)
     @alternate = params[:alternate]
   end
 
@@ -101,7 +100,19 @@ class ExerciseSetsController < ApplicationController
   end
 
   def sets_count
-    all_sets = @workout.exercises.sum{ |e| e.working_sets.count } + @workout.exercises.sum{ |e| e.warmup_sets.count }
+    @workout.exercises.sum{ |e| e.working_sets.count } + @workout.exercises.sum{ |e| e.warmup_sets.count }
+  end
+
+  def set_index
+    index = 0
+    @workout.exercise_groups.order(:order).each do |eg|
+      eg.exercises.each do |exercise|
+        exercise.exercise_sets.order(:order).each do |set|
+          return index if set == @exercise_set
+          index +=1
+        end
+      end
+    end
   end
 
   def form_options
@@ -118,6 +129,6 @@ class ExerciseSetsController < ApplicationController
 
   def exercise_set_params
     params.require(:exercise_set).permit(:play, :order, :set_type, :reps, :load, :unit_id, :intensity, :suggested_intensity,
-      :intensity_technique_id, :exercise_id, :alternate, :current_set_index)
+      :intensity_technique_id, :exercise_id, :alternate)
   end
 end

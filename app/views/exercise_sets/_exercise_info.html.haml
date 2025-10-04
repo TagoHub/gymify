@@ -1,13 +1,22 @@
 %table
   - if upcoming 
     %tr
-      %td.label Load
+      %td.label Set type
       %td.value
+        = exercise_set.set_type
+    %tr
+      %td.label Reps x Load
+      %td.value
+        = exercise_set.reps
+        %i.bi.bi-x
         = exercise_set.load
-        - if exercise_set.load != exercise_set.suggested_load
-          %i.bi.bi-arrow-right.text-primary
-          = exercise_set.suggested_load
         = exercise_set.unit.abbreviation
+        - if exercise_set.reps != exercise_set.suggested_reps || exercise_set.load != exercise_set.suggested_load
+          %i.bi.bi-arrow-right.text-primary
+          = exercise_set.suggested_reps
+          %i.bi.bi-x
+          = exercise_set.suggested_load
+          = exercise_set.unit.abbreviation
   %tr
     %td.label Rep Range
     %td.value= exercise_set.rep_range
