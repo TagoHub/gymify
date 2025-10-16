@@ -105,7 +105,7 @@
     right: 0;
     margin-top: 5%;
     margin-bottom: 5%;
-    z-index: 1050;
+    z-index: 2;
     background: rgba(32, 32, 32, 0.85);
     color: #fff;
     text-align: center;
@@ -218,6 +218,9 @@
 
   document.addEventListener("turbo:load", () => {
     let time = 0;
+    const notes = "#{@exercise_set&.exercise&.notes}" || "";
+    const newExercise = #{@prev_set&.exercise != @exercise_set&.exercise};
+    const intensityTechnique = "#{@exercise_set&.intensity_technique&.name}" || "";
     const prevSet = #{!!@prev_set};
     const workingSet = "#{@exercise_set&.set_type}" === "Working Set";
     const unilateral = #{@exercise_set&.exercise&.unilateral || false};
@@ -225,6 +228,14 @@
     const prevWorkingSet = #{@prev_set&.working_set? ? "true" : "false"};
     let duration = #{(@exercise_set&.exercise&.unilateral ? @exercise_set&.exercise&.rest_time : @prev_set&.exercise&.rest_time) || 0};
     const unit = "#{@prev_set&.exercise&.unit&.name || 'Seconds'}";
+    // Notify user of exercise notes
+    if (newExercise && notes) {
+      showToast(notes, { type: "", icon: '<i class="bi bi-info-circle"></i>' });
+    }
+    // Notify user of intensity techniques
+    if (!!intensityTechnique) {
+      showToast("Apply " + intensityTechnique, { type: "danger", icon: '<i class="bi bi-rocket"></i>' })
+    }
     // Set time based on previous set
     if (prevSet) {
       if (workingSet && prevWorkingSet) {

@@ -16,9 +16,10 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 window.showToast = function(message, options = {}) {
+  if (!message) return;
   const {
-    type = "dark",
-    delay = 3000,
+    type = "light",
+    delay = 4000,
     icon = ""
   } = options;
 
@@ -28,7 +29,7 @@ window.showToast = function(message, options = {}) {
   const toastId = `toast-${Date.now()}`;
 
   const toastEl = document.createElement("div");
-  toastEl.className = `toast align-items-center text-white bg-${type} border-0 mb-2`;
+  toastEl.className = `toast align-items-center text-black bg-${type} bg-opacity-75 border-0 mb-2`;
   toastEl.setAttribute("role", "alert");
   toastEl.setAttribute("aria-live", "assertive");
   toastEl.setAttribute("aria-atomic", "true");
@@ -37,9 +38,9 @@ window.showToast = function(message, options = {}) {
   toastEl.innerHTML = `
     <div class="d-flex">
       <div class="toast-body">
-        ${icon ? icon + " " : ""}${message}
+        ${icon ? icon + "&nbsp;" + "&nbsp;" : ""}${message}
       </div>
-      <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+      <button type="button" class="btn-close btn-close-black me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
     </div>
   `;
 
