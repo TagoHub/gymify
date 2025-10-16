@@ -36,7 +36,7 @@
               %td.cross
                 = ex_set.unit.abbreviation
               %td
-                = f.number_field :intensity, value: ex_set.intensity, id: "intensity-#{ex_set.id}"
+                = f.number_field :intensity, value: ex_set.intensity, id: "intensity-#{ex_set.id}" if ex_set.working_set?
               %td
                 - if current_user.programs.include?(@program)
                   - button_class = (@exercise_set.order > ex_set.order || @prev_set&.id == ex_set.id) ? "bi bi-check-circle-fill text-success" : "hidden"
@@ -47,12 +47,13 @@
               %i.bi.bi-rocket-takeoff
               %span.fw-bold= ex_set.intensity_technique.name
       - if current_user.programs.include?(@program)
-        = form_with model: @exercise, url: program_workout_exercise_path(@program, @workout, @exercise), method: :patch, local: true, html: { id: @exercise.id, target: "_blank" } do |f|
+        %form#exercise-note-form{ action: program_workout_exercise_path(@program, @workout, @exercise), method: "post" }
+          %input{ type: "hidden", name: "_method", value: "patch" }
           %td Notes
           %td{ colspan: 4}
-            = f.text_field :notes, value: @exercise.notes, id: "notes-#{@exercise.id}"
+            %input#notes{ type: "text", name: "exercise[notes]", value: @exercise.notes }
           %td
-            %button.h5.bi.bi-pencil-square.text-primary{ type: "submit", title: "Mark as complete", id: "submit-#{@exercise.id}"} 
+            %button.h5.bi.bi-pencil-square.text-primary#submit-note{ type: "submit" }
 
 
 
@@ -138,4 +139,34 @@
     if (currentRow) {
       currentRow.scrollIntoView({ behavior: "smooth", block: "center" });
     }
+  });
+
+  document.addEventListener("DOMContentLoaded", function() {
+    const form = document.getElementById("exercise-note-form");
+    const notesInput = document.getElementById("notes");
+    form.addEventListener("submit", function(e) {
+      e.preventDefault();
+      const url = form.action;
+      const notesValue = notesInput.value;
+      const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+      fetch(url, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+          "X-CSRF-Token": csrfToken
+        },
+        body: JSON.stringify({ exercise: { notes: notesValue } })
+      })
+      .then(response => {
+        if (!response.ok) throw new Error("Network error");
+        return response.json();
+      })
+      .then(data => {
+        window.showToast("Notes updated!", { type: "success", icon: '<i class="bi bi-check"></i>' });
+      })
+      .catch(error => {
+        window.showToast("Failed to update notes.", { type: "danger", icon: '<i class="bi bi-x"></i>' });
+      });
+    });
   });

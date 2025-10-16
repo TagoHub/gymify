@@ -34,9 +34,15 @@ class ExercisesController < ApplicationController
       end
       redirect_to program_workout_exercise_exercise_sets_path(@program, @workout, @exercise), notice: "Exercise sets created successfully."
     elsif @exercise.update(exercise_params)
-      redirect_to program_workout_exercises_path(@program, @workout), notice: "Exercise updated successfully."
+      respond_to do |format|
+        format.html { redirect_to program_workout_exercises_path(@program, @workout), notice: "Exercise updated successfully." }
+        format.json { render json: { notes: @exercise.notes, id: @exercise.id } }
+      end
     else
-      render :form, status: :unprocessable_entity
+      respond_to do |format|
+        format.html { render :form, status: :unprocessable_entity }
+        format.json { render json: { errors: @exercise.errors.full_messages }, status: :unprocessable_entity }
+      end
     end
   end
 
