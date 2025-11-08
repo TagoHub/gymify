@@ -1,183 +1,198 @@
 - last_set = @exercise.exercise_group.exercises.flat_map{ |e| e.working_sets }.select{ |es| es.last_set? }.first 
+#fixed-timer-bar
+  .progress
+    .progress-bar.bg-primary{
+      role: "progressbar",
+      style: "width: #{@progress}%",
+      aria: {valuenow: (@progress).round, valuemin: "0", valuemax: "100"}
+    }
+  %h1#rest-timer 00:00
+  .progress
+    .progress-bar.bg-light#rest-progress{
+      role: "progressbar",
+      style: "width: 100%; transition: width linear;",
+      aria: {valuenow: "100", valuemin: "0", valuemax: "100"}
+    }
 .flex-container
-  .flex-item-right
+  .flex-item-left
     - if @exercise.image.attached?
-      .image-wrapper
-        = image_tag @exercise.image, id: "exercise-image-#{@exercise.id}", class: "exercise-img img-mobile img-fluid", alt: @exercise.name
-        .spinner{id: "exercise-spinner-#{@exercise.id}"}
+      .image-wrapper{ data: { exercise_id: @exercise.id } }
+        = image_tag @exercise.image, id: "exercise-image-#{@exercise.id}", class: "exercise-img", alt: @exercise.name, loading: "lazy"
+        .spinner{id: "exercise-spinner-#{@exercise.id}", role: "status", aria: { hidden: "false" } }
           %i.bi.bi-arrow-repeat
-    %div#fixed-timer-bar
-      .progress
-        .progress-bar.bg-primary{
-          role: "progressbar",
-          style: "width: #{@progress}%",
-          aria: {valuenow: (@progress).round, valuemin: "0", valuemax: "100"}
-        }
-      %h1#rest-timer 00:00
-      .progress
-        .progress-bar.bg-light#rest-progress{
-          role: "progressbar",
-          style: "width: 100%; transition: width linear;",
-          aria: {valuenow: "100", valuemin: "0", valuemax: "100"}
-        }
-    .flex-row
-      = render 'exercise_sets/play_form'
-    .show
-      = render 'exercise_sets/exercise_info', exercise_set: @exercise_set, exercise: @exercise, upcoming: false
-      - if last_set.next_set
-        - upcoming_ex_sets = last_set.next_set.exercise.exercise_group.all_sets.select { |es| es.order == 1 }
-        .accordion.accordion-flush.border-top.border-bottom#upcomingAccordion
-          - upcoming_ex_sets.each_with_index do |ex_set, index|
-            .accordion-item
-              %h2.accordion-header{id: "heading-#{index}"}
-                %button.accordion-button.collapsed{
-                  type: "button",
-                  data: { "bs-toggle": "collapse", "bs-target": "#collapse-#{index}" },
-                  aria: { expanded: "false", controls: "collapse-#{index}" }
-                }
-                  = "Upcoming"
-                  = " #{index+1}" if upcoming_ex_sets.size > 1
-                  = " – #{ex_set.exercise.name}"
+    - else
+      .image-placeholder
+        %p.text-muted No image available
+  .flex-item-right
+    .play-area
+      .flex-row
+        .exercise-name.fs-3.text-center= @exercise.name
+        = render 'exercise_sets/play_form'
+      .show
+        = render 'exercise_sets/exercise_info', exercise_set: @exercise_set, exercise: @exercise, upcoming: false
+        - if last_set.next_set
+          - upcoming_ex_sets = last_set.next_set.exercise.exercise_group.all_sets.select { |es| es.order == 1 }
+          .accordion.accordion-flush.border-top.border-bottom#upcomingAccordion
+            - upcoming_ex_sets.each_with_index do |ex_set, index|
+              .accordion-item
+                %h2.accordion-header{id: "heading-#{index}"}
+                  %button.accordion-button.collapsed{
+                    type: "button",
+                    data: { "bs-toggle": "collapse", "bs-target": "#collapse-#{index}" },
+                    aria: { expanded: "false", controls: "collapse-#{index}" }
+                  }
+                    = "Upcoming"
+                    = " #{index+1}" if upcoming_ex_sets.size > 1
+                    = " – #{ex_set.exercise.name}"
 
-              .accordion-collapse.collapse{
-                id: "collapse-#{index}",
-                aria: { labelledby: "heading-#{index}" },
-                data: { "bs-parent": "#upcomingAccordion" }
-              }
-                .accordion-body
-                  = render 'exercise_sets/exercise_info', exercise_set: ex_set, exercise: ex_set.exercise, upcoming: true
-.show
-  = form_with model: last_set, url: program_workout_exercise_exercise_set_path(@program, @workout, last_set.exercise, last_set), method: :patch, local: true, html: { id: "next" } do |f|
-    = f.hidden_field :play, value: true, id: "play-#{last_set.id}"
-    = f.hidden_field :reps, value: last_set.reps, id: "reps-#{last_set.id}"
-    = f.hidden_field :load, value: display_number(last_set.load), step: :any, id: "load-#{last_set.id}"
-    = f.hidden_field :intensity, value: last_set.intensity, id: "intensity-#{last_set.id}"
-    %button.h5{ type: "submit", title: "Skip to next exercise", id: "next-link", class: "btn" } Next Exercise
-  %br
+                .accordion-collapse.collapse{
+                  id: "collapse-#{index}",
+                  aria: { labelledby: "heading-#{index}" },
+                  data: { "bs-parent": "#upcomingAccordion" }
+                }
+                  .accordion-body
+                    = render 'exercise_sets/exercise_info', exercise_set: ex_set, exercise: ex_set.exercise, upcoming: true
+        = form_with model: last_set, url: program_workout_exercise_exercise_set_path(@program, @workout, last_set.exercise, last_set), method: :patch, local: true, html: { id: "next" } do |f|
+          = f.hidden_field :play, value: true, id: "play-#{last_set.id}"
+          = f.hidden_field :reps, value: last_set.reps, id: "reps-#{last_set.id}"
+          = f.hidden_field :load, value: display_number(last_set.load), step: :any, id: "load-#{last_set.id}"
+          = f.hidden_field :intensity, value: last_set.intensity, id: "intensity-#{last_set.id}"
+          %button.h5.btn.btn-primary{ type: "submit", title: "Skip to next exercise", id: "next-link" } Next Exercise
+        %br
 
 :scss
-
-  .show {
-    form {
-      border: none;
-    }
-    form#next {
-      padding: 0;
-      margin: 0;
-      align-items: center;
-      #next-link {
-        margin-top: 20px;
-        margin-bottom: 20px;
-      }
-    }
-  }
-
-  .flex-row {
-    align-items: flex-start;
-  }
-
-  .disabled-link {
-    opacity: 0.5;
-  }
-
-  .show td.label {
-    width: 30%;
-  }
-
-  .flex-container {
-    display: flex;
-    flex-direction: column;
-  }
-
-  .accordion-body {
-    padding: 0;
-  }
 
   #fixed-timer-bar {
     position: sticky;
     top: 0;
     left: 0;
     right: 0;
-    margin-top: 5%;
-    margin-bottom: 5%;
     z-index: 2;
-    background: rgba(32, 32, 32, 0.85);
+    background: rgba(32, 32, 32, 0.95);
     color: #fff;
     text-align: center;
-    font-size: 1.5rem;
-    font-weight: bold;
+    padding: 0;
     box-shadow: 0 2px 6px rgba(0,0,0,0.3);
   }
-
+  #fixed-timer-bar .progress { margin: 0; border-radius: 0; }
+  #fixed-timer-bar h1 { margin: 0.4rem 0; }
+  .flex-container { display: flex; flex-direction: column; }
+  .flex-item-left, .flex-item-right { width: 100%; }
+  .exercise-name {
+    text-align: center;
+    font-weight: 700;
+    color: #333;
+    background: transparent;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+  .current-set-row { scroll-margin-top: 110px; }
+  .image-wrapper {
+    width: 100%;
+    min-height: 320px; /* reserve vertical space on mobile */
+    height: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    position: relative;
+    background: transparent;
+    .exercise-img {
+      visibility: hidden;
+      opacity: 0;
+      transition: opacity 220ms ease;
+      max-width: 500px; /* mobile cap */
+      width: 100%;
+      height: auto;
+      object-fit: contain;
+      display: block;
+      margin: 0 auto;
+    }
+    .spinner {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      animation: spin 1s linear infinite;
+      color: rgba(0,0,0,0.6);
+      background: transparent;
+      z-index: 2;
+    }
+    @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+  }
+  .image-placeholder { width: 100%; height: 200px; display:flex; align-items:center; justify-content:center; background: #f8f9fa; color: #6c757d; }
+  .play-area { padding: 1rem; padding-top: 0; }
+  .show form { border: none; }
+  form#next { max-width: 100%; padding: 0; margin: 0; align-items: center; display: flex; justify-content: center; }
+  #next-link { margin-top: 20px; margin-bottom: 20px; }
+  .flex-row { align-items: flex-start; }
+  .disabled-link { opacity: 0.5; }
+  .show td.label { width: 30%; }
+  .accordion-body { padding: 0; }
   .progress {
     background-color: rgba(255, 255, 255, 0);
     border-radius: 0;
     height: 6px;
     width: 100%;
     overflow: hidden;
+    .progress-bar { height: 100%; transition: width 0.4s ease; }
+  }
+  @media (min-width: 1000px) {
+    .flex-container { flex-direction: row; height: calc(100vh - 88px); }
 
-    .progress-bar {
+    .flex-item-left {
+      width: 50%;
       height: 100%;
-      transition: width 0.4s ease;
-    }
-  }
-
-  .flex-item-left {
-    flex: 1;
-    margin-top: 0;
-    height: 100vh;
-    display: flex;
-    justify-content: flex-start;
-    align-items: top;
-    flex-direction: column;
-  }
-
-  .flex-item-right {
-    flex: 1;
-    margin-top: 0;
-    height: 100vh;
-    display: flex;
-    justify-content: flex-start;
-    align-items: top;
-    flex-direction: column;
-  }
-
-  .img-mobile {
-    max-height: 200px;
-  }
-
-
-  .image-wrapper {
-    position: relative;
-    height: 200px; // Prevent layout shift
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    .spinner {
-      position: absolute;
-      font-size: 2rem;
-      animation: spin 1s linear infinite;
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      justify-content: flex-start;
+      overflow: hidden;
+      background: transparent;
     }
 
-    .hidden {
-      display: none;
+    .flex-item-right {
+      width: 50%;
+      height: 100%;
+      overflow: auto;
+      display: flex;
+      flex-direction: column;
+      background: #fff;
+      padding: 1.25rem;
     }
+    .exercise-name { padding: 0.75rem 1rem; font-size: 1.5rem; color: #222; background: transparent; text-align: center; }
 
-    @keyframes spin {
-      from {
-        transform: rotate(0deg);
+    .image-wrapper {
+      width: 100%;
+      height: 100%; /* fill left column fully */
+      min-height: 420px;
+      justify-content: center;
+      background: transparent;
+      .exercise-img {
+        visibility: hidden;
+        opacity: 0;
+        transition: opacity 220ms ease;
+        max-width: 100%;
+        width: 100%; /* fill left column horizontally */
+        height: auto;
+        max-height: 100%;
+        object-fit: contain;
+        margin: 0;
       }
-      to {
-        transform: rotate(360deg);
-      }
+      .spinner { display: flex; }
     }
-  }
 
+    .play-area { position: sticky; top: 96px; z-index: 5; }
+
+    /* Keep Next button centered on desktop too */
+    form#next { justify-content: center; }
+  }
 
 :javascript
 
-  document.addEventListener("turbo:load", () => {
+  document.addEventListener("DOMContentLoaded", () => {
     let time = 0;
     const notes = "#{@exercise_set&.exercise&.notes}" || "";
     const newExercise = #{@prev_set&.exercise != @exercise_set&.exercise};
@@ -262,28 +277,36 @@
 
     updateTimer();
     const interval = setInterval(updateTimer, 1000);
-  });
 
-  // Image loading with spinner
-  document.addEventListener("DOMContentLoaded", function() {
+    // Image loading with spinner
     const img = document.getElementById("exercise-image-#{@exercise.id}");
     const spinner = document.getElementById("exercise-spinner-#{@exercise.id}");
-    if (!img) return;
-    function showImg() {
-      // reveal the image and hide spinner
-      img.style.display = "";
-      if (spinner) spinner.style.display = "none";
-    }
-    // Show image on laod
-    if (img.complete && img.naturalWidth !== 0) {
-      showImg();
-    } else {
-      // show spinner while loading
-      if (spinner) spinner.style.display = "";
-      img.style.display = "none";
-      img.addEventListener("load", showImg);
-      img.addEventListener("error", function() {
+    if (img) {
+      if (spinner) spinner.style.display = "flex";
+      img.style.visibility = "hidden";
+      img.style.opacity = "0";
+      const reveal = () => {
+        img.style.visibility = "visible";
+        img.style.opacity = "1";
         if (spinner) spinner.style.display = "none";
-      });
+      };
+      if (img.complete) {
+        reveal();
+      } else if (img.decode) {
+        img.decode().then(reveal).catch(() => {
+          img.addEventListener("load", reveal);
+          img.addEventListener("error", () => { if (spinner) spinner.style.display = "none"; });
+        });
+      } else {
+        img.addEventListener("load", reveal);
+        img.addEventListener("error", () => { if (spinner) spinner.style.display = "none"; });
+      }
     }
+
+    // Scroll to current set row if present (restore previous behaviour)
+    setTimeout(() => {
+      const setRowId = "set-row-#{@exercise_set&.id}";
+      const el = document.querySelector('.current-set-row') || document.getElementById(setRowId);
+      if (el && typeof el.scrollIntoView === 'function') el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, 90);
   });
