@@ -1,15 +1,10 @@
 - last_set = @exercise.exercise_group.exercises.flat_map{ |e| e.working_sets }.select{ |es| es.last_set? }.first 
 .flex-container
-  .flex-item-left
-    .title 
-      %h1.text-center.mt-3.font-bold= @exercise.name
-    - if @exercise.image.attached?
-      = image_tag url_for(@exercise.image), class: "img-desktop"
   .flex-item-right
     - if @exercise.image.attached?
       .image-wrapper
-        = image_tag url_for(@exercise.image), alt: "", class: "exercise-img img-mobile img-fluid", loading: "lazy", data: { behavior: "image-loader" }
-        .spinner.hidden
+        = image_tag @exercise.image, id: "exercise-image-#{@exercise.id}", class: "exercise-img img-mobile img-fluid", alt: @exercise.name
+        .spinner{id: "exercise-spinner-#{@exercise.id}"}
           %i.bi.bi-arrow-repeat
     %div#fixed-timer-bar
       .progress
@@ -147,38 +142,10 @@
     flex-direction: column;
   }
 
-  .img-desktop {
-    max-height: 400px;
-    max-width: 100%;
-    height: auto;
-    width: auto;
-    display: block;
-    margin: 0 auto; // optional: centers the image
-    object-fit: contain; // optional, for good scaling in constrained areas
-  }
-
   .img-mobile {
     max-height: 200px;
   }
 
-  @media (min-width: 1200px) {
-    .flex-container {
-      height: 500px;
-      flex-direction: row;
-    }
-    .img-mobile {
-      display: none;
-    }
-  }
-
-  @media (max-width: 1199.98px) {
-    .img-desktop, .desktop {
-      display: none;
-    }
-    .center {
-      justify-content: center;
-    }
-  }
 
   .image-wrapper {
     position: relative;
@@ -186,12 +153,6 @@
     display: flex;
     align-items: center;
     justify-content: center;
-
-    .exercise-img {
-      max-height: 100%;
-      max-width: 100%;
-      display: none; // Hide until loaded
-    }
 
     .spinner {
       position: absolute;
@@ -303,16 +264,26 @@
     const interval = setInterval(updateTimer, 1000);
   });
 
-  document.addEventListener("DOMContentLoaded", () => {
-    const images = document.querySelectorAll("[data-behavior='image-loader']");
-
-    images.forEach((img) => {
-      const wrapper = img.closest(".image-wrapper");
-      const spinner = wrapper.querySelector(".spinner");
-
-      img.addEventListener("load", () => {
-        img.style.display = "block";
-        spinner.classList.add("hidden");
+  // Image loading with spinner
+  document.addEventListener("DOMContentLoaded", function() {
+    const img = document.getElementById("exercise-image-#{@exercise.id}");
+    const spinner = document.getElementById("exercise-spinner-#{@exercise.id}");
+    if (!img) return;
+    function showImg() {
+      // reveal the image and hide spinner
+      img.style.display = "";
+      if (spinner) spinner.style.display = "none";
+    }
+    // Show image on laod
+    if (img.complete && img.naturalWidth !== 0) {
+      showImg();
+    } else {
+      // show spinner while loading
+      if (spinner) spinner.style.display = "";
+      img.style.display = "none";
+      img.addEventListener("load", showImg);
+      img.addEventListener("error", function() {
+        if (spinner) spinner.style.display = "none";
       });
-    });
+    }
   });
