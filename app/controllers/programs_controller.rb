@@ -43,7 +43,7 @@ class ProgramsController < ApplicationController
   end
 
   def quick_start
-    @programs = current_user.programs
+    @programs = current_user.programs.order(created_at: :desc)
   end
 
   private

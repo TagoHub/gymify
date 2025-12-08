@@ -3,9 +3,14 @@
     .show-width
       .flex-row
         %h2= program.name
-      - program.workouts.each do |workout|
+      - workouts = program.workouts.sort_by{ |w| w.last_performed_at }.reverse
+      - last_workout = workouts.last
+      - workouts[..-2].each do |workout|
         .flex-row
-          = link_to workout.name, start_workout_program_workout_path(program, workout), class: "btn btn-success btn-md"
+          = link_to workout.name, start_workout_program_workout_path(program, workout), class: "btn btn-outline-success btn-md"
+      - if last_workout
+        .flex-row
+          = link_to last_workout.name, start_workout_program_workout_path(program, last_workout), class: "btn btn-success btn-md"
     .separator
 
 :scss
