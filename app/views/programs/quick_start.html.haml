@@ -3,14 +3,20 @@
     .show-width
       .flex-row
         %h2= program.name
-      - workouts = program.workouts.sort_by{ |w| w.last_performed_at }.reverse
-      - last_workout = workouts.last
-      - workouts[..-2].each do |workout|
-        .flex-row
-          = link_to workout.name, start_workout_program_workout_path(program, workout), class: "btn btn-outline-success btn-md"
-      - if last_workout
-        .flex-row
-          = link_to last_workout.name, start_workout_program_workout_path(program, last_workout), class: "btn btn-success btn-md"
+      - workouts = program.workouts.sort_by{ |w| w.last_performed_at }
+      - if workouts.any?
+        .carousel.slide{ id: "carousel-#{program.id}", data: { bs_ride: "false", bs_interval: "false" } }
+          .carousel-inner
+            - workouts.each_with_index do |workout, index|
+              .carousel-item{ class: (index == 0 ? "active" : "") }
+                .d-flex.justify-content-center.align-items-center{ style: "min-height: 150px;" }
+                  = link_to workout.name, start_workout_program_workout_path(program, workout), class: "btn btn-success btn-lg"
+          %button.carousel-control-prev{ type: "button", data: { bs_target: "#carousel-#{program.id}", bs_slide: "prev" } }
+            %span.carousel-control-prev-icon{ aria: { hidden: "true" } }
+            %span.visually-hidden Previous
+          %button.carousel-control-next{ type: "button", data: { bs_target: "#carousel-#{program.id}", bs_slide: "next" } }
+            %span.carousel-control-next-icon{ aria: { hidden: "true" } }
+            %span.visually-hidden Next
     .separator
 
 :scss
@@ -20,4 +26,12 @@
       padding-top: 15px;
       padding-bottom: 15px;
     }
+  }
+
+  .carousel-control-prev-icon {
+    background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23000' viewBox='0 0 8 8'%3E%3Cpath d='M5.25 0l-4 4 4 4 1.5-1.5-2.5-2.5 2.5-2.5-1.5-1.5z'/%3E%3C/svg%3E") !important;
+  }
+
+  .carousel-control-next-icon {
+    background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23000' viewBox='0 0 8 8'%3E%3Cpath d='M2.75 0l-1.5 1.5 2.5 2.5-2.5 2.5 1.5 1.5 4-4-4-4z'/%3E%3C/svg%3E") !important;
   }
