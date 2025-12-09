@@ -7,7 +7,21 @@ class User < ApplicationRecord
   belongs_to :weight_unit, class_name: "Unit", optional: true
   belongs_to :height_unit, class_name: "Unit", optional: true
 
+  def validate_new_program json
+    validate_template_exercises json
+    # Additional validations can be added here
+  end
+
+  def validate_template_exercises json
+    json_exercises = json[:workouts].flat_map{|w| w[:exercise_groups].map{|eg| eg[:exercises].map{|e| e[:name]}}}.flatten
+    template_exercises = Exercise.template_exercises.pluck(:name)
+    missing_exercises = json_exercises - template_exercises
+    raise "Missing exercises: #{missing_exercises.join(", ")}" if missing_exercises.any?
+  end
+
+
   def create_program json
+    validate_new_program json
     program = Program.find_or_initialize_by(name: json[:name], user: self)
     program.assign_attributes(
       user: self,

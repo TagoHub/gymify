@@ -1,0 +1,480 @@
+{
+  "name": "Push/Pull/Legs",
+  "frequency": 1,
+  "level": "All levels",
+  "goal": "Time limited muscle and strength",
+  "duration": 55,
+  "unit": "Minutes",
+  "workouts": [
+    {
+      "name": "Push #1",
+      "goal": "Strength",
+      "rest_days": 0,
+      "exercise_groups": [
+        {
+          "exercises": [
+            {
+              "name": "Bench Press",
+              "rest_time": 180,
+              "unit": "Seconds",
+              "rep_range_min": 6,
+              "rep_range_max": 8,
+              "warmup_sets": 2,
+              "working_sets": 2,
+              "load_unit": "Kilograms",
+              "intensity_technique": "Myo-Reps"
+            }
+          ]
+        },
+        {
+          "exercises": [
+            {
+              "name": "Dumbbell Seated Shoulder Press",
+              "rest_time": 120,
+              "unit": "Seconds",
+              "rep_range_min": 8,
+              "rep_range_max": 10,
+              "warmup_sets": 2,
+              "working_sets": 3,
+              "load_unit": "Kilograms"
+            }
+          ]
+        },
+        {
+          "exercises": [
+            {
+              "name": "Dumbbell Fly",
+              "rest_time": 120,
+              "unit": "Seconds",
+              "rep_range_min": 8,
+              "rep_range_max": 10,
+              "warmup_sets": 1,
+              "working_sets": 2,
+              "load_unit": "Kilograms",
+              "intensity_technique": "Drop Set"
+            }
+          ]
+        },
+        {
+          "exercises": [
+            {
+              "name": "Triceps Pressdown",
+              "rest_time": 30,
+              "unit": "Seconds",
+              "rep_range_min": 8,
+              "rep_range_max": 10,
+              "warmup_sets": 0,
+              "working_sets": 2,
+              "load_unit": "Pounds"
+            },
+            {
+              "name": "Dumbbell Lateral Raise",
+              "rest_time": 30,
+              "unit": "Seconds",
+              "rep_range_min": 8,
+              "rep_range_max": 10,
+              "warmup_sets": 0,
+              "working_sets": 2,
+              "load_unit": "Kilograms",
+              "intensity_technique": "Partial Reps"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Pull #1",
+      "goal": "Strength",
+      "rest_days": 0,
+      "exercise_groups": [
+        {
+          "exercises": [
+            {
+              "name": "Pendlay Row",
+              "rest_time": 180,
+              "unit": "Seconds",
+              "rep_range_min": 8,
+              "rep_range_max": 10,
+              "warmup_sets": 2,
+              "working_sets": 2,
+              "load_unit": "Pounds",
+              "intensity_technique": "Partial Reps"
+            }
+          ]
+        },
+        {
+          "exercises": [
+            {
+              "name": "Lat Pull Down",
+              "rest_time": 120,
+              "unit": "Seconds",
+              "rep_range_min": 8,
+              "rep_range_max": 10,
+              "warmup_sets": 2,
+              "working_sets": 3,
+              "load_unit": "Pounds"
+            }
+          ]
+        },
+        {
+          "exercises": [
+            {
+              "name": "Rope Face Pull",
+              "rest_time": 120,
+              "unit": "Seconds",
+              "rep_range_min": 8,
+              "rep_range_max": 10,
+              "warmup_sets": 0,
+              "working_sets": 3,
+              "load_unit": "Pounds",
+              "intensity_technique": "Drop Set"
+            }
+          ]
+        },
+        {
+          "exercises": [
+            {
+              "name": "EZ Bar Standing Curl",
+              "rest_time": 30,
+              "unit": "Seconds",
+              "rep_range_min": 8,
+              "rep_range_max": 10,
+              "warmup_sets": 0,
+              "working_sets": 3,
+              "load_unit": "Pounds"
+            },
+            {
+              "name": "Straight-Arm Lat Pullover",
+              "rest_time": 30,
+              "unit": "Seconds",
+              "rep_range_min": 8,
+              "rep_range_max": 10,
+              "warmup_sets": 0,
+              "working_sets": 2,
+              "load_unit": "Kilograms",
+              "intensity_technique": "Partial Reps"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Legs #1",
+      "goal": "Strength",
+      "rest_days": 0,
+      "exercise_groups": [
+        {
+          "exercises": [
+            {
+              "name": "Romanian Deadlift",
+              "rest_time": 180,
+              "unit": "Seconds",
+              "rep_range_min": 8,
+              "rep_range_max": 10,
+              "warmup_sets": 2,
+              "working_sets": 3,
+              "load_unit": "Pounds"
+            }
+          ]
+        },
+        {
+          "exercises": [
+            {
+              "name": "Dumbbell Lunge",
+              "rest_time": 180,
+              "unit": "Seconds",
+              "unilateral": true,
+              "rep_range_min": 6,
+              "rep_range_max": 8,
+              "warmup_sets": 2,
+              "working_sets": 3,
+              "load_unit": "Kilograms"
+            }
+          ]
+        },
+        {
+          "exercises": [
+            {
+              "name": "Glute-Ham Raise",
+              "rest_time": 120,
+              "unit": "Seconds",
+              "rep_range_min": 8,
+              "rep_range_max": 10,
+              "warmup_sets": 1,
+              "working_sets": 2,
+              "load_unit": "Pounds"
+            }
+          ]
+        },
+        {
+          "exercises": [
+            {
+              "name": "Seated Calf Raise",
+              "rest_time": 30,
+              "unit": "Seconds",
+              "rep_range_min": 8,
+              "rep_range_max": 10,
+              "warmup_sets": 0,
+              "working_sets": 3,
+              "load_unit": "Pounds"
+            },
+            {
+              "name": "Cable Crunch",
+              "rest_time": 30,
+              "unit": "Seconds",
+              "rep_range_min": 10,
+              "rep_range_max": 12,
+              "warmup_sets": 0,
+              "working_sets": 3,
+              "load_unit": "Pounds"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Push #2",
+      "goal": "Hypertrophy",
+      "rest_days": 0,
+      "exercise_groups": [
+        {
+          "exercises": [
+            {
+              "name": "Cable Upright Row",
+              "rest_time": 120,
+              "unit": "Seconds",
+              "warmup_sets": 2,
+              "working_sets": 3,
+              "rep_range_min": 10,
+              "rep_range_max": 12,
+              "load_unit": "Pounds"
+            }
+          ]
+        },
+        {
+          "exercises": [
+            {
+              "name": "Dumbbell Bench Press",
+              "rest_time": 180,
+              "unit": "Seconds",
+              "warmup_sets": 2,
+              "working_sets": 3,
+              "rep_range_min": 10,
+              "rep_range_max": 12,
+              "load_unit": "Kilograms"
+            }
+          ]
+        },
+        {
+          "exercises": [
+            {
+              "name": "Cable Lateral Raise",
+              "rest_time": 120,
+              "unit": "Seconds",
+              "warmup_sets": 0,
+              "working_sets": 3,
+              "rep_range_min": 12,
+              "rep_range_max": 15,
+              "load_unit": "Pounds"
+            }
+          ]
+        },{
+          "exercises": [
+            {
+              "name": "Dumbbell Fly",
+              "rest_time": 120,
+              "unit": "Seconds",
+              "warmup_sets": 0,
+              "working_sets": 2,
+              "rep_range_min": 15,
+              "rep_range_max": 20,
+              "load_unit": "Kilograms",
+              "intensity_technique": "Myo-Reps"
+            }
+          ]
+        },
+        {
+          "exercises": [
+            {
+              "name": "Overhead Triceps Extension",
+              "rest_time": 120,
+              "unit": "Seconds",
+              "rep_range_min": 12,
+              "rep_range_max": 15,
+              "warmup_sets": 0,
+              "working_sets": 3,
+              "load_unit": "Pounds"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Pull #2",
+      "goal": "Hypertrophy",
+      "rest_days": 0,
+      "exercise_groups": [
+        {
+          "exercises": [
+            {
+              "name": "Lat Pull Down",
+              "rest_time": 180,
+              "unit": "Seconds",
+              "warmup_sets": 2,
+              "working_sets": 2,
+              "rep_range_min": 10,
+              "rep_range_max": 12,
+              "load_unit": "Pounds",
+              "intensity_technique": "Partial Reps"
+            }
+          ]
+        },
+        {
+          "exercises": [
+            {
+              "name": "Dumbbell Row",
+              "rest_time": 180,
+              "unit": "Seconds",
+              "warmup_sets": 1,
+              "working_sets": 3,
+              "rep_range_min": 10,
+              "rep_range_max": 12,
+              "load_unit": "Kilograms"
+            }
+          ]
+        },
+        {
+          "exercises": [
+            {
+              "name": "Cable Lat Pull-In",
+              "rest_time": 120,
+              "unit": "Seconds",
+              "warmup_sets": 0,
+              "working_sets": 3,
+              "rep_range_min": 12,
+              "rep_range_max": 15,
+              "load_unit": "Pounds"
+            }
+          ]
+        },
+        {
+          "exercises": [
+            {
+              "name": "Rope Face Pull",
+              "rest_time": 120,
+              "unit": "Seconds",
+              "warmup_sets": 0,
+              "working_sets": 3,
+              "rep_range_min": 15,
+              "rep_range_max": 20,
+              "load_unit": "Pounds"
+            }
+          ]
+        },
+        {
+          "exercises": [
+            {
+              "name": "Cable Bayesian Curl",
+              "rest_time": 120,
+              "unit": "Seconds",
+              "warmup_sets": 0,
+              "working_sets": 3,
+              "rep_range_min": 12,
+              "rep_range_max": 15,
+              "load_unit": "Pounds"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Legs #2",
+      "goal": "Hypertrophy",
+      "rest_days": 1,
+      "exercise_groups": [
+        {
+          "exercises": [
+            {
+              "name": "Dumbbell Lunge",
+              "rest_time": 180,
+              "unit": "Seconds",
+              "warmup_sets": 2,
+              "working_sets": 3,
+              "rep_range_min": 6,
+              "rep_range_max": 8,
+              "load_unit": "Kilograms"
+            }
+          ]
+        },
+        {
+          "exercises": [
+            {
+              "name": "Good Morning",
+              "rest_time": 180,
+              "unit": "Seconds",
+              "warmup_sets": 1,
+              "working_sets": 3,
+              "rep_range_min": 10,
+              "rep_range_max": 12,
+              "load_unit": "Pounds"
+            }
+          ]
+        },
+        {
+          "exercises": [
+            {
+              "name": "Goblet Squat",
+              "rest_time": 120,
+              "unit": "Seconds",
+              "warmup_sets": 2,
+              "working_sets": 2,
+              "rep_range_min": 12,
+              "rep_range_max": 15,
+              "load_unit": "Pounds",
+              "intensity_technique": "Partial Reps"
+            }
+          ]
+        },
+        {
+          "exercises": [
+            {
+              "name": "Lying Leg Curl",
+              "rest_time": 120,
+              "unit": "Seconds",
+              "warmup_sets": 1,
+              "working_sets": 2,
+              "rep_range_min": 12,
+              "rep_range_max": 15,
+              "load_unit": "Pounds",
+              "intensity_technique": "Partial Reps"
+            }
+          ]
+        },
+        {
+          "exercises": [
+            {
+              "name": "Standing Calf Raise",
+              "rest_time": 30,
+              "unit": "Seconds",
+              "warmup_sets": 0,
+              "working_sets": 2,
+              "rep_range_min": 15,
+              "rep_range_max": 20,
+              "load_unit": "Pounds"
+            },
+            {
+              "name": "Hanging Leg Raise",
+              "rest_time": 30,
+              "unit": "Seconds",
+              "warmup_sets": 0,
+              "working_sets": 2,
+              "rep_range_min": 10,
+              "rep_range_max": 20,
+              "load_unit": "Pounds"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

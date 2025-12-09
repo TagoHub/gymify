@@ -10,6 +10,7 @@ class Exercise < ApplicationRecord
   has_many :muscles, through: :exercise_muscles
   has_many :muscle_groups, through: :muscles
   belongs_to :primary_muscle_group, class_name: 'MuscleGroup', optional: true
+  scope :template_exercises, -> { where(template: true) }
 
   def max_load
     working_sets.maximum(:load)
