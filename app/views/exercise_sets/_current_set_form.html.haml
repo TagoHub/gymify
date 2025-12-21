@@ -7,7 +7,7 @@
   %td.cross
     %i.bi.bi-x
   %td
-    = f.number_field :load, value: display_number(@exercise_set.suggested_load), step: :any, id: "load-#{@exercise_set.id}"
+    = f.number_field :load, value: display_number(@exercise_set.suggested_load), step: :any, id: "load-#{@exercise_set.id}", class: "load"
   %td.cross
     = @exercise_set.unit.abbreviation
   %td

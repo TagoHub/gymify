@@ -32,7 +32,7 @@
               %td.cross
                 %i.bi.bi-x
               %td
-                = f.number_field :load, value: display_number(ex_set.load), step: :any, id: "load-#{ex_set.id}"
+                = f.number_field :load, value: display_number(ex_set.load), step: :any, id: "load-#{ex_set.id}", class: "load"
               %td.cross
                 = ex_set.unit.abbreviation
               %td
@@ -64,6 +64,15 @@
   }
 
   input {
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 5px 8px;
+    width: 50px;
+    font-size: 0.9rem;
+    text-align: left;
+  }
+
+  input.load {
     border: 1px solid #ccc;
     border-radius: 4px;
     padding: 5px 8px;
@@ -110,7 +119,7 @@
       border-radius: 4px;
     }
   }
-  
+
 :javascript
 
   function copyPaste(text, id) {
