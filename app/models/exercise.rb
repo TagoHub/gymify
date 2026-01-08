@@ -12,22 +12,6 @@ class Exercise < ApplicationRecord
   belongs_to :primary_muscle_group, class_name: 'MuscleGroup', optional: true
   scope :template_exercises, -> { where(template: true) }
 
-  def max_load
-    working_sets.maximum(:load)
-  end
-
-  def max_reps
-    working_sets.maximum(:reps)
-  end
-
-  def maxed_rep_range?
-    working_sets.pluck(:reps).all?{ |r| r >= rep_range_max }
-  end
-
-  def same_reps?
-    working_sets.pluck(:reps).uniq.count == 1
-  end
-
   def working_sets
     exercise_sets.where(set_type: "Working Set").order(:order)
   end
@@ -40,8 +24,11 @@ class Exercise < ApplicationRecord
   # name String
   # notes String
   # exercise_type String
-  # min_reps Integer
-  # max_reps Integer
+  # rep_range_min Integer
+  # rep_range_max Integer
   # rest_time Float
   # unilateral Boolean
+  # hole Integer
+  # body_weight Boolean
+  # template Boolean
 end
