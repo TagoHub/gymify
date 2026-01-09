@@ -30,28 +30,30 @@
         = render 'exercise_sets/play_form'
       .show
         = render 'exercise_sets/exercise_info', exercise_set: @exercise_set, exercise: @exercise, upcoming: false
-        - if last_set.next_set
-          - upcoming_ex_sets = last_set.next_set.exercise.exercise_group.all_sets.select { |es| es.order == 1 }
-          .accordion.accordion-flush.border-top.border-bottom#upcomingAccordion
-            - upcoming_ex_sets.each_with_index do |ex_set, index|
-              .accordion-item
-                %h2.accordion-header{id: "heading-#{index}"}
-                  %button.accordion-button.collapsed{
-                    type: "button",
-                    data: { "bs-toggle": "collapse", "bs-target": "#collapse-#{index}" },
-                    aria: { expanded: "false", controls: "collapse-#{index}" }
-                  }
-                    = "Upcoming"
-                    = " #{index+1}" if upcoming_ex_sets.size > 1
-                    = " – #{ex_set.exercise.name}"
-
-                .accordion-collapse.collapse{
-                  id: "collapse-#{index}",
-                  aria: { labelledby: "heading-#{index}" },
-                  data: { "bs-parent": "#upcomingAccordion" }
+        %h4.text-center Upcoming Exercises
+        %br
+        - upcoming_groups = @workout.exercise_groups.order(:order).select{ |eg| eg.order > @exercise.exercise_group.order }
+        - upcoming_ex_sets = upcoming_groups.flat_map{ |e| e.exercises.map{ |e| e.exercise_sets.where(order: 1).first } }
+        - upcoming_ex_sets << @exercise_set.next_set if @exercise.exercise_group.exercises.count > 1 && @exercise_set.next_set.present?
+        .accordion.accordion-flush.border-top.border-bottom#upcomingAccordion
+          - upcoming_ex_sets.each_with_index do |ex_set, index|
+            .accordion-item
+              %h2.accordion-header{id: "heading-#{index}"}
+                %button.accordion-button.collapsed{
+                  type: "button",
+                  data: { "bs-toggle": "collapse", "bs-target": "#collapse-#{index}" },
+                  aria: { expanded: "false", controls: "collapse-#{index}" }
                 }
-                  .accordion-body
-                    = render 'exercise_sets/exercise_info', exercise_set: ex_set, exercise: ex_set.exercise, upcoming: true
+                  = ex_set.exercise.name
+                  = "- Superset" if ex_set.exercise.exercise_group.exercises.count > 1
+
+              .accordion-collapse.collapse{
+                id: "collapse-#{index}",
+                aria: { labelledby: "heading-#{index}" },
+                data: { "bs-parent": "#upcomingAccordion" }
+              }
+                .accordion-body
+                  = render 'exercise_sets/exercise_info', exercise_set: ex_set, exercise: ex_set.exercise, upcoming: true
         = form_with model: last_set, url: program_workout_exercise_exercise_set_path(@program, @workout, last_set.exercise, last_set), method: :patch, local: true, html: { id: "next" } do |f|
           = f.hidden_field :play, value: true, id: "play-#{last_set.id}"
           = f.hidden_field :reps, value: last_set.reps, id: "reps-#{last_set.id}"
