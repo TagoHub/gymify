@@ -96,7 +96,7 @@ class ExerciseSetsController < ApplicationController
   end
 
   def set_exercise_set
-    @exercise_set = @exercise.exercise_sets.find(params[:id])
+    @exercise_set = ExerciseSet.where(exercise_id: @exercise.exercise_group.exercises.pluck(:id), id: params[:id]).first
   end
 
   def sets_count
